@@ -22,7 +22,7 @@ class StackInABox(object):
     @classmethod
     def register_service(cls, service):
         logger.debug('Registering service {0}'.format(service.name))
-        return local_store.instance.register(sevice)
+        return local_store.instance.register(service)
 
     @classmethod
     def call_into(cls, method, request, uri, headers):
@@ -111,7 +111,10 @@ class StackInABox(object):
 
                 try:
                     service_caller_uri = service_uri[len(service.name)+1:]
-                    return service.request(method, request, service_caller_uri, headers)
+                    return service.request(method,
+                                           request,
+                                           service_caller_uri,
+                                           headers)
                 except Exception as ex:
                     return (500,
                             headers,
