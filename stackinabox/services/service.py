@@ -1,5 +1,5 @@
 """
-Stack-In-A-Box
+Stack-In-A-Box: Service Interface
 """
 import logging
 import re

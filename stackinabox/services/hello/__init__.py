@@ -1,5 +1,5 @@
 """
-Stack-In-A-Box
+Stack-In-A-Box: Hello
 """
 from stackinabox.services.service import StackInABoxService
 

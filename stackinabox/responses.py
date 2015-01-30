@@ -1,3 +1,6 @@
+"""
+Stack-In-A-Box: Python Responses Support
+"""
 import logging
 import re
 

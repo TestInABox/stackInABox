@@ -1,3 +1,6 @@
+"""
+Stack-In-A-Box: HTTPretty Support
+"""
 import logging
 import re
 

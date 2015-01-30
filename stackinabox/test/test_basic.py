@@ -1,5 +1,5 @@
 """
-Stack-In-A-Box Basic Test
+Stack-In-A-Box: Basic Test
 """
 import unittest
 

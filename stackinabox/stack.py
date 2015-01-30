@@ -1,5 +1,5 @@
 """
-Stack-In-A-Box
+Stack-In-A-Box: Stack Management
 """
 import logging
 import re
