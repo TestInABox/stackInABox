@@ -85,7 +85,7 @@ HTTPretty
             super(TestHttpretty, self).tearDown()
 
         def test_basic(self):
-			stackinabox.httpretty.httpretty_registration('localhost')
+            stackinabox.httpretty.httpretty_registration('localhost')
 
             res = requests.get('http://localhost/')
             self.assertEqual(res.status_code, 200)
