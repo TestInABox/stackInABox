@@ -21,18 +21,17 @@ class TestHttpretty(unittest.TestCase):
         super(TestHttpretty, self).tearDown()
 
     def test_basic(self):
-        stackinabox.httpretty.httpretty_registration('http://localhost:8000/hello')
+        stackinabox.httpretty.httpretty_registration('localhost')
 
-        res = requests.get('http://localhost:8000/hello')
+        res = requests.get('http://localhost/hello/')
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.text, 'Hello')
-        assert False
 
 
 @responses.activate
 def test_basic_responses():
-    stackinabox.responses.responses_registration('http://localhost:8000/hello')
+    stackinabox.responses.responses_registration('localhost')
 
-    res = requests.get('http://localhost:8000/hello')
+    res = requests.get('http://localhost/hello/')
     assert res.status_code == 200
     assert res.text == 'Hello'

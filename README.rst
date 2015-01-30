@@ -65,7 +65,7 @@ Both of these are extremely easy to use as shown in the following examples:
 HTTPretty
 ---------
 
-:: code-block:: python
+.. code-block:: python
 
     import unittest
 
@@ -96,7 +96,7 @@ HTTPretty
 Responses
 ---------
 
-:: code-block:: python
+.. code-block:: python
 
     import unittest
 
