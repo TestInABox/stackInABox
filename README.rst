@@ -35,17 +35,29 @@ Why not use framework X?
 I considered a couple frameworks and tools, but they didn't quite meet the goal.
 
 For instance, mimic (https://github.com/rackerlabs/mimic) is a great tool for testing multiple things. However, you have to start/stop it separately from your tests.
-On the other hand, pretenders (https://github.com/pretenders) has a nice framework too, but it doesn't actually generate a socket usage.
+On the other hand, pretenders (https://github.com/pretenders) has a nice framework too, but it doesn't actually use sockets.
 
 ================
 What's Provided?
 ================
 
-It's a work in progress. BuHTTPrettyt here's the list of current targets in-order:
+It's a work in progress. Here's the list of current targets in-order:
 
 - Keystone v2
 - Keystone v3
 - Swift
+
+Thus far Keystone v2 provides end-points for:
+
+- Listing tenants
+- Listing users
+
+It also has support in the backend for:
+
+- tenant (add/remove/enable/disable)
+- users (add/remove/enable/disable, apikey, password)
+- tokens (add/remove, revoke, validate, admin tokens)
+- roles (add, assign)
 
 =======================
 Working with Frameworks
