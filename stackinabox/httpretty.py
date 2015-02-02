@@ -20,6 +20,7 @@ def httpretty_callback(request, uri, headers):
                                  uri,
                                  headers)
 
+
 def httpretty_registration(uri):
     logger.debug('Registering Stack-In-A-Box at {0} under Python HTTPretty'
                  .format(uri))

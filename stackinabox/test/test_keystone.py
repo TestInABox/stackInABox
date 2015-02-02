@@ -10,6 +10,7 @@ import stackinabox.httpretty
 from stackinabox.stack import StackInABox
 from stackinabox.services.keystone.v2 import KeystoneV2Service
 
+
 @httpretty.activate
 class TestHttpretty(unittest.TestCase):
 
@@ -36,7 +37,8 @@ class TestHttpretty(unittest.TestCase):
         # There is always 1 tenant - the system
         self.assertEqual(len(tenant_data['tenants']), 1)
 
-        self.keystone.backend.add_tenant(tenantname='neo', description='The One')
+        self.keystone.backend.add_tenant(tenantname='neo',
+                                         description='The One')
 
         res = requests.get('http://localhost/keystone/v2.0/tenants',
                            headers=self.headers)
@@ -51,19 +53,23 @@ class TestHttpretty(unittest.TestCase):
     def test_user_listing(self):
         stackinabox.httpretty.httpretty_registration('localhost')
 
-        neo_tenant_id = self.keystone.backend.add_tenant(tenantname='neo', description='The One')
+        neo_tenant_id = self.keystone.backend.add_tenant(tenantname='neo',
+                                                         description='The One')
         tom = self.keystone.backend.add_user(neo_tenant_id,
                                              'tom',
                                              'tom@theone.matrix',
                                              'bluepill',
                                              'iamnottheone',
                                              enabled=True)
-        self.keystone.backend.add_user_role_by_rolename(neo_tenant_id, tom, 'identity:user-admin')
+        self.keystone.backend.add_user_role_by_rolename(neo_tenant_id,
+                                                        tom,
+                                                        'identity:user-admin')
 
         self.keystone.backend.add_token(neo_tenant_id, tom)
-        self.headers['x-auth-token'] = self.keystone.backend.get_token_by_userid(tom)['token']
+        user_data = self.keystone.backend.get_token_by_userid(tom)
+        self.headers['x-auth-token'] = user_data['token']
         res = requests.get('http://localhost/keystone/v2.0/users',
-                           headers = self.headers)
+                           headers=self.headers)
         print(res.text)
         self.assertEqual(res.status_code, 200)
         user_data = res.json()
@@ -78,7 +84,7 @@ class TestHttpretty(unittest.TestCase):
                                        enabled=True)
 
         res = requests.get('http://localhost/keystone/v2.0/users',
-                           headers = self.headers)
+                           headers=self.headers)
         self.assertEqual(res.status_code, 200)
         user_data = res.json()
 

@@ -28,52 +28,52 @@ logger = logging.getLogger(__name__)
 """
 
 schema = [
-'''
-    CREATE TABLE keystone_tenants
-    (
-        tenantid INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL,
-        description TEXT,
-        enabled INTEGER DEFAULT 1
-    )
-''',
-'''
-    CREATE TABLE keystone_users
-    (
-        tenantid INTEGER NOT NULL REFERENCES keystone_tenants(tenantid),
-        userid INTEGER PRIMARY KEY AUTOINCREMENT,
-        username TEXT NOT NULL,
-        email TEXT NOT NULL,
-        password TEXT NOT NULL,
-        apikey TEXT NOT NULL,
-        enabled INTEGER DEFAULT 1
-    )
-''',
-'''
-    CREATE TABLE keystone_tokens
-    (
-        tenantid INTEGER NOT NULL REFERENCES keystone_tenants(tenantid),
-        userid INTEGER NOT NULL REFERENCES keystone_users(userid),
-        token TEXT NOT NULL UNIQUE,
-        ttl DATETIME NOT NULL,
-        revoked INTEGER DEFAULT 0
-    )
-''',
-'''
-    CREATE TABLE keystone_roles
-    (
-        roleid INTEGER PRIMARY KEY AUTOINCREMENT,
-        rolename TEXT NOT NULL UNIQUE
-    )
-''',
-'''
-    CREATE TABLE keystone_user_roles
-    (
-        tenantid INTEGER NOT NULL REFERENCES keystone_tenants(tenantid),
-        userid INTEGER NOT NULL REFERENCES keystone_users(userid),
-        roleid INTEGER NOT NULL REFERENCES keystone_roles(roleid)
-    )
-'''
+    '''
+        CREATE TABLE keystone_tenants
+        (
+            tenantid INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            description TEXT,
+            enabled INTEGER DEFAULT 1
+        )
+    ''',
+    '''
+        CREATE TABLE keystone_users
+        (
+            tenantid INTEGER NOT NULL REFERENCES keystone_tenants(tenantid),
+            userid INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT NOT NULL,
+            email TEXT NOT NULL,
+            password TEXT NOT NULL,
+            apikey TEXT NOT NULL,
+            enabled INTEGER DEFAULT 1
+        )
+    ''',
+    '''
+        CREATE TABLE keystone_tokens
+        (
+            tenantid INTEGER NOT NULL REFERENCES keystone_tenants(tenantid),
+            userid INTEGER NOT NULL REFERENCES keystone_users(userid),
+            token TEXT NOT NULL UNIQUE,
+            ttl DATETIME NOT NULL,
+            revoked INTEGER DEFAULT 0
+        )
+    ''',
+    '''
+        CREATE TABLE keystone_roles
+        (
+            roleid INTEGER PRIMARY KEY AUTOINCREMENT,
+            rolename TEXT NOT NULL UNIQUE
+        )
+    ''',
+    '''
+        CREATE TABLE keystone_user_roles
+        (
+            tenantid INTEGER NOT NULL REFERENCES keystone_tenants(tenantid),
+            userid INTEGER NOT NULL REFERENCES keystone_users(userid),
+            roleid INTEGER NOT NULL REFERENCES keystone_roles(roleid)
+        )
+    '''
 ]
 
 SQL_ADD_TENANT = '''
@@ -131,7 +131,7 @@ SQL_GET_USER_BY_USERNAME = '''
     SELECT tenantid, userid, username, email, password, apikey, enabled
     FROM keystone_users
     WHERE tenantid = :tenantid AND
-          username = :username 
+          username = :username
 '''
 
 SQL_GET_USER_BY_USERID = '''
@@ -172,7 +172,8 @@ SQL_GET_TOKEN_BY_USER_ID = '''
 '''
 
 SQL_GET_TOKEN_BY_USER_NAME = '''
-    SELECT keystone_tokens.tenantid, keystone_tokens.userid, keystone_tokens.token, keystone_tokens.ttl, keystone_tokens.revoked
+    SELECT keystone_tokens.tenantid, keystone_tokens.userid,
+           keystone_tokens.token, keystone_tokens.ttl, keystone_tokens.revoked
     FROM keystone_tokens, keystone_users
     WHERE keystone_tokens.tenantid = keystone_users.tenantid
       AND keystone_tokens.userid = keystone_users.userid
@@ -225,6 +226,7 @@ SQL_GET_ROLES_FOR_USER = '''
       AND keystone_user_roles.userid = :userid
 '''
 
+
 class KeystoneError(Exception):
     pass
 
@@ -266,7 +268,7 @@ class KeystoneBackend(object):
     IDENTITY_ADMIN_ROLE = 'identity:user-admin'
 
     def __init__(self):
-        self.__admin_token = 'adminstrate_with_this_{0}'.format(uuid.uuid4()) 
+        self.__admin_token = 'adminstrate_with_this_{0}'.format(uuid.uuid4())
         self.database = sqlite3.connect(':memory:')
         self.init_database()
 
@@ -292,8 +294,13 @@ class KeystoneBackend(object):
             dbcursor.execute(table_sql)
 
         # Create an admin user and add the admin token to that user
-        self.__admin_tenant_id = self.add_tenant('system', 'system administrator')
-        self.__admin_user_id = self.add_user(self.__admin_tenant_id, 'system', 'system@stackinabox', 'stackinabox','537461636b496e41426f78')
+        self.__admin_tenant_id = self.add_tenant('system',
+                                                 'system administrator')
+        self.__admin_user_id = self.add_user(self.__admin_tenant_id,
+                                             'system',
+                                             'system@stackinabox',
+                                             'stackinabox',
+                                             '537461636b496e41426f78')
         role_data = self.add_role(KeystoneBackend.IDENTITY_ADMIN_ROLE)
         self.__admin_role_id = role_data['roleid']
         self.add_user_role_by_roleid(self.__admin_tenant_id,
@@ -307,7 +314,7 @@ class KeystoneBackend(object):
         self.database.commit()
 
     def get_admin_token(self):
-        return self.__admin_token 
+        return self.__admin_token
 
     def add_tenant(self, tenantname=None, description=None, enabled=True):
         args = {
@@ -325,7 +332,8 @@ class KeystoneBackend(object):
         dbcursor.execute(SQL_GET_MAX_TENANT_ID)
         tenant_data = dbcursor.fetchone()
         if tenant_data is None:
-            raise KeystoneTenantError('Unable to retrieve tenantid for newly created tenant')
+            raise KeystoneTenantError(
+                'Unable to retrieve tenantid for newly created tenant')
 
         tenantid = tenant_data[0]
         return tenantid
@@ -400,7 +408,8 @@ class KeystoneBackend(object):
 
         self.database.commit()
 
-    def add_user(self, tenantid=None, username=None, email=None, password=None, apikey=None, enabled=True):
+    def add_user(self, tenantid=None, username=None, email=None,
+                 password=None, apikey=None, enabled=True):
         args = {
             'tenantid': tenantid,
             'username': username,
@@ -481,7 +490,8 @@ class KeystoneBackend(object):
             })
         return results
 
-    def add_token(self, tenantid=None, userid=None, expire_time=None, token=None):
+    def add_token(self, tenantid=None, userid=None,
+                  expire_time=None, token=None):
         if token is None:
             token = uuid.uuid4()
 
@@ -493,7 +503,8 @@ class KeystoneBackend(object):
         }
         if expire_time is not None:
             if not isinstance(expire_time, datetime.datetime):
-                raise TypeError('expire_time must be a datetime.datetime object')
+                raise TypeError(
+                    'expire_time must be a datetime.datetime object')
 
             '''2015-02-03 02:31:17'''
             utc_expire_time = expire_time.utctimetuple()
@@ -503,8 +514,7 @@ class KeystoneBackend(object):
                 utc_expire_time[2],
                 utc_expire_time[3],
                 utc_expire_time[4],
-                utc_expire_time[5]
-                )
+                utc_expire_time[5])
             dbcursor.execute(SQL_INSERT_TOKEN_AND_EXPIRATION, args)
         else:
             dbcursor.execute(SQL_INSERT_TOKEN, args)
@@ -527,7 +537,8 @@ class KeystoneBackend(object):
             dbcursor.execute(SQL_REVOKE_TOKEN, args)
 
         if not dbcursor.rowcount:
-            raise KeystoneTokenError('Unknown tenantid or  userid; or no associated token')
+            raise KeystoneTokenError(
+                'Unknown tenantid or  userid; or no associated token')
 
         self.database.commit()
 
@@ -622,7 +633,8 @@ class KeystoneBackend(object):
         if not dbcursor.rowcount:
             raise KeystoneRoleError('Unable to assign role to tenantid/userid')
 
-    def add_user_role_by_rolename(self, tenantid=None, userid=None, rolename=None):
+    def add_user_role_by_rolename(self, tenantid=None, userid=None,
+                                  rolename=None):
         role_data = self.get_role_id(rolename)
         self.add_user_role_by_roleid(tenantid, userid, role_data['roleid'])
 

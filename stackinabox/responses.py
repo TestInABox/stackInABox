@@ -16,7 +16,8 @@ def responses_callback(request):
     method = request.method
     headers = request.headers
     uri = request.url
-    return (200, headers, 'Hello') 
+    return (200, headers, 'Hello')
+
 
 def responses_registration(uri):
     logger.debug('Registering Stack-In-A-Box at {0} under Python Responses'

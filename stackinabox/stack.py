@@ -95,7 +95,7 @@ class StackInABox(object):
                      .format(self.__id))
 
     def register(self, service):
-        if not service.name in self.services.keys():
+        if service.name not in self.services.keys():
             logger.debug('StackInABox({0}): Registering Service {1}'
                          .format(self.__id, service.name))
             regex = '^/{0}'.format(service.name)
@@ -119,14 +119,15 @@ class StackInABox(object):
             matcher, service = v
             logger.debug('StackInABox({0}): Checking if Service {1} handles...'
                          .format(self.__id, service.name))
-            logger.debug('StackInABox({0}): ...using regex pattern {1} against {2}'
+            logger.debug('StackInABox({0}): ...using regex pattern {1} '
+                         'against {2}'
                          .format(self.__id, matcher.pattern, service_uri))
             if matcher.match(service_uri):
                 logger.debug('StackInABox({0}): Trying Service {1} handler...'
                              .format(self.__id, service.name))
 
                 try:
-                    service_caller_uri = service_uri[len(service.name)+1:]
+                    service_caller_uri = service_uri[(len(service.name) + 1):]
                     return service.request(method,
                                            request,
                                            service_caller_uri,

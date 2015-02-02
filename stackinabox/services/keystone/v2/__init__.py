@@ -19,8 +19,12 @@ class KeystoneV2Service(StackInABoxService):
         self.__id = uuid.uuid4()
         self.__backend = KeystoneBackend()
 
-        self.register(StackInABoxService.GET, '/tenants', KeystoneV2Service.handle_list_tenants)
-        self.register(StackInABoxService.GET, '/users', KeystoneV2Service.handle_list_users)
+        self.register(StackInABoxService.GET,
+                      '/tenants',
+                      KeystoneV2Service.handle_list_tenants)
+        self.register(StackInABoxService.GET,
+                      '/users',
+                      KeystoneV2Service.handle_list_users)
 
     @property
     def backend(self):
@@ -38,7 +42,8 @@ class KeystoneV2Service(StackInABoxService):
         '''
 
         200, 203 -> OK
-        400 -> Bad Request: one or more required parameters is missing or invalid
+        400 -> Bad Request: one or more required parameters
+                            are missing or invalid
         401 -> not authorized
         403 -> forbidden (no permission)
         404 -> Not found
@@ -56,12 +61,17 @@ class KeystoneV2Service(StackInABoxService):
                 """
                 Body on success:
                 body = {
-                    'tenants' : [ {'id': 01234, 'name': 'bob', 'description': 'joe bob', 'enabled': True }]
+                    'tenants' : [ {'id': 01234,
+                                   'name': 'bob',
+                                   'description': 'joe bob',
+                                   'enabled': True }]
                     'tenants_links': []
                 }
                 """
                 response_body = {
-                    'tenants' : [tenant_info for tenant_info in self.backend.get_tenants()],
+                    'tenants': [tenant_info
+                                for tenant_info in
+                                self.backend.get_tenants()],
                     'tenants_links': []
                 }
                 return (200, headers, json.dumps(response_body))
@@ -92,14 +102,18 @@ class KeystoneV2Service(StackInABoxService):
 
         if 'x-auth-token' in req_headers:
             try:
-                user_data = self.backend.validate_token_admin(req_headers['x-auth-token']) 
+                user_data = self.backend.validate_token_admin(
+                    req_headers['x-auth-token'])
+
                 if user_data:
-                    logger.debug('KeystoneV2Service({0}): Token Valid for tenantid {1}'
+                    logger.debug('KeystoneV2Service({0}): Token Valid for '
+                                 'tenantid {1}'
                                  .format(self.__id, user_data['tenantid']))
                     response_body = {
                         'users': [user_data_filter(user_info)
                                   for user_info in
-                                  self.backend.get_users_for_tenant_id(user_data['tenantid'])]
+                                  self.backend.get_users_for_tenant_id(
+                                      user_data['tenantid'])]
                     }
                     return (200, headers, json.dumps(response_body))
 
@@ -107,6 +121,6 @@ class KeystoneV2Service(StackInABoxService):
                     return (200, headers, json.dumps({'users': []}))
 
             except Exception as ex:
-                return (401, headers, 'Not Authorized - {0} {1}'.format(ex, type(ex)))
+                return (401, headers, 'Not Authorized')
         else:
             return (403, headers, 'Forbidden')
