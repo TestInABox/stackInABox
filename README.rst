@@ -14,6 +14,17 @@ Overview
 
 Stack-In-A-Box is a RESTful API Testing Framework for unit testing applications against the other services with support for OpenStack/Rackspace APIs.
 
+==========
+Installing
+==========
+
+Installation is simple:
+
+
+.. code-block:: bash 
+
+   pip install stackinabox
+
 =====
 Goals
 =====
