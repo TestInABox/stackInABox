@@ -63,6 +63,14 @@ class StackInABoxService(object):
         for k, v in self.routes.items():
             v['regex'] = StackInABoxService.__get_service_regex(value,
                                                                 v['uri'])
+
+    def reset(self):
+        logger.debug('StackInABoxService ({0}): Reset'
+                     .format(self.__id, self.name))
+        self.base_url = '/{0}'.format(self.name)
+        logger.debug('StackInABoxService ({0}): Hosting Service {1}'
+                     .format(self.__id, self.name))
+        
             
     def request(self, method, request, uri, headers):
         logger.debug('StackInABoxService ({0}:{1}): Received {2} - {3}'

@@ -20,6 +20,7 @@ class KeystoneV2Service(StackInABoxService):
         self.__backend = KeystoneBackend()
 
         self.register(StackInABoxService.GET, '/tenants', KeystoneV2Service.handle_list_tenants)
+        self.register(StackInABoxService.GET, '/users', KeystoneV2Service.handle_list_users)
 
     @property
     def backend(self):
@@ -68,5 +69,44 @@ class KeystoneV2Service(StackInABoxService):
             else:
                 return (401, headers, 'Not Authorized')
 
+        else:
+            return (403, headers, 'Forbidden')
+
+    def handle_list_users(self, request, uri, headers):
+        req_headers = request.headers
+        '''
+        '''
+        logger.debug('KeystoneV2Service({0}): received request {1}'
+                     .format(self.__id, uri))
+        logger.debug('KeystoneV2Service({0}): Received headers {1}'
+                     .format(self.__id, request.headers))
+
+        def user_data_filter(user):
+            logger.debug('Filtering data on {0}'.format(user))
+            return {
+                'userid': user['userid'],
+                'enabled': user['enabled'],
+                'username': user['username'],
+                'email': user['email'],
+            }
+
+        if 'x-auth-token' in req_headers:
+            try:
+                user_data = self.backend.validate_token_admin(req_headers['x-auth-token']) 
+                if user_data:
+                    logger.debug('KeystoneV2Service({0}): Token Valid for tenantid {1}'
+                                 .format(self.__id, user_data['tenantid']))
+                    response_body = {
+                        'users': [user_data_filter(user_info)
+                                  for user_info in
+                                  self.backend.get_users_for_tenant_id(user_data['tenantid'])]
+                    }
+                    return (200, headers, json.dumps(response_body))
+
+                else:
+                    return (200, headers, json.dumps({'users': []}))
+
+            except Exception as ex:
+                return (401, headers, 'Not Authorized - {0} {1}'.format(ex, type(ex)))
         else:
             return (403, headers, 'Forbidden')

@@ -18,6 +18,10 @@ class ServiceAlreadyRegisteredError(Exception):
 
 class StackInABox(object):
 
+    @classmethod
+    def reset_services(cls):
+        logger.debug('Resetting services')
+        return local_store.instance.reset()
 
     @classmethod
     def register_service(cls, service):
@@ -77,6 +81,20 @@ class StackInABox(object):
                                                              service.name)
             logger.debug('StackInABox({0}): Service {1} has url {2}'
                          .format(self.__id, service.name, service.base_url))
+
+    def reset(self):
+        logger.debug('StackInABox({0}): Resetting...'
+                     .format(self.__id))
+        for k, v in self.services.items():
+            matcher, service = v
+            logger.debug('StackInABox({0}): Resetting Service {1}'
+                         .format(self.__id, service.name))
+            service.reset()
+
+        self.services = {}
+
+        logger.debug('StackInABox({0}): Reset Complete'
+                     .format(self.__id))
 
     def register(self, service):
         if not service.name in self.services.keys():

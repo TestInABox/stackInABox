@@ -23,6 +23,7 @@ class TestHttpretty(unittest.TestCase):
 
     def tearDown(self):
         super(TestHttpretty, self).tearDown()
+        StackInABox.reset_services()
 
     def test_tenant_listing(self):
         stackinabox.httpretty.httpretty_registration('localhost')
@@ -32,7 +33,8 @@ class TestHttpretty(unittest.TestCase):
         self.assertEqual(res.status_code, 200)
         tenant_data = res.json()
 
-        self.assertEqual(len(tenant_data['tenants']), 0)
+        # There is always 1 tenant - the system
+        self.assertEqual(len(tenant_data['tenants']), 1)
 
         self.keystone.backend.add_tenant(tenantname='neo', description='The One')
 
@@ -41,7 +43,44 @@ class TestHttpretty(unittest.TestCase):
         self.assertEqual(res.status_code, 200)
         tenant_data = res.json()
 
-        self.assertEqual(len(tenant_data['tenants']), 1)
-        self.assertEqual(tenant_data['tenants'][0]['name'], 'neo')
-        self.assertEqual(tenant_data['tenants'][0]['description'], 'The One')
-        self.assertTrue(tenant_data['tenants'][0]['enabled'])
+        self.assertEqual(len(tenant_data['tenants']), 2)
+        self.assertEqual(tenant_data['tenants'][1]['name'], 'neo')
+        self.assertEqual(tenant_data['tenants'][1]['description'], 'The One')
+        self.assertTrue(tenant_data['tenants'][1]['enabled'])
+
+    def test_user_listing(self):
+        stackinabox.httpretty.httpretty_registration('localhost')
+
+        neo_tenant_id = self.keystone.backend.add_tenant(tenantname='neo', description='The One')
+        tom = self.keystone.backend.add_user(neo_tenant_id,
+                                             'tom',
+                                             'tom@theone.matrix',
+                                             'bluepill',
+                                             'iamnottheone',
+                                             enabled=True)
+        self.keystone.backend.add_user_role_by_rolename(neo_tenant_id, tom, 'identity:user-admin')
+
+        self.keystone.backend.add_token(neo_tenant_id, tom)
+        self.headers['x-auth-token'] = self.keystone.backend.get_token_by_userid(tom)['token']
+        res = requests.get('http://localhost/keystone/v2.0/users',
+                           headers = self.headers)
+        print(res.text)
+        self.assertEqual(res.status_code, 200)
+        user_data = res.json()
+
+        self.assertEqual(len(user_data['users']), 1)
+
+        self.keystone.backend.add_user(neo_tenant_id,
+                                       'neo',
+                                       'neo@theone.matrix',
+                                       'redpill',
+                                       'iamtheone',
+                                       enabled=True)
+
+        res = requests.get('http://localhost/keystone/v2.0/users',
+                           headers = self.headers)
+        self.assertEqual(res.status_code, 200)
+        user_data = res.json()
+
+        self.assertEqual(len(user_data['users']), 2)
+        StackInABox.reset_services()
