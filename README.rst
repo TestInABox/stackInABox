@@ -4,6 +4,10 @@ Stack-In-A-Box
 
 Testing framework for RESTful APIs such as the OpenStack/Rackspace APIs
 
+.. image:: https://travis-ci.org/BenjamenMeyer/stackInABox.svg?branch=master
+   :target: https://travis-ci.org/BenjamenMeyer/stackInABox
+   :alt: Travis-CI Status
+
 ========
 Overview
 ========
