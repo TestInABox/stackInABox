@@ -2,13 +2,13 @@
 Stack-In-A-Box
 **************
 
-Testing framework for OpenStack/Rackspace Service Suites
+Testing framework for RESTful APIs such as the OpenStack/Rackspace APIs
 
 ========
 Overview
 ========
 
-Stack-In-A-Box is an OpenStack/Rackspace Services Testing Framework for unit testing applications against the OpenStack/Rackspace services.
+Stack-In-A-Box is a RESTful API Testing Framework for unit testing applications against the other services with support for OpenStack/Rackspace APIs.
 
 =====
 Goals
