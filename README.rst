@@ -73,8 +73,8 @@ HTTPretty
     import requests
 
     import stackinabox.httpretty
-	from stackinabox.stack import StackInABox
-	from stackinabox.services.hello import HelloService
+    from stackinabox.stack import StackInABox
+    from stackinabox.services.hello import HelloService
 
 
     @httpretty.activate
@@ -82,11 +82,11 @@ HTTPretty
 
         def setUp(self):
             super(TestHttpretty, self).setUp()
-			StackInABox.register_service(HelloService())
+	    StackInABox.register_service(HelloService())
 
         def tearDown(self):
             super(TestHttpretty, self).tearDown()
-			StackInABox.reset_services()
+	    StackInABox.reset_services()
 
         def test_basic(self):
             stackinabox.httpretty.httpretty_registration('localhost')
@@ -108,14 +108,14 @@ Responses
     import requests
 
     import stackinabox.responses
-	from stackinabox.stack import StackInABox
-	from stackinabox.services.hello import HelloService
+    from stackinabox.stack import StackInABox
+    from stackinabox.services.hello import HelloService
 
 
     @responses.activate
     def test_basic_responses():
-		StackInABox.reset_services()
-		StackInABox.register_service(HelloService())
+	StackInABox.reset_services()
+	StackInABox.register_service(HelloService())
         stackinabox.responses.responses_registration('localhost')
 
         res = requests.get('http://localhost/hello/')
