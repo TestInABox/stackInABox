@@ -5,7 +5,6 @@ import logging
 import re
 import uuid
 
-from stackinabox.services.hello import HelloService
 import threading
 
 
@@ -46,7 +45,6 @@ class StackInABox(object):
         self.__base_url = '/'
         self.services = {
         }
-        self.register(HelloService())
 
     @staticmethod
     def __get_service_url(base_url, service_name):
