@@ -5,7 +5,7 @@ REQUIRES = []
 
 setup(
     name='stackinabox',
-    version='0.1',
+    version='0.2',
     description='OpenStack/Rackspace Service Testing Suite',
     license='Apache License 2.0',
     url='https://github.com/BenjamenMeyer/stackInABox',
