@@ -42,7 +42,7 @@ class StackInABoxService(object):
 
     @staticmethod
     def __get_service_regex(base_url, service_url):
-        regex = '^{0}{1}'.format('', service_url)
+        regex = '^{0}{1}$'.format('', service_url)
         logger.debug('StackInABoxService: {0} + {1} -> {2}'
                      .format(base_url, service_url, regex))
         return re.compile(regex)
@@ -78,27 +78,36 @@ class StackInABoxService(object):
     def request(self, method, request, uri, headers):
         logger.debug('StackInABoxService ({0}:{1}): Received {2} - {3}'
                      .format(self.__id, self.name, method, uri))
+        uri_path = uri
+        if '?' in uri:
+            logger.debug('StackInABoxService ({0}:{1}): Found query string '
+                         'removing for match operation.'
+                         .format(self.__id, self.name))
+            uri_path, uri_qs = uri.split('?')
+            logger.debug('StackInABoxService ({0}:{1}): uri =  "{2}", query = "{3}"'
+                         .format(self.__id, self.name, uri_path, uri_qs))
+
         for k, v in self.routes.items():
             logger.debug('StackInABoxService ({0}:{1}): Checking if '
-                         'route {1} handles...'
+                         'route {2} handles...'
                          .format(self.__id, self.name, v['uri']))
             logger.debug('StackInABoxService ({0}:{1}): ...using regex '
-                         'pattern {1} against {2}'
+                         'pattern {2} against {3}'
                          .format(self.__id,
                                  self.name,
                                  v['regex'].pattern,
-                                 uri))
-            if v['regex'].match(uri):
+                                 uri_path))
+            if v['regex'].match(uri_path):
                 logger.debug('StackInABoxService ({0}:{1}): Checking if '
-                             'method {2} is handled...'
-                             .format(self.__id, self.name, method))
+                             'route {2} handles method {2}...'
+                             .format(self.__id, self.name, v['uri'], method))
                 if method in v['handlers']:
                     logger.debug('StackInABoxService ({0}:{1}): Calling '
-                                 'handler for method {2}...'
-                                 .format(self.__id, self.name, method))
+                                 'handler for route {2} on method {3}...'
+                                 .format(self.__id, self.name, v['uri'], method))
                     return v['handlers'][method](self,
                                                  request,
-                                                 v['uri'],
+                                                 uri,
                                                  headers)
         return (500, headers, 'Server Error')
 
