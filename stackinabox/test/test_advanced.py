@@ -86,7 +86,7 @@ class TestHttpretty(unittest.TestCase):
 
 def tb_responses_setup():
     StackInABox.register_service(AdvancedService())
-    
+
 def tb_responses_teardown():
     StackInABox.reset_services()
 
@@ -101,6 +101,15 @@ def tb_basic_responses():
     res = requests.get('http://localhost/advanced/h')
     assert res.status_code == 200
     assert res.text == 'Good-Bye'
+
+    expected_result = {
+        'bob': 'bob: Good-Bye alice',
+        'alice': 'alice: Good-Bye bob',
+        'joe': 'joe: Good-Bye jane'
+    }
+    res = requests.get('http://localhost/advanced/g?bob=alice;alice=bob&joe=jane')
+    assert res.status_code == 200
+    assert res.json() == expected_result
 
 test_basic_responses = unittest.FunctionTestCase(tb_basic_responses,
                                                  setUp=tb_responses_setup,
