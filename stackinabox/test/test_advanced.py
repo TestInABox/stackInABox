@@ -22,9 +22,12 @@ class AdvancedService(StackInABoxService):
 
     def __init__(self):
         super(AdvancedService, self).__init__('advanced')
-        self.register(StackInABoxService.GET, '/', AdvancedService.handler)
-        self.register(StackInABoxService.GET, '/h', AdvancedService.alternate_handler)
-        self.register(StackInABoxService.GET, '/g', AdvancedService.query_handler)
+        self.register(StackInABoxService.GET, '/',
+                      AdvancedService.handler)
+        self.register(StackInABoxService.GET, '/h',
+                      AdvancedService.alternate_handler)
+        self.register(StackInABoxService.GET, '/g',
+                      AdvancedService.query_handler)
 
     def handler(self, request, uri, headers):
         return (200, headers, 'Hello')
@@ -79,7 +82,8 @@ class TestHttpretty(unittest.TestCase):
             'alice': 'alice: Good-Bye bob',
             'joe': 'joe: Good-Bye jane'
         }
-        res = requests.get('http://localhost/advanced/g?bob=alice;alice=bob&joe=jane')
+        res = requests.get('http://localhost/advanced/g?bob=alice;'
+                           'alice=bob&joe=jane')
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.json(), expected_result)
 
@@ -87,8 +91,10 @@ class TestHttpretty(unittest.TestCase):
 def tb_responses_setup():
     StackInABox.register_service(AdvancedService())
 
+
 def tb_responses_teardown():
     StackInABox.reset_services()
+
 
 @responses.activate
 def tb_basic_responses():
@@ -107,10 +113,12 @@ def tb_basic_responses():
         'alice': 'alice: Good-Bye bob',
         'joe': 'joe: Good-Bye jane'
     }
-    res = requests.get('http://localhost/advanced/g?bob=alice;alice=bob&joe=jane')
+    res = requests.get('http://localhost/advanced/g?bob=alice;'
+                       'alice=bob&joe=jane')
     assert res.status_code == 200
     assert res.json() == expected_result
 
-test_basic_responses = unittest.FunctionTestCase(tb_basic_responses,
-                                                 setUp=tb_responses_setup,
-                                                 tearDown=tb_responses_teardown)
+test_basic_responses = \
+    unittest.FunctionTestCase(tb_basic_responses,
+                              setUp=tb_responses_setup,
+                              tearDown=tb_responses_teardown)

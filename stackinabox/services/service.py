@@ -84,7 +84,8 @@ class StackInABoxService(object):
                          'removing for match operation.'
                          .format(self.__id, self.name))
             uri_path, uri_qs = uri.split('?')
-            logger.debug('StackInABoxService ({0}:{1}): uri =  "{2}", query = "{3}"'
+            logger.debug('StackInABoxService ({0}:{1}): uri =  "{2}", '
+                         'query = "{3}"'
                          .format(self.__id, self.name, uri_path, uri_qs))
 
         for k, v in self.routes.items():
@@ -104,7 +105,10 @@ class StackInABoxService(object):
                 if method in v['handlers']:
                     logger.debug('StackInABoxService ({0}:{1}): Calling '
                                  'handler for route {2} on method {3}...'
-                                 .format(self.__id, self.name, v['uri'], method))
+                                 .format(self.__id,
+                                         self.name,
+                                         v['uri'],
+                                         method))
                     return v['handlers'][method](self,
                                                  request,
                                                  uri,
