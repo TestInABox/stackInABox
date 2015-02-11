@@ -6,7 +6,7 @@ import unittest
 import httpretty
 import requests
 
-import stackinabox.httpretty
+import stackinabox.util_httpretty
 from stackinabox.stack import StackInABox
 from stackinabox.services.keystone.v2 import KeystoneV2Service
 
@@ -27,7 +27,7 @@ class TestHttpretty(unittest.TestCase):
         StackInABox.reset_services()
 
     def test_tenant_listing(self):
-        stackinabox.httpretty.httpretty_registration('localhost')
+        stackinabox.util_httpretty.httpretty_registration('localhost')
 
         res = requests.get('http://localhost/keystone/v2.0/tenants',
                            headers=self.headers)
@@ -51,7 +51,7 @@ class TestHttpretty(unittest.TestCase):
         self.assertTrue(tenant_data['tenants'][1]['enabled'])
 
     def test_user_listing(self):
-        stackinabox.httpretty.httpretty_registration('localhost')
+        stackinabox.util_httpretty.httpretty_registration('localhost')
 
         neo_tenant_id = self.keystone.backend.add_tenant(tenantname='neo',
                                                          description='The One')

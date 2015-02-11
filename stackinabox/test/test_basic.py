@@ -7,8 +7,8 @@ import responses
 import httpretty
 import requests
 
-import stackinabox.httpretty
-import stackinabox.responses
+import stackinabox.util_httpretty
+import stackinabox.util_responses
 from stackinabox.stack import StackInABox
 from stackinabox.services.hello import HelloService
 
@@ -25,7 +25,7 @@ class TestHttpretty(unittest.TestCase):
         StackInABox.reset_services()
 
     def test_basic(self):
-        stackinabox.httpretty.httpretty_registration('localhost')
+        stackinabox.util_httpretty.httpretty_registration('localhost')
 
         res = requests.get('http://localhost/hello/')
         self.assertEqual(res.status_code, 200)
@@ -36,7 +36,7 @@ class TestHttpretty(unittest.TestCase):
 def test_basic_responses():
     StackInABox.reset_services()
     StackInABox.register_service(HelloService())
-    stackinabox.responses.responses_registration('localhost')
+    stackinabox.util_responses.responses_registration('localhost')
 
     res = requests.get('http://localhost/hello/')
     assert res.status_code == 200

@@ -9,8 +9,8 @@ import responses
 import httpretty
 import requests
 
-import stackinabox.httpretty
-import stackinabox.responses
+import stackinabox.util_httpretty
+import stackinabox.util_responses
 from stackinabox.stack import StackInABox
 from stackinabox.services.service import StackInABoxService
 
@@ -64,7 +64,7 @@ class TestHttpretty(unittest.TestCase):
         StackInABox.reset_services()
 
     def test_basic(self):
-        stackinabox.httpretty.httpretty_registration('localhost')
+        stackinabox.util_httpretty.httpretty_registration('localhost')
 
         res = requests.get('http://localhost/advanced/')
         self.assertEqual(res.status_code, 200)
@@ -92,7 +92,7 @@ def tb_responses_teardown():
 
 @responses.activate
 def tb_basic_responses():
-    stackinabox.responses.responses_registration('localhost')
+    stackinabox.util_responses.responses_registration('localhost')
 
     res = requests.get('http://localhost/advanced/')
     assert res.status_code == 200
