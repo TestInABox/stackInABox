@@ -1,5 +1,5 @@
 import sys
-from setuptools import setup
+from setuptools import setup, find_packages
 
 REQUIRES = []
 
@@ -13,4 +13,9 @@ setup(
     author_email='ben.meyer@rackspace.com',
     install_requires=REQUIRES,
     test_suite='stackinabox',
+    packages=find_packages(exclude=['tests*', 'stackinabox/tests']),
+    zip_safe=True,
+    classifiers=["Intended Audience :: Developers",
+                 "License :: OSI Approved :: MIT License",
+                 "Topic :: Software Development :: Testing"],
 )

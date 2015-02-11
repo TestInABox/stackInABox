@@ -14,7 +14,7 @@ class RouteAlreadyRegisteredError(Exception):
 
 
 class StackInABoxService(object):
-    DELETE = 'PUT'
+    DELETE = 'DELETE'
     GET = 'GET'
     HEAD = 'HEAD'
     OPTIONS = 'OPTIONS'
