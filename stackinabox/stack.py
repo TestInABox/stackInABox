@@ -36,6 +36,18 @@ class StackInABox(object):
                                          headers)
 
     @classmethod
+    def hold_onto(cls, name, obj):
+        logger.debug('Holding on {0} of type {1}'
+                     .format(name, type(obj)))
+        local_store.instance.into_hold(name, obj)
+
+    @classmethod
+    def hold_out(cls, name):
+        logger.debug('Retreiving {0} from hold'
+                     .format(name))
+        return local_store.instance.from_hold(name)
+
+    @classmethod
     def update_uri(cls, uri):
         logger.debug('Request: Update URI to {0}'.format(uri))
         local_store.instance.base_url = uri
@@ -44,6 +56,8 @@ class StackInABox(object):
         self.__id = uuid.uuid4()
         self.__base_url = '/'
         self.services = {
+        }
+        self.holds = {
         }
 
     @staticmethod
@@ -90,6 +104,7 @@ class StackInABox(object):
             service.reset()
 
         self.services = {}
+        self.holds = {}
 
         logger.debug('StackInABox({0}): Reset Complete'
                      .format(self.__id))
@@ -137,6 +152,16 @@ class StackInABox(object):
                             headers,
                             'Service Handler had an error: {0}'.format(ex))
         return (500, headers, 'Unknown service')
+
+    def into_hold(self, name, obj):
+        logger.debug('StackInABox({0}): Holding onto {1} of type {2}'
+                     .format(self.__id, name, type(obj)))
+        self.holds[name] = obj
+
+    def from_hold(self, name):
+        logger.debug('StackInABox({0}): Retreiving {1} from the hold'
+                     .format(self.__id, name))
+        return self.holds[name]
 
 local_store = threading.local()
 local_store.instance = StackInABox()

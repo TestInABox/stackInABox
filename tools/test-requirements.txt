@@ -2,3 +2,4 @@ nose
 requests
 httpretty
 responses
+requests-mock

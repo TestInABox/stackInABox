@@ -11,6 +11,7 @@ import requests
 
 import stackinabox.util_httpretty
 import stackinabox.util_responses
+import stackinabox.util_requests_mock
 from stackinabox.stack import StackInABox
 from stackinabox.services.service import StackInABoxService
 
@@ -122,3 +123,38 @@ test_basic_responses = \
     unittest.FunctionTestCase(tb_basic_responses,
                               setUp=tb_responses_setup,
                               tearDown=tb_responses_teardown)
+
+
+class TestRequestMock(unittest.TestCase):
+
+    def setUp(self):
+        super(TestRequestMock, self).setUp()
+        StackInABox.register_service(AdvancedService())
+        self.session = requests.Session()
+
+    def tearDown(self):
+        super(TestRequestMock, self).tearDown()
+        StackInABox.reset_services()
+        self.session.close()
+
+    def test_basic(self):
+        stackinabox.util_requests_mock.requests_mock_registration(
+            'localhost', self.session)
+
+        res = self.session.get('http://localhost/advanced/')
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.text, 'Hello')
+
+        res = sellf.session.get('http://localhost/advanced/h')
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.text, 'Good-Bye')
+
+        expected_result = {
+            'bob': 'bob: Good-Bye alice',
+            'alice': 'alice: Good-Bye bob',
+            'joe': 'joe: Good-Bye jane'
+        }
+        res = self.session.get('http://localhost/advanced/g?bob=alice;'
+                               'alice=bob&joe=jane')
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.json(), expected_result)
