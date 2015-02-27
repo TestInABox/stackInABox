@@ -5,6 +5,8 @@ import logging
 import re
 import uuid
 
+import six
+
 
 logger = logging.getLogger(__name__)
 
@@ -64,7 +66,7 @@ class StackInABoxService(object):
                              self.__base_url,
                              value))
         self.__base_url = value
-        for k, v in self.routes.items():
+        for k, v in six.iteritems(self.routes):
             v['regex'] = StackInABoxService.__get_service_regex(value,
                                                                 v['uri'])
 
@@ -88,7 +90,7 @@ class StackInABoxService(object):
                          'query = "{3}"'
                          .format(self.__id, self.name, uri_path, uri_qs))
 
-        for k, v in self.routes.items():
+        for k, v in six.iteritems(self.routes):
             logger.debug('StackInABoxService ({0}:{1}): Checking if '
                          'route {2} handles...'
                          .format(self.__id, self.name, v['uri']))

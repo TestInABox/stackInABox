@@ -19,25 +19,6 @@ from stackinabox.services.hello import HelloService
 logger = logging.getLogger(__name__)
 
 
-@httpretty.activate
-class TestHttpretty(unittest.TestCase):
-
-    def setUp(self):
-        super(TestHttpretty, self).setUp()
-        StackInABox.register_service(HelloService())
-
-    def tearDown(self):
-        super(TestHttpretty, self).tearDown()
-        StackInABox.reset_services()
-
-    def test_basic(self):
-        stackinabox.util_httpretty.httpretty_registration('localhost')
-
-        res = requests.get('http://localhost/hello/')
-        self.assertEqual(res.status_code, 200)
-        self.assertEqual(res.text, 'Hello')
-
-
 @unittest.skipIf(six.PY3, 'Responses fails on PY3')
 def test_basic_responses():
 
