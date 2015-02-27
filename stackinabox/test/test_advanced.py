@@ -5,9 +5,10 @@ import json
 import logging
 import unittest
 
-import responses
 import httpretty
 import requests
+import responses
+import six
 
 import stackinabox.util_httpretty
 import stackinabox.util_responses
@@ -89,40 +90,39 @@ class TestHttpretty(unittest.TestCase):
         self.assertEqual(res.json(), expected_result)
 
 
-def tb_responses_setup():
-    StackInABox.register_service(AdvancedService())
+@unittest.skipIf(six.PY3, 'Responses fails on PY3')
+def test_basic_responses():
 
+    def run():
+        responses.mock.start()
+        StackInABox.register_service(AdvancedService())
+        stackinabox.util_responses.responses_registration('localhost')
 
-def tb_responses_teardown():
-    StackInABox.reset_services()
+        res = requests.get('http://localhost/advanced/')
+        assert res.status_code == 200
+        assert res.text == 'Hello'
 
+        res = requests.get('http://localhost/advanced/h')
+        assert res.status_code == 200
+        assert res.text == 'Good-Bye'
 
-@responses.activate
-def tb_basic_responses():
-    stackinabox.util_responses.responses_registration('localhost')
+        expected_result = {
+            'bob': 'bob: Good-Bye alice',
+            'alice': 'alice: Good-Bye bob',
+            'joe': 'joe: Good-Bye jane'
+        }
+        res = requests.get('http://localhost/advanced/g?bob=alice;'
+                           'alice=bob&joe=jane')
+        assert res.status_code == 200
+        assert res.json() == expected_result
 
-    res = requests.get('http://localhost/advanced/')
-    assert res.status_code == 200
-    assert res.text == 'Hello'
+        StackInABox.reset_services()
 
-    res = requests.get('http://localhost/advanced/h')
-    assert res.status_code == 200
-    assert res.text == 'Good-Bye'
+        responses.mock.stop()
+        responses.mock.reset()
 
-    expected_result = {
-        'bob': 'bob: Good-Bye alice',
-        'alice': 'alice: Good-Bye bob',
-        'joe': 'joe: Good-Bye jane'
-    }
-    res = requests.get('http://localhost/advanced/g?bob=alice;'
-                       'alice=bob&joe=jane')
-    assert res.status_code == 200
-    assert res.json() == expected_result
-
-test_basic_responses = \
-    unittest.FunctionTestCase(tb_basic_responses,
-                              setUp=tb_responses_setup,
-                              tearDown=tb_responses_teardown)
+    with responses.RequestsMock():
+        run()
 
 
 class TestRequestMock(unittest.TestCase):
@@ -145,7 +145,7 @@ class TestRequestMock(unittest.TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.text, 'Hello')
 
-        res = sellf.session.get('http://localhost/advanced/h')
+        res = self.session.get('http://localhost/advanced/h')
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.text, 'Good-Bye')
 

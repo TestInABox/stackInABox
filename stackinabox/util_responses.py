@@ -16,7 +16,10 @@ def responses_callback(request):
     method = request.method
     headers = request.headers
     uri = request.url
-    return (200, headers, 'Hello')
+    return StackInABox.call_into(method,
+                                 request,
+                                 uri,
+                                 headers)
 
 
 def responses_registration(uri):
