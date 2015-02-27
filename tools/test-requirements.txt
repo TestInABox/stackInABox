@@ -1,5 +1,6 @@
 httpretty==0.8.6
 nose
 requests
+requests-mock
 responses
 six
