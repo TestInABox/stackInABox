@@ -99,7 +99,7 @@ HTTPretty
     import httpretty
     import requests
 
-    import stackinabox.httpretty
+    import stackinabox.util_httpretty
     from stackinabox.stack import StackInABox
     from stackinabox.services.hello import HelloService
 
@@ -116,7 +116,7 @@ HTTPretty
 	    StackInABox.reset_services()
 
         def test_basic(self):
-            stackinabox.httpretty.httpretty_registration('localhost')
+            stackinabox.util_httpretty.httpretty_registration('localhost')
 
             res = requests.get('http://localhost/')
             self.assertEqual(res.status_code, 200)
@@ -143,7 +143,7 @@ Responses
     def test_basic_responses():
 	StackInABox.reset_services()
 	StackInABox.register_service(HelloService())
-        stackinabox.responses.responses_registration('localhost')
+        stackinabox.util_responses.responses_registration('localhost')
 
         res = requests.get('http://localhost/hello/')
         assert res.status_code == 200
