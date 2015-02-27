@@ -178,6 +178,6 @@ class TestRequestMock(unittest.TestCase):
                 'joe': 'joe: Good-Bye jane'
             }
             res = requests.get('http://localhost/advanced/g?bob=alice;'
-                                   'alice=bob&joe=jane')
+                               'alice=bob&joe=jane')
             self.assertEqual(res.status_code, 200)
             self.assertEqual(res.json(), expected_result)

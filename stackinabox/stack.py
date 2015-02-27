@@ -157,7 +157,8 @@ class StackInABox(object):
         return (500, headers, 'Unknown service')
 
     def into_hold(self, name, obj):
-        logger.debug('StackInABox({0}): Holding onto {1} of type {2}with id {3}'
+        logger.debug('StackInABox({0}): Holding onto {1} of type {2} '
+                     'with id {3}'
                      .format(self.__id, name, type(obj), id(obj)))
         self.holds[name] = obj
 

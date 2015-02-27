@@ -51,7 +51,8 @@ class RequestMockCallable(object):
     def get_reason_for_status(status_code):
 
         if status_code in requests.status_codes.codes:
-            return requests.status_codes._codes[status_code][0].replace('_', ' ')
+            return requests.status_codes._codes[status_code][0].replace('_',
+                                                                        ' ')
         else:
             return 'Unknown status code - {0}'.format(status_code)
 
@@ -67,7 +68,6 @@ class RequestMockCallable(object):
 
         else:
             return (status, 'Unknown')
-
 
     def handle(self, request, uri):
         method = request.method
@@ -110,36 +110,42 @@ def requests_mock_registration(uri):
                                        local_sessions.session)
 
 
-def requests_request(method, url,**kwargs):
+def requests_request(method, url, **kwargs):
     session = local_sessions.session
     response = session.request(method=method, url=url, **kwargs)
     session.close()
     return response
 
+
 def requests_get(url, **kwargs):
     kwargs.setdefault('allow_redirects', True)
     return requests_request('get', url, **kwargs)
+
 
 def requests_options(url, **kwargs):
     kwargs.setdefault('allow_redirects', True)
     return reuests_request('options', url, **kwargs)
 
+
 def requests_head(url, **kwargs):
     kwargs.setdefault('allow_redirects', False)
     return reuests_request('options', url, **kwargs)
 
+
 def requests_post(url, data=None, json=None, **kwargs):
     return requests_request('post', url, data=data, json=json, **kwargs)
+
 
 def requests_put(url, data=None, **kwargs):
     return requests_request('put', url, data=data, **kwargs)
 
+
 def requests_patch(url, data=None, **kwargs):
     return requests_request('patch', url, data=data, **kwargs)
 
+
 def requests_delete(url, **kwargs):
     return requests_request('delete', url, **kwargs)
-    
 
 
 class requests_session(requests.sessions.SessionRedirectMixin):
@@ -184,7 +190,8 @@ class requests_session(requests.sessions.SessionRedirectMixin):
         return local_session.session.send(*args, **kwargs)
 
     def merge_environment_settings(*args, **kwargs):
-        return local_session.session.merge_environment_settings(*args, **kwargs)
+        return local_session.session.merge_environment_settings(*args,
+                                                                **kwargs)
 
     def get_adapter(*args, **kwargs):
         return local_session.session.get_adapter(*args, **kwargs)
@@ -243,8 +250,9 @@ class activate(object):
                      .format(id(local_sessions.session)))
         requests.session = self.__replacements['requests.session']
         requests.Session = self.__replacements['requests.Session']
-        requests.sessions.Session = self.__replacements['requests.sessions.Session']
-        
+        requests.sessions.Session = self.__replacements[
+            'requests.sessions.Session']
+
         requests.delete = self.__replacements['requests.delete']
         requests.patch = self.__replacements['requests.patch']
         requests.put = self.__replacements['requests.put']
