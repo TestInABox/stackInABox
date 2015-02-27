@@ -91,8 +91,7 @@ class TestHttpretty(unittest.TestCase):
         self.assertEqual(res.json(), expected_result)
 
 
-@unittest.skip('Responses seems to be broken in this scenario '
-               'for all versions of python')
+@unittest.skipIf(six.PY3, 'Responses fails on PY3')
 def test_basic_responses():
 
     def run():
