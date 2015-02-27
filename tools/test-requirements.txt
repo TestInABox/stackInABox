@@ -1,4 +1,5 @@
+httpretty
 nose
 requests
-httpretty
 responses
+six
