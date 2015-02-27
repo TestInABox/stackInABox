@@ -138,7 +138,7 @@ class TestRequestMock(unittest.TestCase):
         self.session.close()
 
     def test_basic(self):
-        stackinabox.util_requests_mock.requests_mock_registration(
+        stackinabox.util_requests_mock.requests_mock_session_registration(
             'localhost', self.session)
 
         res = self.session.get('http://localhost/advanced/')
@@ -158,3 +158,26 @@ class TestRequestMock(unittest.TestCase):
                                'alice=bob&joe=jane')
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.json(), expected_result)
+
+    def test_context_requests_mock(self):
+        with stackinabox.util_requests_mock.activate():
+            stackinabox.util_requests_mock.requests_mock_registration(
+                'localhost')
+
+            res = requests.get('http://localhost/advanced/')
+            self.assertEqual(res.status_code, 200)
+            self.assertEqual(res.text, 'Hello')
+
+            res = requests.get('http://localhost/advanced/h')
+            self.assertEqual(res.status_code, 200)
+            self.assertEqual(res.text, 'Good-Bye')
+
+            expected_result = {
+                'bob': 'bob: Good-Bye alice',
+                'alice': 'alice: Good-Bye bob',
+                'joe': 'joe: Good-Bye jane'
+            }
+            res = requests.get('http://localhost/advanced/g?bob=alice;'
+                                   'alice=bob&joe=jane')
+            self.assertEqual(res.status_code, 200)
+            self.assertEqual(res.json(), expected_result)

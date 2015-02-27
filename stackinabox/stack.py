@@ -37,15 +37,18 @@ class StackInABox(object):
 
     @classmethod
     def hold_onto(cls, name, obj):
-        logger.debug('Holding on {0} of type {1}'
-                     .format(name, type(obj)))
+        logger.debug('Holding on {0} of type {1} with id {2}'
+                     .format(name, type(obj), id(obj)))
         local_store.instance.into_hold(name, obj)
 
     @classmethod
     def hold_out(cls, name):
         logger.debug('Retreiving {0} from hold'
                      .format(name))
-        return local_store.instance.from_hold(name)
+        obj = local_store.instance.from_hold(name)
+        logger.debug('Retrieved {0} of type {1} with id {2} from hold'
+                     .format(name, type(obj), id(obj)))
+        return obj
 
     @classmethod
     def update_uri(cls, uri):
@@ -154,14 +157,18 @@ class StackInABox(object):
         return (500, headers, 'Unknown service')
 
     def into_hold(self, name, obj):
-        logger.debug('StackInABox({0}): Holding onto {1} of type {2}'
-                     .format(self.__id, name, type(obj)))
+        logger.debug('StackInABox({0}): Holding onto {1} of type {2}with id {3}'
+                     .format(self.__id, name, type(obj), id(obj)))
         self.holds[name] = obj
 
     def from_hold(self, name):
         logger.debug('StackInABox({0}): Retreiving {1} from the hold'
                      .format(self.__id, name))
-        return self.holds[name]
+        obj = self.holds[name]
+        logger.debug('StackInABox({0}): Retrieved {1} of type {2} with id {3}'
+                     .format(self.__id, name, type(obj), id(obj)))
+
+        return obj
 
 local_store = threading.local()
 local_store.instance = StackInABox()
