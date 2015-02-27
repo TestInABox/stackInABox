@@ -12,10 +12,10 @@ from stackinabox.services.keystone.v2 import KeystoneV2Service
 
 
 @httpretty.activate
-class TestHttpretty(unittest.TestCase):
+class TestHttprettyKeystone(unittest.TestCase):
 
     def setUp(self):
-        super(TestHttpretty, self).setUp()
+        super(TestHttprettyKeystone, self).setUp()
         self.keystone = KeystoneV2Service()
         self.headers = {
             'x-auth-token': self.keystone.backend.get_admin_token()
@@ -23,7 +23,7 @@ class TestHttpretty(unittest.TestCase):
         StackInABox.register_service(self.keystone)
 
     def tearDown(self):
-        super(TestHttpretty, self).tearDown()
+        super(TestHttprettyKeystone, self).tearDown()
         StackInABox.reset_services()
 
     def test_tenant_listing(self):

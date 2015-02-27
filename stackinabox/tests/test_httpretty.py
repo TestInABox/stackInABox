@@ -18,14 +18,14 @@ logger = logging.getLogger(__name__)
 
 
 @httpretty.activate
-class TestHttpretty(unittest.TestCase):
+class TestHttprettyBasic(unittest.TestCase):
 
     def setUp(self):
-        super(TestHttpretty, self).setUp()
+        super(TestHttprettyBasic, self).setUp()
         StackInABox.register_service(HelloService())
 
     def tearDown(self):
-        super(TestHttpretty, self).tearDown()
+        super(TestHttprettyBasic, self).tearDown()
         StackInABox.reset_services()
 
     def test_basic(self):
