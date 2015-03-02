@@ -12,14 +12,13 @@ Testing framework for RESTful APIs such as the OpenStack/Rackspace APIs
 Overview
 ========
 
-Stack-In-A-Box is a RESTful API Testing Framework for unit testing applications against the other services with support for OpenStack/Rackspace APIs.
+Stack-In-A-Box is a RESTful API Testing Framework for unit testing applications against the other services
 
 ==========
 Installing
 ==========
 
 Installation is simple:
-
 
 .. code-block:: bash 
 
@@ -29,32 +28,46 @@ Installation is simple:
 Goals
 =====
 
-- Enable Python modules to be unit tested against externals services and the OpenStack/Rackspace services (f.e Keystone) in particular in an environment entirely controlled by the unittest.
+- Enable Python modules to be unit tested against externals services in particular in an environment entirely controlled by the unittest.
+  - Example: The OpenStack/Rackspace APIs
 - The service should be started/stopped and configured from the setup/teardown methods of the unittest
 - Support both Postive and Negative testing
 - Testing should be easy to do:
-  - you shouldn't need to know the ins and outs of each service
+
+  - you should not necessarily need to know the ins and outs of each service
   - you should be able to register what you need (f.e keystone, swift) and have it just work
+  
 - should be useable on systems like Travis (https://travis-ci.org/)
 - should be light on requirements
-  - we don't want to bloat your testing to fit our needs
-  - if we have many requirements they could interfere with your requirements:w
+
+  - we do not want to bloat your testing to fit our needs
+  - if we have many requirements they could interfere with your requirements
+  
 - The code being unit-tested should not be able to tell the difference of whether it is working with Stack-In-A-Box or the real thing
-  - the should be nothing special about setting up the test
+
+  - there should be nothing special about setting up the test
   - if you don't turn on Stack-In-A-Box then the code should be able to call the real thing
 
 ========================
 Why not use framework X?
 ========================
 
-I considered a couple frameworks and tools, but they didn't quite meet the goal.
+A couple of frameworks and tools were considered, but they did not quite meet the goals above.
 
-For instance, mimic (https://github.com/rackerlabs/mimic) is a great tool for testing multiple things. However, you have to start/stop it separately from your tests.
-On the other hand, pretenders (https://github.com/pretenders) has a nice framework too, but it doesn't actually use sockets.
+For instance, mimic (https://github.com/rackerlabs/mimic) is a great tool for testing multiple things. However, you have to start/stop it separately from your tests, and each test is configured through a series of HTTP calls to Mimic itself.
+
+On the other hand, pretenders (https://github.com/pretenders) has a nice framework too, but it does not provide a way to emulate an integrated application that requires a series of dependent calls that modify each other.
 
 ================
 What's Provided?
 ================
+
+Here's what is currently provided:
+
+- An easy to build Service object and end-point registration that is plug-in-play with StackInABox
+- A plug-in-play utility set for several testing frameworks so you the developer can choose which fits your needs best
+- An example HelloWorld Service to show the basics
+- The start of support StackInABox services for testing against OpenStack/Rackspace APIs
 
 It's a work in progress. Here's the list of current targets in-order:
 
@@ -79,19 +92,21 @@ Working with Frameworks
 =======================
 
 Stack-In-A-Box does not itself provide a socket interception framework.
-Out-of-the-box it supports two frameworks:
+Out-of-the-box it supports the following frameworks:
 
 - HTTPretty (https://github.com/gabrielfalcao/HTTPretty)
 - Responses (https://github.com/dropbox/responses)
 - Requests-Mock(https://git.openstack.org/cgit/stackforge/requests-mock)
 
-You can use either one, and you must pull them in via your own test requirements.
+You can use any of them, and you must pull them in via your own test requirements.
 
 Both of these are extremely easy to use as shown in the following examples:
 
 ---------
 HTTPretty
 ---------
+
+``httypretty`` works well with class-based tests.
 
 .. code-block:: python
 
@@ -128,6 +143,8 @@ HTTPretty
 Responses
 ---------
 
+``responses`` works well with function-based tests; however, it does require you use the Python ``requests`` library.
+
 .. code-block:: python
 
     import unittest
@@ -155,6 +172,8 @@ Responses
 Requests Mock
 -------------
 
+``requests-mock`` works well with class-based tests, however, it does require that you use the Python ``requests`` API. If you use ``requests-mock`` directly than you also have to configure ``requests.session.Session`` objects and setup your code to use them. However, Stack-In-A-Box makes that unnecessary by providing thread-based session objects that are automatically registered and patching ``requests`` to return them automatically. Thus you can either use a Session object directly or just use the nice calls that ``requests`` provides and your tests will still just work.
+
 .. code-block:: python
 
 	import unittest
@@ -178,6 +197,7 @@ Requests Mock
 			self.session.close()
 
 		def test_basic_requests_mock(self):
+		    # Register with existing session object
 			stackinabox.util_requests_mock.requests_mock_session_registration(
 				'localhost', self.session)
 
@@ -187,7 +207,7 @@ Requests Mock
 
 		def test_context_requests_mock(self):
 			with stackinabox.util_requests_mock.activate():
-
+                # Register without the session object
 				stackinabox.util_requests_mock.requests_mock_registration(
 					'localhost')
 
