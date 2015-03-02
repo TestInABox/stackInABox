@@ -5,7 +5,7 @@ REQUIRES = []
 
 setup(
     name='stackinabox',
-    version='0.4',
+    version='0.5',
     description='RESTful API Testing Suite',
     license='Apache License 2.0',
     url='https://github.com/BenjamenMeyer/stackInABox',
