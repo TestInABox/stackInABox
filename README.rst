@@ -83,6 +83,7 @@ Out-of-the-box it supports two frameworks:
 
 - HTTPretty (https://github.com/gabrielfalcao/HTTPretty)
 - Responses (https://github.com/dropbox/responses)
+- Requests-Mock(https://git.openstack.org/cgit/stackforge/requests-mock)
 
 You can use either one, and you must pull them in via your own test requirements.
 
