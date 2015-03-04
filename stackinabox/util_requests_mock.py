@@ -16,6 +16,9 @@ from requests import Session
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.response import HTTPResponse
 import requests_mock
+import requests_mock.compat
+import requests_mock.response
+import six
 
 from stackinabox.stack import StackInABox
 
@@ -37,15 +40,6 @@ class RequestMockCallable(object):
         else:
             # We don't handle it
             return None
-
-    @staticmethod
-    def __is_string_type(s):
-
-        if int(sys.version[0]) > 2:
-            return isinstance(s, str)
-
-        else:
-            return isinstance(s, types.StringTypes)
 
     @staticmethod
     def get_reason_for_status(status_code):
@@ -78,18 +72,33 @@ class RequestMockCallable(object):
                                                    headers)
 
         status_code, output_headers, body = stackinabox_result
-        if RequestMockCallable.__is_string_type(body):
-            body = body.encode()
 
-        response = HTTPResponse(status=status_code,
-                                body=io.BytesIO(body),
-                                headers=output_headers,
-                                preload_content=False)
+        json_data = None
+        text_data = None
+        content_data = None
+        body_data = None
 
-        adapter = HTTPAdapter()
-        response = adapter.build_response(request, response)
+        if isinstance(body, six.string_types):
+            text_data = body
+            try:
+                json_data = json.dumps(text_data)
+                text_data = json_data
+            except:
+                json_data = None
+                text_data = body
 
-        return response
+        elif isinstance(body, six.binary_type):
+            content_data = body
+
+        return requests_mock.response.create_response(
+            request,
+            headers=output_headers,
+            status_code=status_code,
+            body=body_data,
+            json=json_data,
+            text=text_data,
+            content=content_data
+        )
 
 
 def requests_mock_session_registration(uri, session):
@@ -262,6 +271,7 @@ class activate(object):
         requests.get = self.__replacements['requests.get']
         requests.request = self.__replacements['requests.request']
 
+        # Create a new session for next time
         local_sessions.session = Session()
 
 
