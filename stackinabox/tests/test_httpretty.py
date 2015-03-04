@@ -67,5 +67,3 @@ class TestHttprettyAdvanced(unittest.TestCase):
                            'alice=bob&joe=jane')
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.json(), expected_result)
-
-
