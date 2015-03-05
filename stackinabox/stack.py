@@ -3,9 +3,10 @@ Stack-In-A-Box: Stack Management
 """
 import logging
 import re
+import threading
 import uuid
 
-import threading
+import six
 
 
 logger = logging.getLogger(__name__)
@@ -90,7 +91,7 @@ class StackInABox(object):
         logger.debug('StackInABox({0}): Updating URL from {1} to {2}'
                      .format(self.__id, self.__base_url, value))
         self.__base_url = value
-        for k, v in self.services.items():
+        for k, v in six.iteritems(self.services):
             matcher, service = v
             service.base_url = StackInABox.__get_service_url(value,
                                                              service.name)
@@ -100,7 +101,7 @@ class StackInABox(object):
     def reset(self):
         logger.debug('StackInABox({0}): Resetting...'
                      .format(self.__id))
-        for k, v in self.services.items():
+        for k, v in six.iteritems(self.services):
             matcher, service = v
             logger.debug('StackInABox({0}): Resetting Service {1}'
                          .format(self.__id, service.name))
@@ -133,7 +134,7 @@ class StackInABox(object):
         logger.debug('StackInABox({0}): Received call to {1} - {2}'
                      .format(self.__id, method, uri))
         service_uri = StackInABox.__get_services_url(uri, self.base_url)
-        for k, v in self.services.items():
+        for k, v in six.iteritems(self.services):
             matcher, service = v
             logger.debug('StackInABox({0}): Checking if Service {1} handles...'
                          .format(self.__id, service.name))
