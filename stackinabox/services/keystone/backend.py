@@ -707,6 +707,6 @@ class KeystoneBackend(object):
                     return user_data
 
         except Exception as ex:
-            logger.debug('Error: {0}'.format(ex))
+            logger.exception('Error: {0}'.format(ex))
 
         raise KeystoneInvalidTokenError('Invalid Token')

@@ -152,6 +152,9 @@ class StackInABox(object):
                                            service_caller_uri,
                                            headers)
                 except Exception as ex:
+                    logger.exception('StackInABox({0}): Service {1} - '
+                                     'Internal Failure'
+                                     .format(self.__id, service.name))
                     return (500,
                             headers,
                             'Service Handler had an error: {0}'.format(ex))
