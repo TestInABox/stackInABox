@@ -91,4 +91,3 @@ class CaseInsensitiveDict(collections.MutableMapping):  # pragma: no cover
 
     def __repr__(self):
         return '%s(%r)' % (self.__class__.__name__, dict(self.items()))
-
