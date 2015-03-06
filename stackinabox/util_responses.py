@@ -16,6 +16,9 @@ logger = logging.getLogger(__name__)
 def responses_callback(request):
     method = request.method
     headers = CaseInsensitiveDict()
+    request_headers = CaseInsensitiveDict()
+    request_headers.update(request.headers)
+    request.headers = request_headers
     uri = request.url
     return StackInABox.call_into(method,
                                  request,

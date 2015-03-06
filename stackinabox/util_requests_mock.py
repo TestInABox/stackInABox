@@ -67,6 +67,9 @@ class RequestMockCallable(object):
     def handle(self, request, uri):
         method = request.method
         headers = CaseInsensitiveDict()
+        request_headers = CaseInsensitiveDict()
+        request_headers.update(request.headers)
+        request.headers = request_headers
         stackinabox_result = StackInABox.call_into(method,
                                                    request,
                                                    uri,

@@ -18,6 +18,9 @@ def httpretty_callback(request, uri, headers):
     method = request.method
     response_headers = CaseInsensitiveDict()
     response_headers.update(headers)
+    request_headers = CaseInsensitiveDict()
+    request_headers.update(request.headers)
+    request.headers = request_headers
     return StackInABox.call_into(method,
                                  request,
                                  uri,
