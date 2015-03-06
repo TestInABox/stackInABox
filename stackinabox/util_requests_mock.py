@@ -21,6 +21,7 @@ import requests_mock.response
 import six
 
 from stackinabox.stack import StackInABox
+from stackinabox.utils import CaseInsensitiveDict
 
 
 logger = logging.getLogger(__name__)
@@ -65,7 +66,10 @@ class RequestMockCallable(object):
 
     def handle(self, request, uri):
         method = request.method
-        headers = request.headers
+        headers = CaseInsensitiveDict()
+        request_headers = CaseInsensitiveDict()
+        request_headers.update(request.headers)
+        request.headers = request_headers
         stackinabox_result = StackInABox.call_into(method,
                                                    request,
                                                    uri,

@@ -121,6 +121,7 @@ class KeystoneV2Service(StackInABoxService):
                     return (200, headers, json.dumps({'users': []}))
 
             except Exception as ex:
+                logger.exception('User List Failure')
                 return (401, headers, 'Not Authorized')
         else:
             return (403, headers, 'Forbidden')

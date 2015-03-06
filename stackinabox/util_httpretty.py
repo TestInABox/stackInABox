@@ -8,6 +8,7 @@ from httpretty import register_uri
 from httpretty.http import HttpBaseClass
 
 from stackinabox.stack import StackInABox
+from stackinabox.utils import CaseInsensitiveDict
 
 
 logger = logging.getLogger(__name__)
@@ -15,10 +16,15 @@ logger = logging.getLogger(__name__)
 
 def httpretty_callback(request, uri, headers):
     method = request.method
+    response_headers = CaseInsensitiveDict()
+    response_headers.update(headers)
+    request_headers = CaseInsensitiveDict()
+    request_headers.update(request.headers)
+    request.headers = request_headers
     return StackInABox.call_into(method,
                                  request,
                                  uri,
-                                 headers)
+                                 response_headers)
 
 
 def httpretty_registration(uri):
