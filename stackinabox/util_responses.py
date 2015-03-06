@@ -7,6 +7,7 @@ import re
 import responses
 
 from stackinabox.stack import StackInABox
+from stackinabox.utils import CaseInsensitiveDict
 
 
 logger = logging.getLogger(__name__)
@@ -14,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 def responses_callback(request):
     method = request.method
-    headers = request.headers
+    headers = CaseInsensitiveDict()
     uri = request.url
     return StackInABox.call_into(method,
                                  request,
