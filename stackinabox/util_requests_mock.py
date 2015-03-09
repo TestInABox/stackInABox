@@ -94,6 +94,10 @@ class RequestMockCallable(object):
         elif isinstance(body, six.binary_type):
             content_data = body
 
+        else:
+            # default to body data
+            body_data = body
+
         return requests_mock.response.create_response(
             request,
             headers=output_headers,
