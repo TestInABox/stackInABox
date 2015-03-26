@@ -29,13 +29,12 @@ Goals
 =====
 
 - Enable Python modules to be unit tested against externals services in particular in an environment entirely controlled by the unittest.
-  - Example: The OpenStack/Rackspace APIs
 - The service should be started/stopped and configured from the setup/teardown methods of the unittest
 - Support both Postive and Negative testing
 - Testing should be easy to do:
 
   - you should not necessarily need to know the ins and outs of each service
-  - you should be able to register what you need (f.e keystone, swift) and have it just work
+  - you should be able to register what you need (f.e authentication, storage) and have it just work
   
 - should be useable on systems like Travis (https://travis-ci.org/)
 - should be light on requirements
@@ -47,6 +46,7 @@ Goals
 
   - there should be nothing special about setting up the test
   - if you don't turn on Stack-In-A-Box then the code should be able to call the real thing
+  - caveat: the utility tools (f.e httpretty, requests-mock) will determine the URL for the Stack-In-A-Box Service which will start differently from the URL of the real thing. For example: if the Hello World service was normally run at 'www.helloworld.com/v1', it's Stack-In-A-Box version was registered with Stack-In-A-Box as 'hello/v1', and Stack-In-A-Box was registered using 'localhost', then it's Stack-In-A-Box URL would be 'http://localhost/hello/v1'. The remainder of the URL and any query-string parameters should be the same.
 
 ========================
 Why not use framework X?
