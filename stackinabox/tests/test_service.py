@@ -55,7 +55,7 @@ class TestServiceRouteRegistration(unittest.TestCase):
         super(TestServiceRouteRegistration, self).tearDown()
 
     def test_bad_registration(self):
-        
+
         service = AnotherAdvancedService()
 
         with self.assertRaises(RouteAlreadyRegisteredError):
