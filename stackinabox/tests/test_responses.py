@@ -60,6 +60,10 @@ def test_advanced_responses():
         assert res.status_code == 200
         assert res.json() == expected_result
 
+        res = requests.get('http://localhost/advanced/1234567890')
+        assert res.status_code == 200
+        assert res.text == 'okay'
+
         StackInABox.reset_services()
 
         responses.mock.stop()

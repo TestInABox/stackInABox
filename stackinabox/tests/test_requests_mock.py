@@ -82,6 +82,10 @@ class TestRequestMockAdvanced(unittest.TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.json(), expected_result)
 
+        res = self.session.get('http://localhost/advanced/1234567890')
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.text, 'okay')
+
     def test_context_requests_mock(self):
         with stackinabox.util_requests_mock.activate():
             stackinabox.util_requests_mock.requests_mock_registration(

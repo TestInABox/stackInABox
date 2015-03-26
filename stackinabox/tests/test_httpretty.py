@@ -67,3 +67,7 @@ class TestHttprettyAdvanced(unittest.TestCase):
                            'alice=bob&joe=jane')
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.json(), expected_result)
+
+        res = requests.get('http://localhost/advanced/1234567890')
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.text, 'okay')
