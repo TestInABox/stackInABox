@@ -71,3 +71,9 @@ class TestHttprettyAdvanced(unittest.TestCase):
         res = requests.get('http://localhost/advanced/1234567890')
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.text, 'okay')
+
+        res = requests.get('http://localhost/advanced/_234567890')
+        self.assertEqual(res.status_code, 500)
+
+        res = requests.put('http://localhost/advanced/h')
+        self.assertEqual(res.status_code, 500)

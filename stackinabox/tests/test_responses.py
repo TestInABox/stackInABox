@@ -64,6 +64,12 @@ def test_advanced_responses():
         assert res.status_code == 200
         assert res.text == 'okay'
 
+        res = requests.get('http://localhost/advanced/_234567890')
+        assert res.status_code == 500
+
+        res = requests.put('http://localhost/advanced/h')
+        assert res.status_code == 500
+
         StackInABox.reset_services()
 
         responses.mock.stop()
