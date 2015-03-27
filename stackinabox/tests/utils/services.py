@@ -3,6 +3,7 @@ import logging
 import re
 
 import six
+from six.moves.urllib import parse
 
 from stackinabox.services.service import StackInABoxService
 
@@ -28,17 +29,14 @@ class AdvancedService(StackInABoxService):
         return (200, headers, 'Good-Bye')
 
     def query_handler(self, request, uri, headers):
-        query = None
-        if '?' in uri:
-            path, querys = uri.split('?')
-            querys = querys.replace(';', '&')
-            query = {}
-            for kv in querys.split('&'):
-                k, v = kv.split('=')
-                query[k] = v
+        parsed_uri = parse.urlparse(uri)
+        query = parsed_uri.query
+
+        if len(query) > 0:
+            queries = parse.parse_qsl(query)
 
             body = {}
-            for k, v in six.iteritems(query):
+            for k, v in queries:
                 body[k] = '{0}: Good-Bye {1}'.format(k, v)
 
             return (200, headers, json.dumps(body))
