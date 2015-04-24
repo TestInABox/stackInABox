@@ -13,9 +13,12 @@ matrix:
 before_install:
   - sudo apt-get install build-essential python-dev
 
-install: pip install tox setuptools virtualenv --upgrade
+install: pip install tox setuptools virtualenv coveralls --upgrade
 
 script: tox -v -e $TOX_ENV -- -v
+
+after_success:
+	coveralls
 
 notifications:
   email:
