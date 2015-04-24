@@ -8,6 +8,10 @@ Testing framework for RESTful APIs such as the OpenStack/Rackspace APIs
    :target: https://travis-ci.org/BenjamenMeyer/stackInABox
    :alt: Travis-CI Status
 
+.. image:: https://coveralls.io/repos/BenjamenMeyer/stackInABox/badge.svg
+   :target: https://coveralls.io/r/BenjamenMeyer/stackInABox
+   :alt: Coverage Status
+
 ========
 Overview
 ========
