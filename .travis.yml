@@ -17,8 +17,7 @@ install: pip install tox setuptools virtualenv coveralls --upgrade
 
 script: tox -v -e $TOX_ENV -- -v
 
-after_success:
-	coveralls
+after_success: coveralls
 
 notifications:
   email:
