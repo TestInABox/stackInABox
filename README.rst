@@ -2,7 +2,7 @@
 Stack-In-A-Box
 **************
 
-Testing framework for RESTful APIs such as the OpenStack/Rackspace APIs
+Testing framework for RESTful APIs
 
 .. image:: https://travis-ci.org/BenjamenMeyer/stackInABox.svg?branch=master
    :target: https://travis-ci.org/BenjamenMeyer/stackInABox
@@ -56,11 +56,13 @@ Goals
 Why not use framework X?
 ========================
 
-A couple of frameworks and tools were considered, but they did not quite meet the goals above.
+This project initially setup to provide mock-ups of the OpenStack Keystone and Swift APIs. In doing so other frameworks, such as ``mimic`` (https://github.com/rackerlabs/mimic) were considered.
+However, they did not meet the goals set out above. This framework was then built and initially provided the Keystone module that is now part of ``OpenStack-In-A-Box`` (https://github.com/BenjamenMeyer/openstackinabox).
+This framework now makes it easy to build services that can be integrated with one of many unit testing frameworks, f.e httpretty, to provide a consistent, reliable unit testing framework that essentially merges the API/Integration-level tests into
+the more specific unit tests. It does not, however, replace a proper Integration Test as the responses (in terms of time and integration) will likely be different; but it does allow the unit tests to be sufficient to catch the coding errors early on
+so that you can focus on the real integration problems with the Integration-level tests.
 
-For instance, mimic (https://github.com/rackerlabs/mimic) is a great tool for testing multiple things. However, you have to start/stop it separately from your tests, and each test is configured through a series of HTTP calls to Mimic itself.
-
-On the other hand, pretenders (https://github.com/pretenders) has a nice framework too, but it does not provide a way to emulate an integrated application that requires a series of dependent calls that modify each other.
+This framework is specifically targetted at running the unit tests, as part of the unit tests, and fully controlled by the unit tests. Projects such as ``mimic`` (https://github.com/rackerlabs/mimic) provide a good next-layer of testing if mocked integration level testing is desired; otherwise full integration tests could be utilized.
 
 ================
 What's Provided?
@@ -71,25 +73,8 @@ Here's what is currently provided:
 - An easy to build Service object and end-point registration that is plug-in-play with StackInABox
 - A plug-in-play utility set for several testing frameworks so you the developer can choose which fits your needs best
 - An example HelloWorld Service to show the basics
-- The start of support StackInABox services for testing against OpenStack/Rackspace APIs
 
-It's a work in progress. Here's the list of current targets in-order:
-
-- Keystone v2
-- Keystone v3
-- Swift
-
-Thus far Keystone v2 provides end-points for:
-
-- Listing tenants
-- Listing users
-
-It also has support in the backend for:
-
-- tenant (add/remove/enable/disable)
-- users (add/remove/enable/disable, apikey, password)
-- tokens (add/remove, revoke, validate, admin tokens)
-- roles (add, assign)
+Note: The ``OpenStack-In-A-Box`` (https://github.com/BenjamenMeyer/openstackinabox) provides a more advanced example of building a Stack-In-A-Box Service.
 
 =======================
 Working with Frameworks
