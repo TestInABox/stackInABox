@@ -8,6 +8,9 @@ from six.moves.urllib import parse
 from stackinabox.services.service import StackInABoxService
 
 
+logger = logging.getLogger(__name__)
+
+
 class AdvancedService(StackInABoxService):
 
     def __init__(self):
