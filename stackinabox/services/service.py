@@ -246,7 +246,7 @@ class StackInABoxService(object):
                                      request,
                                      uri,
                                      headers)
-        return (599, headers, 'Server Error')
+        return (595, headers, 'Route ({0}) Not Handled'.format(uri))
 
     def request(self, method, request, uri, headers):
         logger.debug('StackInABoxService ({0}:{1}): Request Received {2} - {3}'

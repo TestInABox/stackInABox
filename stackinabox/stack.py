@@ -156,10 +156,10 @@ class StackInABox(object):
                     logger.exception('StackInABox({0}): Service {1} - '
                                      'Internal Failure'
                                      .format(self.__id, service.name))
-                    return (598,
+                    return (596,
                             headers,
                             'Service Handler had an error: {0}'.format(ex))
-        return (599, headers, 'Unknown service')
+        return (597, headers, 'Unknown service - {0}'.format(service_uri))
 
     def into_hold(self, name, obj):
         logger.debug('StackInABox({0}): Holding onto {1} of type {2} '

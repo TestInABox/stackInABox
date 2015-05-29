@@ -60,4 +60,4 @@ class TestStack(unittest.TestCase):
         stackinabox.util_httpretty.httpretty_registration('localhost')
 
         res = requests.get('http://localhost/except/')
-        self.assertEqual(res.status_code, 598)
+        self.assertEqual(res.status_code, 596)
