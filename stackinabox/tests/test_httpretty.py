@@ -76,4 +76,4 @@ class TestHttprettyAdvanced(unittest.TestCase):
         self.assertEqual(res.status_code, 500)
 
         res = requests.put('http://localhost/advanced/h')
-        self.assertEqual(res.status_code, 500)
+        self.assertEqual(res.status_code, 599)

@@ -68,7 +68,7 @@ def test_advanced_responses():
         assert res.status_code == 500
 
         res = requests.put('http://localhost/advanced/h')
-        assert res.status_code == 500
+        assert res.status_code == 599
 
         StackInABox.reset_services()
 

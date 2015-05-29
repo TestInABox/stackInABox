@@ -134,6 +134,7 @@ class StackInABox(object):
         logger.debug('StackInABox({0}): Received call to {1} - {2}'
                      .format(self.__id, method, uri))
         service_uri = StackInABox.__get_services_url(uri, self.base_url)
+
         for k, v in six.iteritems(self.services):
             matcher, service = v
             logger.debug('StackInABox({0}): Checking if Service {1} handles...'
@@ -155,7 +156,7 @@ class StackInABox(object):
                     logger.exception('StackInABox({0}): Service {1} - '
                                      'Internal Failure'
                                      .format(self.__id, service.name))
-                    return (500,
+                    return (599,
                             headers,
                             'Service Handler had an error: {0}'.format(ex))
         return (500, headers, 'Unknown service')
