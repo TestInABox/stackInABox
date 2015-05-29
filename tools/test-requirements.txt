@@ -1,5 +1,5 @@
 coverage
-httpretty==0.8.8
+httpretty==0.8.6
 nose
 nose-exclude
 pep8
