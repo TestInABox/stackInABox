@@ -18,7 +18,6 @@ from stackinabox.tests.utils.services import AdvancedService
 logger = logging.getLogger(__name__)
 
 
-@unittest.skipIf(six.PY3, 'Responses fails on PY3')
 def test_basic_responses():
 
     @responses.activate
@@ -34,7 +33,6 @@ def test_basic_responses():
     run()
 
 
-@unittest.skipIf(six.PY3, 'Responses fails on PY3')
 def test_advanced_responses():
 
     def run():
