@@ -25,7 +25,7 @@ class TestServiceRegex(unittest.TestCase):
         self.assertTrue(service.base_url.startswith('/'))
         self.assertTrue(service.base_url.endswith(name))
         self.assertEqual(len(service.base_url),
-                         (len(name)+1))
+                         (len(name) + 1))
         self.assertEqual(len(service.routes), 0)
 
     def test_stackinabox_validate_regex(self):

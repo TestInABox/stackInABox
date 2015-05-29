@@ -152,12 +152,12 @@ class StackInABoxService(object):
             raise InvalidRouteRegexError('Pattern must start with ^')
 
         # Note: pattern may end with $ even if sub_service is True
-        if regex.pattern.endswith('$') is False and sub_service == False:
+        if regex.pattern.endswith('$') is False and sub_service is False:
             logger.debug('StackInABoxService: Pattern must end with $')
             raise InvalidRouteRegexError('Pattern must end with $')
 
         # Enforce that if the pattern does not end with $ that it is a service
-        if regex.pattern.endswith('$') is True and sub_service == True:
+        if regex.pattern.endswith('$') is True and sub_service is True:
             logger.debug(
                 'StackInABoxService: Sub-Service RegEx Pattern must not '
                 'end with $')
@@ -195,10 +195,10 @@ class StackInABoxService(object):
                              value))
         self.__base_url = value
         for k, v in six.iteritems(self.routes):
-            v['regex'] = StackInABoxService.get_service_regex(value,
-                                                              v['uri'],
-                                                              v['handlers'].is_subservice)
-
+            v['regex'] = StackInABoxService.get_service_regex(
+                value,
+                v['uri'],
+                v['handlers'].is_subservice)
 
     def reset(self):
         logger.debug('StackInABoxService ({0}): Reset'
@@ -242,7 +242,6 @@ class StackInABoxService(object):
         logger.debug('StackInABoxService ({0}:{1}): Request Received {2} - {3}'
                      .format(self.__id, self.name, method, uri))
         return self.try_handle_route(uri, method, request, uri, headers)
-
 
     def sub_request(self, method, request, uri, headers):
         logger.debug('StackInABoxService ({0}:{1}): Sub-Request Received '
