@@ -96,7 +96,7 @@ class StackInABoxServiceRouter(object):
                                         request,
                                         uri,
                                         headers)
-        else:
+        elif self.obj is not None:
             logger.debug('Service Router ({0} - {1}): Located Subservice {2} '
                          'on Route {3}. Calling...'
                          .format(id(self),
@@ -108,6 +108,16 @@ class StackInABoxServiceRouter(object):
                                         request,
                                         uri,
                                         headers)
+
+        else:
+            logger.debug('Service Router ({0} - {1}): '
+                         'No Method handler for service'
+                         .format(id(self),
+                                 self.service_name))
+            return (405,
+                    headers,
+                    '{0} not supported. Supported Methods are {1}'.format(
+                        method, self.methods))
 
 
 class StackInABoxService(object):
@@ -236,7 +246,7 @@ class StackInABoxService(object):
                                      request,
                                      uri,
                                      headers)
-        return (500, headers, 'Server Error')
+        return (599, headers, 'Server Error')
 
     def request(self, method, request, uri, headers):
         logger.debug('StackInABoxService ({0}:{1}): Request Received {2} - {3}'

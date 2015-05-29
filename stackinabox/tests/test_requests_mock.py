@@ -87,9 +87,12 @@ class TestRequestMockAdvanced(unittest.TestCase):
         self.assertEqual(res.text, 'okay')
 
         res = self.session.get('http://localhost/advanced/_234567890')
-        self.assertEqual(res.status_code, 500)
+        self.assertEqual(res.status_code, 599)
 
         res = self.session.put('http://localhost/advanced/h')
+        self.assertEqual(res.status_code, 405)
+
+        res = self.session.put('http://localhost/advanced2/i')
         self.assertEqual(res.status_code, 599)
 
     def test_context_requests_mock(self):
