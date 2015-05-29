@@ -6,6 +6,8 @@ import re
 
 from httpretty import register_uri
 from httpretty.http import HttpBaseClass
+import httpretty.http
+import six
 
 from stackinabox.stack import StackInABox
 from stackinabox.utils import CaseInsensitiveDict
@@ -28,6 +30,16 @@ def httpretty_callback(request, uri, headers):
 
 
 def httpretty_registration(uri):
+
+    status_data = {
+        595: 'StackInABoxService - Unknown Route',
+        596: 'StackInABox - Exception in Service Handler',
+        597: 'StackInABox - Unknown Service'
+    }
+    for k, v in six.iteritems(status_data):
+        if k not in httpretty.http.STATUSES:
+            httpretty.http.STATUSES[k] = v
+
     logger.debug('Registering Stack-In-A-Box at {0} under Python HTTPretty'
                  .format(uri))
     StackInABox.update_uri(uri)

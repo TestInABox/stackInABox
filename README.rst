@@ -89,6 +89,16 @@ Out-of-the-box it supports the following frameworks:
 
 You can use any of them, and you must pull them in via your own test requirements.
 
+-----------
+Error Codes
+-----------
+
+StackInABox has some specific error codes to help with diagnosing issues:
+
+- 597 - StackInABox - Base URL is correct, but service is unknown
+- 596 - StackInABox - Handling StackInABoxService generated an exception
+- 595 - StackInABoxService - Route Not handled 
+
 Both of these are extremely easy to use as shown in the following examples:
 
 ---------

@@ -18,7 +18,6 @@ from stackinabox.tests.utils.services import AdvancedService
 logger = logging.getLogger(__name__)
 
 
-@unittest.skipIf(six.PY3, 'Responses fails on PY3')
 def test_basic_responses():
 
     @responses.activate
@@ -34,7 +33,6 @@ def test_basic_responses():
     run()
 
 
-@unittest.skipIf(six.PY3, 'Responses fails on PY3')
 def test_advanced_responses():
 
     def run():
@@ -65,10 +63,13 @@ def test_advanced_responses():
         assert res.text == 'okay'
 
         res = requests.get('http://localhost/advanced/_234567890')
-        assert res.status_code == 500
+        assert res.status_code == 595
 
         res = requests.put('http://localhost/advanced/h')
-        assert res.status_code == 500
+        assert res.status_code == 405
+
+        res = requests.put('http://localhost/advanced2/i')
+        assert res.status_code == 597
 
         StackInABox.reset_services()
 
