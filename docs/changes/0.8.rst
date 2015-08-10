@@ -1,0 +1,20 @@
+.. _0.8:
+
+ChangeLog for Stack-In-A-Box 0.8
+================================
+
+New
+---
+- StackInABoxService is not fully unit tested
+- Adds support for the user to specify regex patterns for the end-point registration
+  - regex patterns must start with ```^``` and end with ```$``` and operate on the whole URI service path (e.g /v1.0) for the service
+- OpensStack API mocks are no longer part of Stack-In-A-Box	
+  - OpenStack API is now its own separate project:  https://github.com/BenjamenMeyer/openstackinabox
+
+Breaking Changes
+----------------
+
+Fixed
+-----
+
+

@@ -1,0 +1,4 @@
+.. _errors:
+
+StackInABoxService Errors
+=========================

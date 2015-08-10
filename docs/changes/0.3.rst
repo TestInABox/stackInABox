@@ -1,0 +1,19 @@
+.. _0.3:
+
+ChangeLog for Stack-In-A-Box 0.3
+================================
+
+New
+---
+
+
+Breaking Changes
+----------------
+
+
+Fixed
+-----
+
+- Python2 ```httpretty``` Support
+- HTTP Query String Support
+- '/' vs '/h' support

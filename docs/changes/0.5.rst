@@ -1,0 +1,17 @@
+.. _0.5:
+
+ChangeLog for Stack-In-A-Box 0.5
+================================
+
+New
+---
+
+- Restructure of tox tests for better clarity and support going forward
+
+Breaking Changes
+----------------
+
+Fixed
+-----
+
+- Fixes ```requests-mock``` support

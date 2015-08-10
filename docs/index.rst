@@ -11,7 +11,10 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
-
+   community/index
+   user/index
+   api/index
+   changes/index
 
 Indices and tables
 ==================
