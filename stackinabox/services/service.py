@@ -12,20 +12,42 @@ logger = logging.getLogger(__name__)
 
 
 class StackInABoxServiceErrors(Exception):
+    """Stack-In-A-Box Service Exception object
+
+    All Stack-In-A-Box Service specific exceptions are
+    base on StackInABoxServiceErrors
+    """
     pass
 
 
 class RouteAlreadyRegisteredError(StackInABoxServiceErrors):
+    """Exception: Route is already registered
+    """
     pass
 
 
 class InvalidRouteRegexError(StackInABoxServiceErrors):
+    """Exception: Regex for URI is invalid
+    """
     pass
 
 
 class StackInABoxServiceRouter(object):
+    """Stack-In-A-Box Service Router object
+
+    Advanced URI routing to support Service-within-Service routing
+    """
 
     def __init__(self, name, uri, obj, parent_obj):
+        """Initialize router
+
+        :parameter: name - service name for the route
+        :parameter: uri - URI to match for the route
+        :parameter: obj - optional object for sub-service routing
+        :parameter: parent_obj - parent for sub-service routing
+
+        Note: obj and parent_obj must not be the same object
+        """
         self.service_name = name
         self.uri = uri
         self.obj = obj
@@ -37,18 +59,28 @@ class StackInABoxServiceRouter(object):
 
     @property
     def is_subservice(self):
+        """Is the object managing a sub-service
+        """
         if self.obj is not None:
             return True
 
         return False
 
     def set_subservice(self, obj):
+        """Add a sub-service object
+
+        :parameter: obj - stackinabox.services.StackInABoxService instance
+        :raises: RouteAlreadyRegisteredError if the route is already registered
+        :returns: n/a
+        """
+        # ensure there is not already a sub-service
         if self.obj is not None:
             raise RouteAlreadyRegisteredError(
                 'Service Router ({0} - {1}): Route {2} already has a '
                 'sub-service handler'
                 .format(id(self), self.service_name, self.uri))
 
+        # warn if any methods are already registered
         if len(self.methods):
             logger.debug(
                 'WARNING: Service Router ({0} - {1}): Methods detected '
@@ -57,15 +89,35 @@ class StackInABoxServiceRouter(object):
 
         # Ensure we do not have any circular references
         assert(obj != self.parent_obj)
+
+        # if no errors, save the object and update the URI
         self.obj = obj
         self.obj.base_url = '{0}/{1}'.format(self.uri, self.service_name)
 
     def update_uris(self, new_uri):
+        """Update all URIS
+
+        :parameter: new_uri - URI to switch to and update the matching
+        :returns: n/a
+
+        Note: This overwrites any existing URI
+        """
         self.uri = new_uri
+
+        # if there is a sub-service, update it too
         if self.obj:
             self.obj.base_url = '{0}/{1}'.format(self.uri, self.service_name)
 
     def register_method(self, method, fn):
+        """Register an HTTP method and handler function
+
+        :parameter: method - string, HTTP verb
+        :parameter: fn - python function handling the request
+        :raises: RouteAlreadyRegisteredError if the route is already registered
+        :returns: n/a
+        """
+
+        # ensure the HTTP verb is not already registered
         if method not in self.methods.keys():
             logger.debug('Service Router ({0} - {1}): Adding method {2} on '
                          'route {3}'
@@ -85,6 +137,20 @@ class StackInABoxServiceRouter(object):
                         self.uri))
 
     def __call__(self, method, request, uri, headers):
+        """Python callable interface
+
+        :parameter: method - HTTP verb
+        :parameter: request - Request object
+        :parameter: uri - URI of the request
+        :parameter: headers - response headers for the request
+
+        :returns: tuple - (int, dict, string) containing:
+                          int - the http response status code
+                          dict - the headers for the http response
+                          string - http string response
+        """
+
+        # Check the registered methods, preferring a function to sub-service
         if method in self.methods:
             logger.debug('Service Router ({0} - {1}): Located Method {2} on '
                          'Route {3}. Calling...'
@@ -96,6 +162,7 @@ class StackInABoxServiceRouter(object):
                                         request,
                                         uri,
                                         headers)
+        # If no method, is there a sub-service that handles it?
         elif self.obj is not None:
             logger.debug('Service Router ({0} - {1}): Located Subservice {2} '
                          'on Route {3}. Calling...'
@@ -109,6 +176,7 @@ class StackInABoxServiceRouter(object):
                                         uri,
                                         headers)
 
+        # otherwise, return an HTTP 405 error
         else:
             logger.debug('Service Router ({0} - {1}): '
                          'No Method handler for service'
