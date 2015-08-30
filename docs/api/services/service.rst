@@ -1,4 +1,8 @@
 .. _service:
 
-StackInABoxService
-==================
+Services
+========
+
+.. currentmodule:: stackinabox.services.service
+.. autoclass:: StackInABoxService
+	:members:

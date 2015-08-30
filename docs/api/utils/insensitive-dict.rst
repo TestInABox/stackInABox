@@ -1,4 +1,7 @@
 .. _insensitive-dict:
 
-Case-Insensitive Dictionary
-===========================
+CaseInsensitiveDict
+===================
+
+.. currentmodule:: stackinabox.utils.caseinsensitivedict
+.. autoclass:: CaseInsensitiveDict

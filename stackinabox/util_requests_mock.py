@@ -36,7 +36,7 @@ class RequestMockCallable(object):
     def __init__(self, uri):
         """object initialization
 
-        :parameter: uri - URI to match against
+        :param uri: URI to match against
         """
         self.regex = re.compile(
             '(http)?s?(://)?{0}:?(\d+)?/'.format(uri), re.I)
@@ -44,7 +44,7 @@ class RequestMockCallable(object):
     def __call__(self, request):
         """object callable interface
 
-        :parameter: request - Python requests Request object
+        :param request: Python requests Request object
 
         :returns: Python requests Response object if handled
                   otherwise None
@@ -61,7 +61,7 @@ class RequestMockCallable(object):
     def get_reason_for_status(status_code):
         """Lookup the HTTP reason text for a given status code
 
-        :parameter: status_code - int - HTTP status code
+        :param status_code: int - HTTP status code
 
         :returns: string - HTTP reason text
         """
@@ -76,7 +76,7 @@ class RequestMockCallable(object):
     def split_status(status):
         """Split a HTTP Status and Reason code string into a tuple
 
-        :parameter: status - string containing the status and reason text or
+        :param status string containing the status and reason text or
                              the integer of the status code
 
         :returns: tuple - (int, string) containing the integer status code
@@ -101,8 +101,8 @@ class RequestMockCallable(object):
     def handle(self, request, uri):
         """Request handler interface
 
-        :parameter: request - Python requests Request object
-        :parameter: uri - URI of the request
+        :param request: Python requests Request object
+        :param uri: URI of the request
         """
 
         # Convert the call over to Stack-In-A-Box
@@ -159,8 +159,8 @@ class RequestMockCallable(object):
 def requests_mock_session_registration(uri, session):
     """Requests-mock registration with a specific Session
 
-    :parameter: uri - base URI to match against
-    :parameter: session - Python requests' Session object
+    :param uri: base URI to match against
+    :param session: Python requests' Session object
 
     :returns: n/a
     """
@@ -185,7 +185,7 @@ def requests_mock_session_registration(uri, session):
 def requests_mock_registration(uri):
     """Requests-mock registrationn
 
-    :parameter: uri - base URI to match against
+    :param uri: base URI to match against
 
     :returns: n/a
     """

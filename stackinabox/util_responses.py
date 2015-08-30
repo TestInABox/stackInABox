@@ -19,7 +19,7 @@ def responses_callback(request):
     Converts a call intercepted by Responses to
     the Stack-In-A-Box infrastructure
 
-    :parameter: request - request object
+    :param request: request object
 
     :returns: tuple - (int, dict, string) containing:
                       int - the HTTP response status code
@@ -45,7 +45,7 @@ def responses_registration(uri):
     so that it can be intercepted and handed to
     Stack-In-A-Box.
 
-    :parameter: uri - URI used for the base of the HTTP requests
+    :param uri: URI used for the base of the HTTP requests
 
     :returns: n/a
     """

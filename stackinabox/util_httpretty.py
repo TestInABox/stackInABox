@@ -17,19 +17,20 @@ logger = logging.getLogger(__name__)
 
 
 def httpretty_callback(request, uri, headers):
-    """httpretty request handler
+    """httpretty request handler.
 
     converts a call intercepted by httpretty to
     the stack-in-a-box infrastructure
 
-    :parameter: request - request object
-    :parameter: uri - the uri of the request
-    :parameter: headers - headers for the response
+    :param request: request object
+    :param uri: the uri of the request
+    :param headers: headers for the response
 
     :returns: tuple - (int, dict, string) containing:
                       int - the http response status code
                       dict - the headers for the http response
                       string - http string response
+
     """
     method = request.method
     response_headers = CaseInsensitiveDict()
@@ -44,15 +45,16 @@ def httpretty_callback(request, uri, headers):
 
 
 def httpretty_registration(uri):
-    """httpretty handler registration
+    """httpretty handler registration.
 
     registers a handler for a given uri with httpretty
     so that it can be intercepted and handed to
     stack-in-a-box.
 
-    :parameter: uri - uri used for the base of the http requests
+    :param uri: uri used for the base of the http requests
 
     :returns: n/a
+
     """
 
     # add the stack-in-a-box specific response codes to

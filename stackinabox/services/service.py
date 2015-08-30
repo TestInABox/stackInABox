@@ -41,10 +41,10 @@ class StackInABoxServiceRouter(object):
     def __init__(self, name, uri, obj, parent_obj):
         """Initialize router
 
-        :parameter: name - service name for the route
-        :parameter: uri - URI to match for the route
-        :parameter: obj - optional object for sub-service routing
-        :parameter: parent_obj - parent for sub-service routing
+        :param name: service name for the route
+        :param uri: URI to match for the route
+        :param obj: optional object for sub-service routing
+        :param parent_obj: parent for sub-service routing
 
         Note: obj and parent_obj must not be the same object
         """
@@ -69,7 +69,7 @@ class StackInABoxServiceRouter(object):
     def set_subservice(self, obj):
         """Add a sub-service object
 
-        :parameter: obj - stackinabox.services.StackInABoxService instance
+        :param obj: stackinabox.services.StackInABoxService instance
         :raises: RouteAlreadyRegisteredError if the route is already registered
         :returns: n/a
         """
@@ -97,7 +97,7 @@ class StackInABoxServiceRouter(object):
     def update_uris(self, new_uri):
         """Update all URIS
 
-        :parameter: new_uri - URI to switch to and update the matching
+        :param new_uri: URI to switch to and update the matching
         :returns: n/a
 
         Note: This overwrites any existing URI
@@ -111,8 +111,8 @@ class StackInABoxServiceRouter(object):
     def register_method(self, method, fn):
         """Register an HTTP method and handler function
 
-        :parameter: method - string, HTTP verb
-        :parameter: fn - python function handling the request
+        :param method: string, HTTP verb
+        :param fn: python function handling the request
         :raises: RouteAlreadyRegisteredError if the route is already registered
         :returns: n/a
         """
@@ -139,10 +139,10 @@ class StackInABoxServiceRouter(object):
     def __call__(self, method, request, uri, headers):
         """Python callable interface
 
-        :parameter: method - HTTP verb
-        :parameter: request - Request object
-        :parameter: uri - URI of the request
-        :parameter: headers - response headers for the request
+        :param method: HTTP verb
+        :param request: Request object
+        :param uri: URI of the request
+        :param headers: response headers for the request
 
         :returns: tuple - (int, dict, string) containing:
                           int - the http response status code

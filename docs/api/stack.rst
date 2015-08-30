@@ -1,4 +1,9 @@
 .. _stack:
 
-StackInABox
-===========
+Stack
+=====
+
+.. currentmodule:: stackinabox.stack
+
+.. autoclass:: StackInABox
+	:members:

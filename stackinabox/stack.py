@@ -17,7 +17,7 @@ class ServiceAlreadyRegisteredError(Exception):
 
 
 class StackInABox(object):
-    """Stack-In-A-Box Testing Service
+    """Stack-In-A-Box Testing Service.
 
     StackInABox provides a testing framework for RESTful APIs
 
@@ -31,36 +31,40 @@ class StackInABox(object):
     and write StackInABoxService's that are thread-safe
     themselves, then there is no reason it could not be used in a
     multi-threaded or multi-processed test.
+
     """
 
     @classmethod
     def reset_services(cls):
-        """Reset the thread's StackInABox instance
+        """Reset the thread's StackInABox instance.
+
         """
         logger.debug('Resetting services')
         return local_store.instance.reset()
 
     @classmethod
     def register_service(cls, service):
-        """Add a service to the thread's StackInABox instance
+        """Add a service to the thread's StackInABox instance.
 
-        :parameter: service - StackInABoxService instance to add to the test
+        :param service: StackInABoxService instance to add to the test
 
         For return value and errors see StackInABox.register()
+
         """
         logger.debug('Registering service {0}'.format(service.name))
         return local_store.instance.register(service)
 
     @classmethod
     def call_into(cls, method, request, uri, headers):
-        """Make a call into the thread's StackInABox instance
+        """Make a call into the thread's StackInABox instance.
 
-        :parameter: method - HTTP Method (e.g GET, POST)
-        :parameter: request - a Request object containing the request data
-        :parameter: uri - the URI of the request submitted with the method
-        :parameter: headers - the return headers in a Case-Insensitive dict
+        :param method: HTTP Method (e.g GET, POST)
+        :param request: a Request object containing the request data
+        :param uri: the URI of the request submitted with the method
+        :param headers: the return headers in a Case-Insensitive dict
 
         For return value and errors see StackInABox.call()
+
         """
         logger.debug('Request: {0} - {1}'.format(method, uri))
         return local_store.instance.call(method,
@@ -70,14 +74,15 @@ class StackInABox(object):
 
     @classmethod
     def hold_onto(cls, name, obj):
-        """Add data into the a storage area provided by the framework
+        """Add data into the a storage area provided by the framework.
 
         Note: The data is stored with the thread local instance.
 
-        :parameter: name - name of the data to be stored
-        :parameter: obj - data to be stored
+        :param name: name of the data to be stored
+        :param obj: data to be stored
 
         For return value and errors see StackInABox.into_hold()
+
         """
         logger.debug('Holding on {0} of type {1} with id {2}'
                      .format(name, type(obj), id(obj)))
@@ -85,15 +90,16 @@ class StackInABox(object):
 
     @classmethod
     def hold_out(cls, name):
-        """Get data from the storage area provided by the framework
+        """Get data from the storage area provided by the framework.
 
         Note: The data is retrieved from the thread local instance.
 
-        :parameter: name - name of the data to be retrieved
+        :param name: name of the data to be retrieved
 
         :returns: The data associated with the specified name.
 
         For errors see StackInABox.from_hold()
+
         """
         logger.debug('Retreiving {0} from hold'
                      .format(name))
@@ -104,9 +110,10 @@ class StackInABox(object):
 
     @classmethod
     def update_uri(cls, uri):
-        """Set the URI of the StackInABox framework
+        """Set the URI of the StackInABox framework.
 
-        :parameter: uri - the base URI used to match the service.
+        :param uri: the base URI used to match the service.
+
         """
         logger.debug('Request: Update URI to {0}'.format(uri))
         local_store.instance.base_url = uri
@@ -118,6 +125,7 @@ class StackInABox(object):
 
         There are no services registered, and the storage hold
         is a basic dictionary object used as a key-value store.
+
         """
         self.__id = uuid.uuid4()
         self.__base_url = '/'
@@ -128,12 +136,13 @@ class StackInABox(object):
 
     @staticmethod
     def __get_service_url(base_url, service_name):
-        """Get the URI for a given StackInABoxService
+        """Get the URI for a given StackInABoxService.
 
         Note: this is an internal function
 
-        :parameter: base_url - base URL to use
-        :parameter: service_name - name of the service the URI is for
+        :param base_url: base URL to use
+        :param service_name: name of the service the URI is for
+
         """
         return '{0}/{1}'.format(base_url, service_name)
 
@@ -142,6 +151,7 @@ class StackInABox(object):
         """Get the URI from a given URL.
 
         :returns: URI within the URL
+
         """
         length = len(base_url)
         checks = ['http://', 'https://']
@@ -157,13 +167,15 @@ class StackInABox(object):
 
     @property
     def base_url(self):
-        """Base URL property
+        """Base URL property.
+
         """
         return self.__base_url
 
     @base_url.setter
     def base_url(self, value):
-        """Set the Base URL property, updating all associated services
+        """Set the Base URL property, updating all associated services.
+
         """
         logger.debug('StackInABox({0}): Updating URL from {1} to {2}'
                      .format(self.__id, self.__base_url, value))
@@ -176,7 +188,8 @@ class StackInABox(object):
                          .format(self.__id, service.name, service.base_url))
 
     def reset(self):
-        """Reset StackInABox to a like-new state
+        """Reset StackInABox to a like-new state.
+
         """
         logger.debug('StackInABox({0}): Resetting...'
                      .format(self.__id))
@@ -193,12 +206,13 @@ class StackInABox(object):
                      .format(self.__id))
 
     def register(self, service):
-        """Add a service to the thread's StackInABox instance
+        """Add a service to the thread's StackInABox instance.
 
-        :parameter: service - StackInABoxService instance to add to the test
+        :param service: StackInABoxService instance to add to the test
 
         :returns: None
         :raises: ServiceAlreadyRegisteredError if the service already exists
+
         """
         if service.name not in self.services.keys():
             logger.debug('StackInABox({0}): Registering Service {1}'
@@ -217,17 +231,18 @@ class StackInABox(object):
                 'Service {0} is already registered'.format(service.name))
 
     def call(self, method, request, uri, headers):
-        """Make a call into the thread's StackInABox instance
+        """Make a call into the thread's StackInABox instance.
 
-        :parameter: method - HTTP Method (e.g GET, POST)
-        :parameter: request - a Request object containing the request data
-        :parameter: uri - the URI of the request submitted with the method
-        :parameter: headers - the return headers in a Case-Insensitive dict
+        :param method: HTTP Method (e.g GET, POST)
+        :param request: a Request object containing the request data
+        :param uri: the URI of the request submitted with the method
+        :param headers: the return headers in a Case-Insensitive dict
 
         :returns: A tuple containing - (i) the Status Code, (ii) the response
                   headers, and (iii) the response body data
 
         This function should not emit any Exceptions
+
         """
         logger.debug('StackInABox({0}): Received call to {1} - {2}'
                      .format(self.__id, method, uri))
@@ -260,15 +275,16 @@ class StackInABox(object):
         return (597, headers, 'Unknown service - {0}'.format(service_uri))
 
     def into_hold(self, name, obj):
-        """Add data into the a storage area provided by the framework
+        """Add data into the a storage area provided by the framework.
 
         Note: The data is stored with the thread local instance.
 
-        :parameter: name - name of the data to be stored
-        :parameter: obj - data to be stored
+        :param name: name of the data to be stored
+        :param obj: data to be stored
 
         :returns: N/A
         :raises: N/A
+
         """
         logger.debug('StackInABox({0}): Holding onto {1} of type {2} '
                      'with id {3}'
@@ -276,15 +292,16 @@ class StackInABox(object):
         self.holds[name] = obj
 
     def from_hold(self, name):
-        """Get data from the storage area provided by the framework
+        """Get data from the storage area provided by the framework.
 
         Note: The data is retrieved from the thread local instance.
 
-        :parameter: name - name of the data to be retrieved
+        :param name: name of the data to be retrieved
 
         :returns: The data associated with the specified name.
         :raises: Lookup/KeyError error if the name does not match
                  a value in the storage
+
         """
         logger.debug('StackInABox({0}): Retreiving {1} from the hold'
                      .format(self.__id, name))
