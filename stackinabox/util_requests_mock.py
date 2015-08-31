@@ -28,7 +28,7 @@ logger = logging.getLogger(__name__)
 
 
 class RequestMockCallable(object):
-    """Requests-Mock Callable object
+    """Requests-Mock Callable object.
 
     Python callable object to interact with Requests-Mock
     """
@@ -42,7 +42,7 @@ class RequestMockCallable(object):
             '(http)?s?(://)?{0}:?(\d+)?/'.format(uri), re.I)
 
     def __call__(self, request):
-        """object callable interface
+        """object callable interface.
 
         :param request: Python requests Request object
 
@@ -59,7 +59,7 @@ class RequestMockCallable(object):
 
     @staticmethod
     def get_reason_for_status(status_code):
-        """Lookup the HTTP reason text for a given status code
+        """Lookup the HTTP reason text for a given status code.
 
         :param status_code: int - HTTP status code
 
@@ -74,7 +74,7 @@ class RequestMockCallable(object):
 
     @staticmethod
     def split_status(status):
-        """Split a HTTP Status and Reason code string into a tuple
+        """Split a HTTP Status and Reason code string into a tuple.
 
         :param status string containing the status and reason text or
                              the integer of the status code
@@ -99,7 +99,7 @@ class RequestMockCallable(object):
             return (status, 'Unknown')
 
     def handle(self, request, uri):
-        """Request handler interface
+        """Request handler interface.
 
         :param request: Python requests Request object
         :param uri: URI of the request
@@ -157,7 +157,7 @@ class RequestMockCallable(object):
 
 
 def requests_mock_session_registration(uri, session):
-    """Requests-mock registration with a specific Session
+    """Requests-mock registration with a specific Session.
 
     :param uri: base URI to match against
     :param session: Python requests' Session object
@@ -183,7 +183,7 @@ def requests_mock_session_registration(uri, session):
 
 
 def requests_mock_registration(uri):
-    """Requests-mock registrationn
+    """Requests-mock registrationn.
 
     :param uri: base URI to match against
 
@@ -196,8 +196,7 @@ def requests_mock_registration(uri):
 
 
 def requests_request(method, url, **kwargs):
-    """Requests-mock requests.request wrapper
-    """
+    """Requests-mock requests.request wrapper."""
     session = local_sessions.session
     response = session.request(method=method, url=url, **kwargs)
     session.close()
@@ -205,158 +204,130 @@ def requests_request(method, url, **kwargs):
 
 
 def requests_get(url, **kwargs):
-    """Requests-mock requests.get wrapper
-    """
+    """Requests-mock requests.get wrapper."""
     kwargs.setdefault('allow_redirects', True)
     return requests_request('get', url, **kwargs)
 
 
 def requests_options(url, **kwargs):
-    """Requests-mock requests.options wrapper
-    """
+    """Requests-mock requests.options wrapper."""
     kwargs.setdefault('allow_redirects', True)
     return reuests_request('options', url, **kwargs)
 
 
 def requests_head(url, **kwargs):
-    """Requests-mock requests.head wrapper
-    """
+    """Requests-mock requests.head wrapper."""
     kwargs.setdefault('allow_redirects', False)
     return reuests_request('options', url, **kwargs)
 
 
 def requests_post(url, data=None, json=None, **kwargs):
-    """Requests-mock requests.post wrapper
-    """
+    """Requests-mock requests.post wrapper."""
     return requests_request('post', url, data=data, json=json, **kwargs)
 
 
 def requests_put(url, data=None, **kwargs):
-    """Requests-mock requests.put wrapper
-    """
+    """Requests-mock requests.put wrapper."""
     return requests_request('put', url, data=data, **kwargs)
 
 
 def requests_patch(url, data=None, **kwargs):
-    """Requests-mock requests.patch wrapper
-    """
+    """Requests-mock requests.patch wrapper."""
     return requests_request('patch', url, data=data, **kwargs)
 
 
 def requests_delete(url, **kwargs):
-    """Requests-mock requests.delete wrapper
-    """
+    """Requests-mock requests.delete wrapper."""
     return requests_request('delete', url, **kwargs)
 
 
 class requests_session(requests.sessions.SessionRedirectMixin):
-    """Requests-mock requests.Session wrapper
-    """
+    """Requests-mock requests.Session wrapper."""
 
     def __init__(self):
         logger.debug('Session wrapper has id {0}'.format(id(self)))
 
     def __enter__(self):
-        """Python requests.session.Session context entry wrapper
-        """
+        """Python requests.session.Session context entry wrapper."""
         return local_sessions.session
 
     def __exit__(self, *args):
-        """Python requests.session.Session context exit wrapper
-        """
+        """Python requests.session.Session context exit wrapper."""
         local_sessions.session.close()
 
     def prepare_request(self, request):
-        """Pyton requests.session.Session.prepare_request wrapper
-        """
+        """Pyton requests.session.Session.prepare_request wrapper."""
         return local_sessions.session.prepare_request(request)
 
     def request(*args, **kwargs):
-        """Python requests.session.Session.request wrapper
-        """
+        """Python requests.session.Session.request wrapper."""
         return local_session.session.request(*args, **kwargs)
 
     def get(*args, **kwargs):
-        """Python requests.session.Session.get wrapper
-        """
+        """Python requests.session.Session.get wrapper."""
         return local_session.session.get(*args, **kwargs)
 
     def options(*args, **kwargs):
-        """Python requests.session.Session.options wrapper
-        """
+        """Python requests.session.Session.options wrapper."""
         return local_session.session.options(*args, **kwargs)
 
     def head(*args, **kwargs):
-        """Python requests.session.Session.head wrapper
-        """
+        """Python requests.session.Session.head wrapper."""
         return local_session.session.head(*args, **kwargs)
 
     def post(*args, **kwargs):
-        """Python requests.session.Session.post wrapper
-        """
+        """Python requests.session.Session.post wrapper."""
         return local_session.session.post(*args, **kwargs)
 
     def put(*args, **kwargs):
-        """Python requests.session.Session.put wrapper
-        """
+        """Python requests.session.Session.put wrapper."""
         return local_session.session.put(*args, **kwargs)
 
     def patch(*args, **kwargs):
-        """Python requests.session.Session.patch wrapper
-        """
+        """Python requests.session.Session.patch wrapper."""
         return local_session.session.patch(*args, **kwargs)
 
     def delete(*args, **kwargs):
-        """Python requests.session.Session.delete wrapper
-        """
+        """Python requests.session.Session.delete wrapper."""
         return local_session.session.delete(*args, **kwargs)
 
     def send(*args, **kwargs):
-        """Python requests.session.Session.send wrapper
-        """
+        """Python requests.session.Session.send wrapper."""
         return local_session.session.send(*args, **kwargs)
 
     def merge_environment_settings(*args, **kwargs):
-        """Python requests.session.Session.merge_environment_settings wrapper
-        """
+        """Python requests.session.Session.merge_environment_settings wrapper."""
         return local_session.session.merge_environment_settings(*args,
                                                                 **kwargs)
 
     def get_adapter(*args, **kwargs):
-        """Python requests.session.Session.get_adapter wrapper
-        """
+        """Python requests.session.Session.get_adapter wrapper."""
         return local_session.session.get_adapter(*args, **kwargs)
 
     def close(*args, **kwargs):
-        """Python requests.session.Session.close wrapper
-        """
+        """Python requests.session.Session.close wrapper."""
         return local_session.session.close(*args, **kwargs)
 
     def mount(*args, **kwargs):
-        """Python requests.session.Session.mount wrapper
-        """
+        """Python requests.session.Session.mount wrapper."""
         return local_session.session.mount(*args, **kwargs)
 
     def __getstate__(*args, **kwargs):
-        """Python requests.session.Session.__getstate__ wrapper
-        """
+        """Python requests.session.Session.__getstate__ wrapper."""
         return local_session.session.__getstate__(*args, **kwargs)
 
     def __setstate__(*args, **kwargs):
-        """Python requests.session.Session.__setstate__ wrapper
-        """
+        """Python requests.session.Session.__setstate__ wrapper."""
         return local_session.session.__setstate__(*args, **kwargs)
 
 
 def get_session():
-    """Access the global session object
-    """
+    """Access the global session object."""
     return local_sessions.session
 
 
 class activate(object):
-    """Requests-mock context object for Stack-In-A-Box
-    """
+    """Requests-mock context object for Stack-In-A-Box."""
 
     def __init__(self):
         # Keep track of all the original functions that will
@@ -376,8 +347,7 @@ class activate(object):
         }
 
     def __enter__(self):
-        """Setup the context to use the Stack-In-A-Box variants
-        """
+        """Setup the context to use the Stack-In-A-Box variants."""
         logger.debug('Using session with id {0}'
                      .format(id(local_sessions.session)))
         requests.request = requests_request
@@ -393,8 +363,7 @@ class activate(object):
         requests.sessions.Sesssion = requests_session
 
     def __exit__(self, exc_type, exc_value, traceback):
-        """Exiting the context and restore the originals
-        """
+        """Exiting the context and restore the originals"""
         logger.debug('Stopping session with id {0}'
                      .format(id(local_sessions.session)))
         requests.session = self.__replacements['requests.session']

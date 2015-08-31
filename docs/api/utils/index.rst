@@ -2,9 +2,9 @@ Utilities
 =========
 
 .. toctree::
-	:maxdepth: 2
+    :maxdepth: 2
 
-	insensitive-dict
-	httpretty
-	requests-mock
-	responses
+    insensitive-dict
+    httpretty
+    requests-mock
+    responses

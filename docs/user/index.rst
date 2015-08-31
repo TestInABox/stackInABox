@@ -2,9 +2,9 @@ User Guide
 ==========
 
 .. toctree::
-	:maxdepth: 2
+    :maxdepth: 2
 
-	intro
-	install
-	quickstart
-	tutorial
+    intro
+    install
+    quickstart
+    tutorial

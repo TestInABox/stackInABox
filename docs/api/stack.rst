@@ -6,4 +6,4 @@ Stack
 .. currentmodule:: stackinabox.stack
 
 .. autoclass:: StackInABox
-	:members:
+    :members:

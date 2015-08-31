@@ -13,6 +13,7 @@ logger = logging.getLogger(__name__)
 
 
 class ServiceAlreadyRegisteredError(Exception):
+    """StackInABoxService with the same name already registered."""
     pass
 
 
@@ -36,9 +37,7 @@ class StackInABox(object):
 
     @classmethod
     def reset_services(cls):
-        """Reset the thread's StackInABox instance.
-
-        """
+        """Reset the thread's StackInABox instance."""
         logger.debug('Resetting services')
         return local_store.instance.reset()
 
@@ -167,16 +166,12 @@ class StackInABox(object):
 
     @property
     def base_url(self):
-        """Base URL property.
-
-        """
+        """Base URL property."""
         return self.__base_url
 
     @base_url.setter
     def base_url(self, value):
-        """Set the Base URL property, updating all associated services.
-
-        """
+        """Set the Base URL property, updating all associated services."""
         logger.debug('StackInABox({0}): Updating URL from {1} to {2}'
                      .format(self.__id, self.__base_url, value))
         self.__base_url = value
@@ -188,9 +183,7 @@ class StackInABox(object):
                          .format(self.__id, service.name, service.base_url))
 
     def reset(self):
-        """Reset StackInABox to a like-new state.
-
-        """
+        """Reset StackInABox to a like-new state."""
         logger.debug('StackInABox({0}): Resetting...'
                      .format(self.__id))
         for k, v in six.iteritems(self.services):

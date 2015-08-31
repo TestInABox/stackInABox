@@ -2,8 +2,9 @@ Class and Functions
 ===================
 
 .. toctree::
-	:maxdepth: 2
+    :maxdepth: 2
 
-	stack
-	services/index
-	utils/index
+    stack
+    stack-exceptions
+    services/index
+    utils/index

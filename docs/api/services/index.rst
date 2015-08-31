@@ -2,9 +2,9 @@ Services
 ========
 
 .. toctree::
-	:maxdepth: 2
+    :maxdepth: 2
 
-	service
-	router
-	service-exceptions
-	errors
+    service
+    router
+    service-exceptions
+    errors

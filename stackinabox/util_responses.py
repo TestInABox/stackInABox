@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 
 def responses_callback(request):
-    """Responses Request Handler
+    """Responses Request Handler.
 
     Converts a call intercepted by Responses to
     the Stack-In-A-Box infrastructure
@@ -39,7 +39,7 @@ def responses_callback(request):
 
 
 def responses_registration(uri):
-    """Responses handler registration
+    """Responses handler registration.
 
     Registers a handler for a given URI with Responses
     so that it can be intercepted and handed to
