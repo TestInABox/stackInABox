@@ -248,11 +248,11 @@ class requests_session(requests.sessions.SessionRedirectMixin):
         logger.debug('Session wrapper has id {0}'.format(id(self)))
 
     def __enter__(self):
-        """Python requests.session.Session context entry wrapper."""
+        """requests.session.Session context entry wrapper."""
         return local_sessions.session
 
     def __exit__(self, *args):
-        """Python requests.session.Session context exit wrapper."""
+        """requests.session.Session context exit wrapper."""
         local_sessions.session.close()
 
     def prepare_request(self, request):
@@ -260,64 +260,64 @@ class requests_session(requests.sessions.SessionRedirectMixin):
         return local_sessions.session.prepare_request(request)
 
     def request(*args, **kwargs):
-        """Python requests.session.Session.request wrapper."""
+        """requests.session.Session.request wrapper."""
         return local_session.session.request(*args, **kwargs)
 
     def get(*args, **kwargs):
-        """Python requests.session.Session.get wrapper."""
+        """requests.session.Session.get wrapper."""
         return local_session.session.get(*args, **kwargs)
 
     def options(*args, **kwargs):
-        """Python requests.session.Session.options wrapper."""
+        """requests.session.Session.options wrapper."""
         return local_session.session.options(*args, **kwargs)
 
     def head(*args, **kwargs):
-        """Python requests.session.Session.head wrapper."""
+        """requests.session.Session.head wrapper."""
         return local_session.session.head(*args, **kwargs)
 
     def post(*args, **kwargs):
-        """Python requests.session.Session.post wrapper."""
+        """requests.session.Session.post wrapper."""
         return local_session.session.post(*args, **kwargs)
 
     def put(*args, **kwargs):
-        """Python requests.session.Session.put wrapper."""
+        """requests.session.Session.put wrapper."""
         return local_session.session.put(*args, **kwargs)
 
     def patch(*args, **kwargs):
-        """Python requests.session.Session.patch wrapper."""
+        """requests.session.Session.patch wrapper."""
         return local_session.session.patch(*args, **kwargs)
 
     def delete(*args, **kwargs):
-        """Python requests.session.Session.delete wrapper."""
+        """requests.session.Session.delete wrapper."""
         return local_session.session.delete(*args, **kwargs)
 
     def send(*args, **kwargs):
-        """Python requests.session.Session.send wrapper."""
+        """requests.session.Session.send wrapper."""
         return local_session.session.send(*args, **kwargs)
 
     def merge_environment_settings(*args, **kwargs):
-        """Python requests.session.Session.merge_environment_settings wrapper."""
+        """requests.session.Session.merge_environment_settings wrapper."""
         return local_session.session.merge_environment_settings(*args,
                                                                 **kwargs)
 
     def get_adapter(*args, **kwargs):
-        """Python requests.session.Session.get_adapter wrapper."""
+        """requests.session.Session.get_adapter wrapper."""
         return local_session.session.get_adapter(*args, **kwargs)
 
     def close(*args, **kwargs):
-        """Python requests.session.Session.close wrapper."""
+        """requests.session.Session.close wrapper."""
         return local_session.session.close(*args, **kwargs)
 
     def mount(*args, **kwargs):
-        """Python requests.session.Session.mount wrapper."""
+        """requests.session.Session.mount wrapper."""
         return local_session.session.mount(*args, **kwargs)
 
     def __getstate__(*args, **kwargs):
-        """Python requests.session.Session.__getstate__ wrapper."""
+        """requests.session.Session.__getstate__ wrapper."""
         return local_session.session.__getstate__(*args, **kwargs)
 
     def __setstate__(*args, **kwargs):
-        """Python requests.session.Session.__setstate__ wrapper."""
+        """requests.session.Session.__setstate__ wrapper."""
         return local_session.session.__setstate__(*args, **kwargs)
 
 
