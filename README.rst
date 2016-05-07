@@ -4,12 +4,12 @@ Stack-In-A-Box
 
 Testing framework for RESTful APIs
 
-.. image:: https://travis-ci.org/BenjamenMeyer/stackInABox.svg?branch=master
-   :target: https://travis-ci.org/BenjamenMeyer/stackInABox
+.. image:: https://travis-ci.org/TestInABox/stackInABox.svg?branch=master
+   :target: https://travis-ci.org/TestInABox/stackInABox
    :alt: Travis-CI Status
 
-.. image:: https://coveralls.io/repos/BenjamenMeyer/stackInABox/badge.svg
-   :target: https://coveralls.io/r/BenjamenMeyer/stackInABox
+.. image:: https://coveralls.io/repos/TestInABox/stackInABox/badge.svg
+   :target: https://coveralls.io/r/TestInABox/stackInABox
    :alt: Coverage Status
 
 ========
@@ -57,7 +57,7 @@ Why not use framework X?
 ========================
 
 This project initially setup to provide mock-ups of the OpenStack Keystone and Swift APIs. In doing so other frameworks, such as ``mimic`` (https://github.com/rackerlabs/mimic) were considered.
-However, they did not meet the goals set out above. This framework was then built and initially provided the Keystone module that is now part of ``OpenStack-In-A-Box`` (https://github.com/BenjamenMeyer/openstackinabox).
+However, they did not meet the goals set out above. This framework was then built and initially provided the Keystone module that is now part of ``OpenStack-In-A-Box`` (https://github.com/TestInABox/openstackinabox).
 This framework now makes it easy to build services that can be integrated with one of many unit testing frameworks, f.e httpretty, to provide a consistent, reliable unit testing framework that essentially merges the API/Integration-level tests into
 the more specific unit tests. It does not, however, replace a proper Integration Test as the responses (in terms of time and integration) will likely be different; but it does allow the unit tests to be sufficient to catch the coding errors early on
 so that you can focus on the real integration problems with the Integration-level tests.
@@ -74,7 +74,7 @@ Here's what is currently provided:
 - A plug-in-play utility set for several testing frameworks so you the developer can choose which fits your needs best
 - An example HelloWorld Service to show the basics
 
-Note: The ``OpenStack-In-A-Box`` (https://github.com/BenjamenMeyer/openstackinabox) provides a more advanced example of building a Stack-In-A-Box Service.
+Note: The ``OpenStack-In-A-Box`` (https://github.com/TestInABox/openstackinabox) provides a more advanced example of building a Stack-In-A-Box Service.
 
 =======================
 Working with Frameworks

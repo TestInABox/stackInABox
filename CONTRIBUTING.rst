@@ -95,8 +95,8 @@ Make a successful contribution, and your name will be immortalized in
 the `AUTHORS`_ file! Thanks for your help. You make this project
 possible.
 
-.. _Issues: https://github.com/BenjamenMeyer/stackInABox/issues
-.. _Milestones: https://github.com/BenjamenMeyer/stackInABox/milestones
+.. _Issues: https://github.com/TestInABox/stackInABox/issues
+.. _Milestones: https://github.com/TestInABox/stackInABox/milestones
 .. _pep8: https://pypi.python.org/pypi/pep8
-.. _AUTHORS: https://github.com/BenjamenMeyer/stackInABox/blob/master/AUTHORS
+.. _AUTHORS: https://github.com/TestInABox/stackInABox/blob/master/AUTHORS
 
