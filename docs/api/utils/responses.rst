@@ -3,6 +3,6 @@
 Responses Utility
 =================
 
-.. currentmodule:: stackinabox.util_responses
+.. currentmodule:: stackinabox.util.responses
 .. autofunction:: responses_callback
 .. autofunction:: responses_registration

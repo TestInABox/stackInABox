@@ -1,13 +1,15 @@
 """
 Stack-In-A-Box: Python Responses Support
 """
+from __future__ import absolute_import
+
 import logging
 import re
 
 import responses
 
 from stackinabox.stack import StackInABox
-from stackinabox.utils import CaseInsensitiveDict
+from stackinabox.util.tools import CaseInsensitiveDict
 
 
 logger = logging.getLogger(__name__)

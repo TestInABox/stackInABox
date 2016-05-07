@@ -3,5 +3,5 @@
 CaseInsensitiveDict
 ===================
 
-.. currentmodule:: stackinabox.utils.caseinsensitivedict
+.. currentmodule:: stackinabox.util.tools.caseinsensitivedict
 .. autoclass:: CaseInsensitiveDict

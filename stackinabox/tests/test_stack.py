@@ -5,7 +5,7 @@ import ddt
 import httpretty
 import requests
 
-import stackinabox.util_httpretty
+import stackinabox.util.httpretty
 from stackinabox.stack import (
     StackInABox, ServiceAlreadyRegisteredError)
 from stackinabox.services.service import *
@@ -57,7 +57,7 @@ class TestStack(unittest.TestCase):
         exceptional = ExceptionalServices()
         StackInABox.register_service(exceptional)
 
-        stackinabox.util_httpretty.httpretty_registration('localhost')
+        stackinabox.util.httpretty.httpretty_registration('localhost')
 
         res = requests.get('http://localhost/except/')
         self.assertEqual(res.status_code, 596)
