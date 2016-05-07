@@ -12,20 +12,40 @@ logger = logging.getLogger(__name__)
 
 
 class StackInABoxServiceErrors(Exception):
+    """Stack-In-A-Box Service Exception object.
+
+    All Stack-In-A-Box Service specific exceptions are
+    base on StackInABoxServiceErrors
+    """
     pass
 
 
 class RouteAlreadyRegisteredError(StackInABoxServiceErrors):
+    """Exception: Route is already registered."""
     pass
 
 
 class InvalidRouteRegexError(StackInABoxServiceErrors):
+    """Exception: Regex for URI is invalid."""
     pass
 
 
 class StackInABoxServiceRouter(object):
+    """Stack-In-A-Box Service Router object.
+
+    Advanced URI routing to support Service-within-Service routing
+    """
 
     def __init__(self, name, uri, obj, parent_obj):
+        """Initialize router.
+
+        :param name: service name for the route
+        :param uri: URI to match for the route
+        :param obj: optional object for sub-service routing
+        :param parent_obj: parent for sub-service routing
+
+        Note: obj and parent_obj must not be the same object
+        """
         self.service_name = name
         self.uri = uri
         self.obj = obj
@@ -37,18 +57,27 @@ class StackInABoxServiceRouter(object):
 
     @property
     def is_subservice(self):
+        """Is the object managing a sub-service."""
         if self.obj is not None:
             return True
 
         return False
 
     def set_subservice(self, obj):
+        """Add a sub-service object.
+
+        :param obj: stackinabox.services.StackInABoxService instance
+        :raises: RouteAlreadyRegisteredError if the route is already registered
+        :returns: n/a
+        """
+        # ensure there is not already a sub-service
         if self.obj is not None:
             raise RouteAlreadyRegisteredError(
                 'Service Router ({0} - {1}): Route {2} already has a '
                 'sub-service handler'
                 .format(id(self), self.service_name, self.uri))
 
+        # warn if any methods are already registered
         if len(self.methods):
             logger.debug(
                 'WARNING: Service Router ({0} - {1}): Methods detected '
@@ -57,15 +86,35 @@ class StackInABoxServiceRouter(object):
 
         # Ensure we do not have any circular references
         assert(obj != self.parent_obj)
+
+        # if no errors, save the object and update the URI
         self.obj = obj
         self.obj.base_url = '{0}/{1}'.format(self.uri, self.service_name)
 
     def update_uris(self, new_uri):
+        """Update all URIS.
+
+        :param new_uri: URI to switch to and update the matching
+        :returns: n/a
+
+        Note: This overwrites any existing URI
+        """
         self.uri = new_uri
+
+        # if there is a sub-service, update it too
         if self.obj:
             self.obj.base_url = '{0}/{1}'.format(self.uri, self.service_name)
 
     def register_method(self, method, fn):
+        """Register an HTTP method and handler function.
+
+        :param method: string, HTTP verb
+        :param fn: python function handling the request
+        :raises: RouteAlreadyRegisteredError if the route is already registered
+        :returns: n/a
+        """
+
+        # ensure the HTTP verb is not already registered
         if method not in self.methods.keys():
             logger.debug('Service Router ({0} - {1}): Adding method {2} on '
                          'route {3}'
@@ -85,6 +134,20 @@ class StackInABoxServiceRouter(object):
                         self.uri))
 
     def __call__(self, method, request, uri, headers):
+        """Python callable interface.
+
+        :param method: HTTP verb
+        :param request: Request object
+        :param uri: URI of the request
+        :param headers: response headers for the request
+
+        :returns: tuple - (int, dict, string) containing:
+                          int - the http response status code
+                          dict - the headers for the http response
+                          string - http string response
+        """
+
+        # Check the registered methods, preferring a function to sub-service
         if method in self.methods:
             logger.debug('Service Router ({0} - {1}): Located Method {2} on '
                          'Route {3}. Calling...'
@@ -96,6 +159,7 @@ class StackInABoxServiceRouter(object):
                                         request,
                                         uri,
                                         headers)
+        # If no method, is there a sub-service that handles it?
         elif self.obj is not None:
             logger.debug('Service Router ({0} - {1}): Located Subservice {2} '
                          'on Route {3}. Calling...'
@@ -109,6 +173,7 @@ class StackInABoxServiceRouter(object):
                                         uri,
                                         headers)
 
+        # otherwise, return an HTTP 405 error
         else:
             logger.debug('Service Router ({0} - {1}): '
                          'No Method handler for service'
@@ -121,6 +186,12 @@ class StackInABoxServiceRouter(object):
 
 
 class StackInABoxService(object):
+    """Stack-In-A-Box Service interface.
+
+    StackInABoxService provides the functionality and interface to build a
+    service that is compliant with the requirements of Stack-In-A-Box.
+    """
+
     DELETE = 'DELETE'
     GET = 'GET'
     HEAD = 'HEAD'
@@ -139,6 +210,10 @@ class StackInABoxService(object):
     ]
 
     def __init__(self, name):
+        """Initialize the service.
+
+        :param name: name of the service used for the URI
+        """
         self.__base_url = '/{0}'.format(name)
         self.__id = uuid.uuid4()
         self.name = name
@@ -149,11 +224,24 @@ class StackInABoxService(object):
 
     @staticmethod
     def is_regex(uri):
+        """Is the provided URI a regex?
+
+        :returns: boolean
+        """
         regex_type = type(re.compile(''))
         return isinstance(uri, regex_type)
 
     @staticmethod
     def validate_regex(regex, sub_service):
+        """Is the regex valid for StackInABox routing?
+
+        :param regex: Python regex object to match the URI
+        :param sub_service: boolean for whether or not the regex is for
+                            a sub-service
+
+        :raises: InvalidRouteRegexError if the regex does not meet the
+                 requirements.
+        """
         # The regex generated by stackinabox starts with ^
         # and ends with $. Enforce that the provided regex does the same.
 
@@ -175,6 +263,14 @@ class StackInABoxService(object):
 
     @staticmethod
     def get_service_regex(base_url, service_url, sub_service):
+        """Get the regex for a given service.
+
+        :param base_url: string - Base URI
+        :param service_url: string - Service URI under the Base URI
+        :param sub_service: boolean - is the Service URI for a sub-service?
+
+        :returns: Python Regex object containing the regex for the Service
+        """
         # if the specified service_url is already a regex
         # then just use. Otherwise create what we need
         if StackInABoxService.is_regex(service_url):
@@ -193,10 +289,15 @@ class StackInABoxService(object):
 
     @property
     def base_url(self):
+        """Base URI utilized for anything managed by this instance."""
         return self.__base_url
 
     @base_url.setter
     def base_url(self, value):
+        """Set the Base URI value.
+
+        :param value: the new URI to use for the Base URI
+        """
         logger.debug('StackInABoxService ({0}:{1}) Updating Base URL '
                      'from {2} to {3}'
                      .format(self.__id,
@@ -211,6 +312,7 @@ class StackInABoxService(object):
                 v['handlers'].is_subservice)
 
     def reset(self):
+        """Reset the service to its' initial state."""
         logger.debug('StackInABoxService ({0}): Reset'
                      .format(self.__id, self.name))
         self.base_url = '/{0}'.format(self.name)
@@ -218,6 +320,19 @@ class StackInABoxService(object):
                      .format(self.__id, self.name))
 
     def try_handle_route(self, route_uri, method, request, uri, headers):
+        """Try to handle the supplied request on the specified routing URI.
+
+        :param route_uri: string - URI of the request
+        :param method: string - HTTP Verb
+        :param request: request object describing the HTTP request
+        :param uri: URI of the reuqest
+        :param headers: case-insensitive headers dict
+
+        :returns: tuple - (int, dict, string) containing:
+                          int - the http response status code
+                          dict - the headers for the http response
+                          string - http string response
+        """
         uri_path = route_uri
         if '?' in uri:
             logger.debug('StackInABoxService ({0}:{1}): Found query string '
@@ -249,17 +364,48 @@ class StackInABoxService(object):
         return (595, headers, 'Route ({0}) Not Handled'.format(uri))
 
     def request(self, method, request, uri, headers):
+        """Handle the supplied request on the specified routing URI.
+
+        :param method: string - HTTP Verb
+        :param request: request object describing the HTTP request
+        :param uri: URI of the reuqest
+        :param headers: case-insensitive headers dict
+
+        :returns: tuple - (int, dict, string) containing:
+                          int - the http response status code
+                          dict - the headers for the http response
+                          string - http string response
+        """
         logger.debug('StackInABoxService ({0}:{1}): Request Received {2} - {3}'
                      .format(self.__id, self.name, method, uri))
         return self.try_handle_route(uri, method, request, uri, headers)
 
     def sub_request(self, method, request, uri, headers):
+        """Handle the supplied sub-service request on the specified routing URI.
+
+        :param method: string - HTTP Verb
+        :param request: request object describing the HTTP request
+        :param uri: URI of the reuqest
+        :param headers: case-insensitive headers dict
+
+        :returns: tuple - (int, dict, string) containing:
+                          int - the http response status code
+                          dict - the headers for the http response
+                          string - http string response
+        """
         logger.debug('StackInABoxService ({0}:{1}): Sub-Request Received '
                      '{2} - {3}'
                      .format(self.__id, self.name, method, uri))
         return self.request(method, request, uri, headers)
 
     def create_route(self, uri, sub_service):
+        """Create the route for the URI.
+
+        :param uri: string - URI to be routed
+        :param sub_service: boolean - is the URI for a sub-service
+
+        :returns: n/a
+        """
         if uri not in self.routes.keys():
             logger.debug('Service ({0}): Creating routes'
                          .format(self.name))
@@ -275,6 +421,14 @@ class StackInABoxService(object):
             }
 
     def register(self, method, uri, call_back):
+        """Register a class instance function to handle a request.
+
+        :param method: string - HTTP Verb
+        :param uri: string - URI for the request
+        :param call_back: class instance function that handles the request
+
+        :returns: n/a
+        """
         found = False
 
         self.create_route(uri, False)
@@ -282,6 +436,14 @@ class StackInABoxService(object):
                                                      call_back)
 
     def register_subservice(self, uri, service):
+        """Register a class instance to handle a URI.
+
+        :param uri: string - URI for the request
+        :param service: StackInABoxService object instance that handles
+                        the request
+
+        :returns: n/a
+        """
         found = False
 
         self.create_route(uri, True)
