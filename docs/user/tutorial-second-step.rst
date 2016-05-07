@@ -13,7 +13,7 @@ To start, we need to setup the test structure as follows:
 
 	import requests
 
-	import stackinabox.util_requests_mock
+	import stackinabox.util.requests_mock
 	from stackinabox.stack import StackInABox
 
 	from tests.service.lookupService import LookupService
@@ -41,7 +41,7 @@ they don't interfere with each other. Now we'll add a simple test to it:
 .. code:: python
 
 	def test_basic(self):
-		stackinabox.util_requests_mock.request_mock_session_registration(
+		stackinabox.util.requests_mock.request_mock_session_registration(
 			'localhost', self.session)
 		res = self.session.head('http://localhost/lookup/')
 		self.assertEqual(res.status_code, 204)
