@@ -1,0 +1,17 @@
+.. _0.4:
+
+ChangeLog for Stack-In-A-Box 0.4
+================================
+
+New
+---
+- Adds support for ```requests-mock```
+
+Breaking Changes
+----------------
+
+
+Fixed
+-----
+
+- Fixes issues with ```responses``` which seems to have issues under Python3
