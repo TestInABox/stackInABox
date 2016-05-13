@@ -8,10 +8,10 @@ sub-service routing. This is entirely an internal object.
 
 .. code:: python
 
-	import stackinabox.services.service
+    import stackinabox.services.service
 
-	router = stackinabox.services.service.StackInABoxServiceRouter
+    router = stackinabox.services.service.StackInABoxServiceRouter
 
 .. currentmodule:: stackinabox.services.service
 .. autoclass:: StackInABoxServiceRouter
-	:members:
+    :members:
