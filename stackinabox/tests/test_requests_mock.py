@@ -8,7 +8,7 @@ import unittest
 import requests
 import six
 
-import stackinabox.util_requests_mock
+import stackinabox.util.requests_mock
 from stackinabox.stack import StackInABox
 from stackinabox.services.hello import HelloService
 from stackinabox.tests.utils.services import AdvancedService
@@ -30,7 +30,7 @@ class TestRequestsMockBasic(unittest.TestCase):
         self.session.close()
 
     def test_basic_requests_mock(self):
-        stackinabox.util_requests_mock.requests_mock_session_registration(
+        stackinabox.util.requests_mock.requests_mock_session_registration(
             'localhost', self.session)
 
         res = self.session.get('http://localhost/hello/')
@@ -38,9 +38,9 @@ class TestRequestsMockBasic(unittest.TestCase):
         self.assertEqual(res.text, 'Hello')
 
     def test_context_requests_mock(self):
-        with stackinabox.util_requests_mock.activate():
+        with stackinabox.util.requests_mock.activate():
 
-            stackinabox.util_requests_mock.requests_mock_registration(
+            stackinabox.util.requests_mock.requests_mock_registration(
                 'localhost')
 
             res = requests.get('http://localhost/hello/')
@@ -61,7 +61,7 @@ class TestRequestMockAdvanced(unittest.TestCase):
         self.session.close()
 
     def test_basic(self):
-        stackinabox.util_requests_mock.requests_mock_session_registration(
+        stackinabox.util.requests_mock.requests_mock_session_registration(
             'localhost', self.session)
 
         res = self.session.get('http://localhost/advanced/')
@@ -96,8 +96,8 @@ class TestRequestMockAdvanced(unittest.TestCase):
         self.assertEqual(res.status_code, 597)
 
     def test_context_requests_mock(self):
-        with stackinabox.util_requests_mock.activate():
-            stackinabox.util_requests_mock.requests_mock_registration(
+        with stackinabox.util.requests_mock.activate():
+            stackinabox.util.requests_mock.requests_mock_registration(
                 'localhost')
 
             res = requests.get('http://localhost/advanced/')

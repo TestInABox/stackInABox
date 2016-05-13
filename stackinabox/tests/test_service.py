@@ -6,7 +6,7 @@ import requests
 
 from stackinabox.stack import StackInABox
 from stackinabox.services.service import *
-import stackinabox.util_httpretty
+import stackinabox.util.httpretty
 
 
 class TestServiceRegex(unittest.TestCase):
@@ -121,7 +121,7 @@ class TestServiceRouteRegistration(unittest.TestCase):
 
         StackInABox.register_service(service)
 
-        stackinabox.util_httpretty.httpretty_registration('localhost')
+        stackinabox.util.httpretty.httpretty_registration('localhost')
 
         res = requests.get('http://localhost/aas/french')
         self.assertEqual(res.status_code,

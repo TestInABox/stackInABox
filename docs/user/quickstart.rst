@@ -36,7 +36,7 @@ to use the Stack-In-A-Box in an actual test:
 
     import requests
 
-    import stackinabox.util_requests_mock
+    import stackinabox.util.requests_mock
     from stackinabox.stack import StackInABox
     from stackinabox.services.hello import HelloService
 
@@ -54,7 +54,7 @@ to use the Stack-In-A-Box in an actual test:
 
         def test_basic_requests_mock(self):
             # Register with existing session object
-            stackinabox.util_requests_mock.requests_mock_session_registration(
+            stackinabox.util.requests_mock.requests_mock_session_registration(
                 'localhost', self.session)
 
             res = self.session.get('http://localhost/hello/')
@@ -62,9 +62,9 @@ to use the Stack-In-A-Box in an actual test:
             self.assertEqual(res.text, 'Hello')
 
         def test_context_requests_mock(self):
-            with stackinabox.util_requests_mock.activate():
+            with stackinabox.util.requests_mock.activate():
                 # Register without the session object
-                stackinabox.util_requests_mock.requests_mock_registration(
+                stackinabox.util.requests_mock.requests_mock_registration(
                     'localhost')
 
                 res = requests.get('http://localhost/hello/')

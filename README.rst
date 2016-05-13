@@ -114,7 +114,7 @@ HTTPretty
     import httpretty
     import requests
 
-    import stackinabox.util_httpretty
+    import stackinabox.util.httpretty
     from stackinabox.stack import StackInABox
     from stackinabox.services.hello import HelloService
 
@@ -131,7 +131,7 @@ HTTPretty
 	    StackInABox.reset_services()
 
         def test_basic(self):
-            stackinabox.util_httpretty.httpretty_registration('localhost')
+            stackinabox.util.httpretty.httpretty_registration('localhost')
 
             res = requests.get('http://localhost/')
             self.assertEqual(res.status_code, 200)
@@ -160,7 +160,7 @@ Responses
     def test_basic_responses():
 	StackInABox.reset_services()
 	StackInABox.register_service(HelloService())
-        stackinabox.util_responses.responses_registration('localhost')
+        stackinabox.util.responses.responses_registration('localhost')
 
         res = requests.get('http://localhost/hello/')
         assert res.status_code == 200
@@ -179,7 +179,7 @@ Requests Mock
 
 	import requests
 
-	import stackinabox.util_requests_mock
+	import stackinabox.util.requests_mock
 	from stackinabox.stack import StackInABox
 	from stackinabox.services.hello import HelloService
 
@@ -197,7 +197,7 @@ Requests Mock
 
 		def test_basic_requests_mock(self):
 		    # Register with existing session object
-			stackinabox.util_requests_mock.requests_mock_session_registration(
+			stackinabox.util.requests_mock.requests_mock_session_registration(
 				'localhost', self.session)
 
 			res = self.session.get('http://localhost/hello/')
@@ -205,9 +205,9 @@ Requests Mock
 			self.assertEqual(res.text, 'Hello')
 
 		def test_context_requests_mock(self):
-			with stackinabox.util_requests_mock.activate():
+			with stackinabox.util.requests_mock.activate():
                 # Register without the session object
-				stackinabox.util_requests_mock.requests_mock_registration(
+				stackinabox.util.requests_mock.requests_mock_registration(
 					'localhost')
 
 				res = requests.get('http://localhost/hello/')
