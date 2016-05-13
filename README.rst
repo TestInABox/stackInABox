@@ -124,11 +124,11 @@ HTTPretty
 
         def setUp(self):
             super(TestHttpretty, self).setUp()
-	    StackInABox.register_service(HelloService())
+            StackInABox.register_service(HelloService())
 
         def tearDown(self):
             super(TestHttpretty, self).tearDown()
-	    StackInABox.reset_services()
+            StackInABox.reset_services()
 
         def test_basic(self):
             stackinabox.util.httpretty.httpretty_registration('localhost')
@@ -136,7 +136,27 @@ HTTPretty
             res = requests.get('http://localhost/')
             self.assertEqual(res.status_code, 200)
             self.assertEqual(res.text, 'Hello')
-            assert False
+
+There is now also the option of using a decorator:
+
+.. code-block:: python
+
+    import unittest
+
+    import requests
+
+    import stackinabox.util.httpretty.decorator as stack_decorator
+    from stackinabox.services.hello import HelloService
+
+
+    class TestHttpretty(unittest.TestCase):
+
+		@stack_decorator.stack_activate('localhost', HelloService())
+        def test_basic(self):
+            res = requests.get('http://localhost/')
+            self.assertEqual(res.status_code, 200)
+            self.assertEqual(res.text, 'Hello')
+
 
 ---------
 Responses

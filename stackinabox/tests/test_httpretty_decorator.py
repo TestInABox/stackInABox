@@ -1,0 +1,62 @@
+"""
+Stack-In-A-Box: Basic Test
+"""
+import unittest
+
+import requests
+
+import stackinabox.util.httpretty.decorator as stack_decorator
+from stackinabox.services.hello import HelloService
+from stackinabox.tests.utils.services import AdvancedService
+
+
+class TestHttprettyBasicWithDecorator(unittest.TestCase):
+
+    @stack_decorator.stack_activate('localhost', HelloService())
+    def test_basic(self):
+        res = requests.get('http://localhost/hello/')
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.text, 'Hello')
+
+    @stack_decorator.stack_activate('localhost', HelloService(),
+                                    200, value='Hello')
+    def test_basic_with_parameters(self, response_code, value='alpha'):
+        res = requests.get('http://localhost/hello/')
+        self.assertEqual(res.status_code, response_code)
+        self.assertEqual(res.text, value)
+
+
+class TestHttprettyAdvancedWithDecorator(unittest.TestCase):
+
+    @stack_decorator.stack_activate('localhost', AdvancedService())
+    def test_basic(self):
+        res = requests.get('http://localhost/advanced/')
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.text, 'Hello')
+
+        res = requests.get('http://localhost/advanced/h')
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.text, 'Good-Bye')
+
+        expected_result = {
+            'bob': 'bob: Good-Bye alice',
+            'alice': 'alice: Good-Bye bob',
+            'joe': 'joe: Good-Bye jane'
+        }
+        res = requests.get('http://localhost/advanced/g?bob=alice;'
+                           'alice=bob&joe=jane')
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.json(), expected_result)
+
+        res = requests.get('http://localhost/advanced/1234567890')
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.text, 'okay')
+
+        res = requests.get('http://localhost/advanced/_234567890')
+        self.assertEqual(res.status_code, 595)
+
+        res = requests.put('http://localhost/advanced/h')
+        self.assertEqual(res.status_code, 405)
+
+        res = requests.put('http://localhost/advanced2/i')
+        self.assertEqual(res.status_code, 597)
