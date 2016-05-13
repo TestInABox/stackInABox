@@ -10,7 +10,8 @@ New
 
 Breaking Changes
 ----------------
-- Refactored the utilities for the module names to be less awkward. stackinabox.util_* is now stackinabox.util.*
+- Refactored the utilities for the module names to be less awkward.
+  stackinabox.util_* is now stackinabox.util.*
 - Moved stackinabox.utils to stackinabox.util.tools
 
 Fixed
