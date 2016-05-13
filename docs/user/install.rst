@@ -5,6 +5,6 @@ Installing
 
 Installation is simple:
 
-.. code-block:: bash 
+.. code-block:: bash
 
    pip install stackinabox
