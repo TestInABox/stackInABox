@@ -124,11 +124,11 @@ HTTPretty
 
         def setUp(self):
             super(TestHttpretty, self).setUp()
-	    StackInABox.register_service(HelloService())
+            StackInABox.register_service(HelloService())
 
         def tearDown(self):
             super(TestHttpretty, self).tearDown()
-	    StackInABox.reset_services()
+            StackInABox.reset_services()
 
         def test_basic(self):
             stackinabox.util.httpretty.httpretty_registration('localhost')
@@ -136,7 +136,27 @@ HTTPretty
             res = requests.get('http://localhost/')
             self.assertEqual(res.status_code, 200)
             self.assertEqual(res.text, 'Hello')
-            assert False
+
+There is now also the option of using a decorator:
+
+.. code-block:: python
+
+    import unittest
+
+    import requests
+
+    import stackinabox.util.httpretty.decorator as stack_decorator
+    from stackinabox.services.hello import HelloService
+
+
+    class TestHttpretty(unittest.TestCase):
+
+        @stack_decorator.stack_activate('localhost', HelloService())
+        def test_basic(self):
+            res = requests.get('http://localhost/')
+            self.assertEqual(res.status_code, 200)
+            self.assertEqual(res.text, 'Hello')
+
 
 ---------
 Responses
@@ -158,13 +178,31 @@ Responses
 
     @responses.activate
     def test_basic_responses():
-	StackInABox.reset_services()
-	StackInABox.register_service(HelloService())
+        StackInABox.reset_services()
+        StackInABox.register_service(HelloService())
         stackinabox.util.responses.responses_registration('localhost')
 
         res = requests.get('http://localhost/hello/')
         assert res.status_code == 200
         assert res.text == 'Hello'
+
+There is now also the option of using a decorator:
+
+.. code-block:: python
+
+    import unittest
+
+    import requests
+
+    import stackinabox.util.responses.decorator as stack_decorator
+    from stackinabox.services.hello import HelloService
+
+
+    @stack_decorator.stack_activate('localhost', HelloService())
+    def test_basic_responses_with_decorator(self):
+        res = requests.get('http://localhost/')
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.text, 'Hello')
 
 
 -------------
@@ -175,41 +213,61 @@ Requests Mock
 
 .. code-block:: python
 
-	import unittest
+    import unittest
 
-	import requests
+    import requests
 
-	import stackinabox.util.requests_mock
-	from stackinabox.stack import StackInABox
-	from stackinabox.services.hello import HelloService
+    import stackinabox.util.requests_mock
+    from stackinabox.stack import StackInABox
+    from stackinabox.services.hello import HelloService
 
-	class TestRequestsMock(unittest.TestCase):
+    class TestRequestsMock(unittest.TestCase):
 
-		def setUp(self):
-			super(TestRequestsMock, self).setUp()
-			StackInABox.register_service(HelloService())
-			self.session = requests.Session()
+        def setUp(self):
+            super(TestRequestsMock, self).setUp()
+            StackInABox.register_service(HelloService())
+            self.session = requests.Session()
 
-		def tearDown(self):
-			super(TestRequestsMock, self).tearDown()
-			StackInABox.reset_services()
-			self.session.close()
+        def tearDown(self):
+            super(TestRequestsMock, self).tearDown()
+            StackInABox.reset_services()
+            self.session.close()
 
-		def test_basic_requests_mock(self):
-		    # Register with existing session object
-			stackinabox.util.requests_mock.requests_mock_session_registration(
-				'localhost', self.session)
+        def test_basic_requests_mock(self):
+            # Register with existing session object
+            stackinabox.util.requests_mock.requests_mock_session_registration(
+                'localhost', self.session)
 
-			res = self.session.get('http://localhost/hello/')
-			self.assertEqual(res.status_code, 200)
-			self.assertEqual(res.text, 'Hello')
+            res = self.session.get('http://localhost/hello/')
+            self.assertEqual(res.status_code, 200)
+            self.assertEqual(res.text, 'Hello')
 
-		def test_context_requests_mock(self):
-			with stackinabox.util.requests_mock.activate():
+        def test_context_requests_mock(self):
+            with stackinabox.util.requests_mock.activate():
                 # Register without the session object
-				stackinabox.util.requests_mock.requests_mock_registration(
-					'localhost')
+                stackinabox.util.requests_mock.requests_mock_registration(
+                    'localhost')
 
-				res = requests.get('http://localhost/hello/')
-				self.assertEqual(res.status_code, 200)
-				self.assertEqual(res.text, 'Hello')
+                res = requests.get('http://localhost/hello/')
+                self.assertEqual(res.status_code, 200)
+                self.assertEqual(res.text, 'Hello')
+
+There is now also the option of using a decorator:
+
+.. code-block:: python
+
+    import unittest
+
+    import requests
+
+    import stackinabox.util.requests_mock.decorator as stack_decorator
+    from stackinabox.services.hello import HelloService
+
+
+    class TestRequestsMock(unittest.TestCase):
+
+        @stack_decorator.stack_activate('localhost', HelloService())
+        def test_basic(self):
+            res = requests.get('http://localhost/')
+            self.assertEqual(res.status_code, 200)
+            self.assertEqual(res.text, 'Hello')

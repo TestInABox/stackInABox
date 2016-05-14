@@ -1,5 +1,5 @@
 """
-Stack-In-A-Box: HTTPretty Support
+Stack-In-A-Box: Requests-Mock Support
 """
 from __future__ import absolute_import
 
