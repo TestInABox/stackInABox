@@ -1,10 +1,9 @@
 """
-Stack-In-A-Box: HTTPretty Support
+Stack-In-A-Box: HTTPretty Support via decorator
 """
 import functools
 import logging
 import re
-
 
 import httpretty
 import six

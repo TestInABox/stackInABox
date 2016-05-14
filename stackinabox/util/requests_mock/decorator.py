@@ -1,17 +1,18 @@
 """
-Stack-In-A-Box: Responses Support via decorator
+Stack-In-A-Box: Requests-Mock Support via Decorator
 """
 import functools
 import logging
 import re
 
-import responses
-import six
+import requests
 
 from stackinabox.services.service import StackInABoxService
 from stackinabox.stack import StackInABox
-from stackinabox.util.responses.core import (
-    responses_registration
+from stackinabox.util.requests_mock.core import (
+    activate as requests_mock_activate,
+    requests_mock_session_registration,
+    requests_mock_registration
 )
 from stackinabox.util.tools import CaseInsensitiveDict
 
@@ -21,7 +22,7 @@ logger = logging.getLogger(__name__)
 
 class stack_activate(object):
     """
-    Decorator class to make use of Responses and Stack-In-A-Box
+    Decorator class to make use of Requests-Mock and Stack-In-A-Box
     extremely simple to do.
     """
 
@@ -41,6 +42,11 @@ class stack_activate(object):
         self.services = []
         self.args = []
         self.kwargs = kwargs
+        if "session" in self.kwargs:
+            self.session = self.kwargs["session"]
+            del self.kwargs["session"]
+        else:
+            self.session = None
 
         for arg in args:
             if isinstance(arg, StackInABoxService):
@@ -61,23 +67,27 @@ class stack_activate(object):
             args_finalized = tuple(args_copy)
             kwargs.update(self.kwargs)
 
-            return_value = None
+            with requests_mock_activate():
+                if self.session is not None:
+                    kwargs[self.session] = requests.Session()
 
-            def run():
-                responses.mock.start()
+                    StackInABox.reset_services()
+                    for service in self.services:
+                        StackInABox.register_service(service)
+                    requests_mock_session_registration(
+                        self.uri,
+                        kwargs[self.session]
+                    )
+                    return_value = fn(*args_finalized, **kwargs)
+                    StackInABox.reset_services()
 
-                StackInABox.reset_services()
-                for service in self.services:
-                    StackInABox.register_service(service)
-                responses_registration(self.uri)
-                return_value = fn(*args_finalized, **kwargs)
-                StackInABox.reset_services()
-
-                responses.mock.stop()
-                responses.mock.reset()
-
-            with responses.RequestsMock():
-                run()
+                else:
+                    StackInABox.reset_services()
+                    for service in self.services:
+                        StackInABox.register_service(service)
+                    requests_mock_registration(self.uri)
+                    return_value = fn(*args_finalized, **kwargs)
+                    StackInABox.reset_services()
 
             return return_value
 
