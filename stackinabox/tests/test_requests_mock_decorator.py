@@ -29,6 +29,25 @@ class TestRequestsMockBasic(unittest.TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.text, 'Hello')
 
+    @stack_decorator.stack_activate('localhost', HelloService(),
+                                    200, value='Hello')
+    def test_basic_with_parameters(self, response_code, value='alpha'):
+        res = requests.get('http://localhost/hello/')
+        self.assertEqual(res.status_code, response_code)
+        self.assertEqual(res.text, value)
+
+    @stack_decorator.stack_activate('localhost', HelloService(),
+                                    200, value='Hello',
+                                    access_services="stack")
+    def test_basic_with_stack_acccess(self, response_code, value='alpha',
+                                      stack=None):
+        res = requests.get('http://localhost/hello/')
+        self.assertEqual(res.status_code, response_code)
+        self.assertEqual(res.text, value)
+        self.assertEqual(len(stack), 1)
+        self.assertTrue(HelloService().name in stack)
+        self.assertIsInstance(stack[list(stack.keys())[0]], HelloService)
+
 
 class TestRequestMockAdvanced(unittest.TestCase):
 

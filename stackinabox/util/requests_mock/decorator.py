@@ -32,6 +32,13 @@ class stack_activate(object):
 
         :param uri: URI Stack-In-A-Box will use to recognize the HTTP calls
             f.e 'localhost'.
+        :param text_type access_services: name of a keyword parameter in the
+            test function to assign access to the services created in the
+            arguments to the decorator.
+        :param text_type session: name of a keyword parameter in the
+            test function to assign a requests.Session instance for use
+            in the test function. The requests.Session instance will be
+            configured for StackInABox.
         :param args: A tuple containing all the positional arguments. Any
             StackInABoxService arguments are removed before being passed to
             the actual function.
@@ -39,9 +46,16 @@ class stack_activate(object):
             actual function.
         """
         self.uri = uri
-        self.services = []
+        self.services = {}
         self.args = []
         self.kwargs = kwargs
+
+        if "access_services" in self.kwargs:
+            self.enable_service_access = self.kwargs["access_services"]
+            del self.kwargs["access_services"]
+        else:
+            self.enable_service_access = None
+
         if "session" in self.kwargs:
             self.session = self.kwargs["session"]
             del self.kwargs["session"]
@@ -50,7 +64,7 @@ class stack_activate(object):
 
         for arg in args:
             if isinstance(arg, StackInABoxService):
-                self.services.append(arg)
+                self.services[arg.name] = arg
             else:
                 self.args.append(arg)
 
@@ -67,12 +81,15 @@ class stack_activate(object):
             args_finalized = tuple(args_copy)
             kwargs.update(self.kwargs)
 
+            if self.enable_service_access is not None:
+                kwargs[self.enable_service_access] = self.services
+
             with requests_mock_activate():
                 if self.session is not None:
                     kwargs[self.session] = requests.Session()
 
                     StackInABox.reset_services()
-                    for service in self.services:
+                    for service in self.services.values():
                         StackInABox.register_service(service)
                     requests_mock_session_registration(
                         self.uri,
@@ -83,7 +100,7 @@ class stack_activate(object):
 
                 else:
                     StackInABox.reset_services()
-                    for service in self.services:
+                    for service in self.services.values():
                         StackInABox.register_service(service)
                     requests_mock_registration(self.uri)
                     return_value = fn(*args_finalized, **kwargs)

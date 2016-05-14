@@ -22,6 +22,27 @@ def test_basic_responses():
     assert res.text == 'Hello'
 
 
+@stack_decorator.stack_activate('localhost', HelloService(),
+                                200, value='Hello')
+def test_basic_with_parameters(response_code, value='alpha'):
+    res = requests.get('http://localhost/hello/')
+    assert res.status_code == response_code
+    assert res.text == value
+
+
+@stack_decorator.stack_activate('localhost', HelloService(),
+                                200, value='Hello',
+                                access_services="stack")
+def test_basic_with_stack_acccess(response_code, value='alpha',
+                                  stack=None):
+    res = requests.get('http://localhost/hello/')
+    assert res.status_code == response_code
+    assert res.text == value
+    assert len(stack) == 1
+    assert HelloService().name in stack
+    assert isinstance(stack[list(stack.keys())[0]], HelloService)
+
+
 @stack_decorator.stack_activate('localhost', AdvancedService())
 def test_advanced_responses():
     res = requests.get('http://localhost/advanced/')
