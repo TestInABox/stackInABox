@@ -1,0 +1,11 @@
+.. _0.1:
+
+ChangeLog for Stack-In-A-Box 0.1
+================================
+
+Initial Release
+
+- Basic Framework is in place
+- Start of OpenStack Keystone API mocking
+
+This release is primarily about the basic framework

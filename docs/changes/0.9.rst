@@ -1,0 +1,41 @@
+.. _0.9:
+
+ChangeLog for Stack-In-A-Box 0.9
+================================
+
+New
+---
+
+- Enable Sub-Services
+- PEP8 Compliance
+- Returns 595-597 for specific errors within the framework:
+
+================ ================== ===========================================
+HTTP Status Code Generating Object  Meaning
+================ ================== ===========================================
+597              StackInABox        Base URL is correct, but service is unknown
+596              StackInABox        Handling StackInABoxService generated an
+                                    exception
+595              StackInABoxService Route Not Handled
+================ ================== ===========================================
+
+Breaking Changes
+----------------
+
+Fixed
+-----
+
+- Attempted fix of ```httpretty``` usage for Travis-CI
+
+  .. note:: ```httpretty``` is having issues with Travis-CI and Python3 but
+     does work.
+
+  .. note:: We are still using ```httpretty``` 0.8.6 as it does work with
+     Python3; 0.8.8 is supposed to have one fix, but causes other parts of the
+     tox run to hang. 0.8.9 also causes tox to hang.
+
+- Added missing dependencies (```six``` and ```mock```).
+- Removed documentation related to the OpenStack API that is now in its own
+  project
+- Return 405 if URI is handled but the requested HTTP Verb (aka method) is not
+  available

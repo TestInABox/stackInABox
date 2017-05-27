@@ -1,0 +1,19 @@
+.. _0.6:
+
+ChangeLog for Stack-In-A-Box 0.6
+================================
+
+New
+---
+
+- Request and Response headers are now stored in a Case-Insensitive dict-like
+  object
+
+Breaking Changes
+----------------
+
+Fixed
+-----
+
+- Generate exception logs to aid in debugging StackInABoxServices
+- Correctly generate the response headers

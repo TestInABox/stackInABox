@@ -1,0 +1,18 @@
+.. _0.2:
+
+ChangeLog for Stack-In-A-Box 0.2
+================================
+
+New
+---
+
+
+Breaking Changes
+----------------
+
+
+Fixed
+-----
+
+- DELETE != PUT for Service verbs
+- setup might not have been capturing the package correctly

@@ -1,0 +1,16 @@
+.. _0.7:
+
+ChangeLog for Stack-In-A-Box 0.7
+================================
+
+New
+---
+
+Breaking Changes
+----------------
+
+Fixed
+-----
+
+- ```requests-mock``` support did not return the body correctly if it did not
+  match against the ```six``` types being looked for
