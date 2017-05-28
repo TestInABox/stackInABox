@@ -16,7 +16,7 @@ import mock
 import requests
 from requests import Session
 from requests.adapters import HTTPAdapter
-from requests.packages.urllib3.response import HTTPResponse
+from urllib3.response import HTTPResponse
 import requests_mock
 import requests_mock.compat
 import requests_mock.response
