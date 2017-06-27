@@ -11,5 +11,3 @@ Breaking Changes
 
 Fixed
 -----
-- Removed `sphinx` from being a dependency as it's only required
-  for building the documentation.
