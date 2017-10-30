@@ -5,6 +5,7 @@ import json
 import logging
 import unittest
 
+import ddt
 import requests
 import six
 
@@ -48,6 +49,7 @@ class TestRequestsMockBasic(unittest.TestCase):
             self.assertEqual(res.text, 'Hello')
 
 
+@ddt.ddt
 class TestRequestMockAdvanced(unittest.TestCase):
 
     def setUp(self):
@@ -117,3 +119,22 @@ class TestRequestMockAdvanced(unittest.TestCase):
                                'alice=bob&joe=jane')
             self.assertEqual(res.status_code, 200)
             self.assertEqual(res.json(), expected_result)
+
+    @ddt.data(
+        ('head', 204, ''),
+        ('delete', 204, ''),
+        ('post', 200, 'created'),
+        ('put', 200, 'updated'),
+        ('patch', 200, 'patched'),
+        ('options', 200, 'options'),
+    )
+    @ddt.unpack
+    def test_extra_http_verbs(self, http_verb, response_status, response_body):
+        with stackinabox.util.requests_mock.activate():
+            stackinabox.util.requests_mock.requests_mock_registration(
+                'localhost')
+
+            method_call = getattr(requests, http_verb)
+            res = method_call('http://localhost/advanced/')
+            self.assertEqual(res.status_code, response_status)
+            self.assertEqual(res.text, response_body)
