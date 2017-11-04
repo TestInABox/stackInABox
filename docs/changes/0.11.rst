@@ -1,0 +1,14 @@
+.. _0.11:
+
+ChangeLog for Stack-In-A-Box (latest)
+=====================================
+
+New
+---
+
+Breaking Changes
+----------------
+
+Fixed
+-----
+- Sphinx should not be a general requirement

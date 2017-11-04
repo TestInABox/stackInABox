@@ -1,0 +1,22 @@
+.. _0.10:
+
+ChangeLog for Stack-In-A-Box (latest)
+=====================================
+
+New
+---
+
+- StackInABox moved to a new organization in GitHub
+- Initial Decorator Support
+- Enable tox testing for Python 3.5
+- Enable documentation generation via Sphinx
+
+Breaking Changes
+----------------
+- Refactored the utilities for the module names to be less awkward.
+  stackinabox.util_* is now stackinabox.util.*
+- Moved stackinabox.utils to stackinabox.util.tools
+
+Fixed
+-----
+- Requests unvendored its dependencies
