@@ -7,7 +7,8 @@ New
 ---
 - Add Python 3.5 to Travis-CI gating
 - Add Python 3.6 to Travis-CI and tox
-- Update the Decorators to support receiving the services via a Generator or Iterable
+- Update the Decorators to support receiving the services via a Generator or
+  Iterable
 
 Breaking Changes
 ----------------
