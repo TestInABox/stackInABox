@@ -7,6 +7,9 @@ New
 ---
 
 - StackInABox moved to a new organization in GitHub
+- Initial Decorator Support
+- Enable tox testing for Python 3.5
+- Enable documentation generation via Sphinx
 
 Breaking Changes
 ----------------
@@ -16,4 +19,4 @@ Breaking Changes
 
 Fixed
 -----
-
+- Requests unvendored its dependencies

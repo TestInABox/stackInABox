@@ -1,0 +1,18 @@
+.. _0.12:
+
+ChangeLog for Stack-In-A-Box (latest)
+=====================================
+
+New
+---
+- Add Python 3.5 to Travis-CI gating
+- Add Python 3.6 to Travis-CI and tox
+- Update the Decorators to support receiving the services via a Generator or
+  Iterable
+
+Breaking Changes
+----------------
+
+Fixed
+-----
+- Request-mock had a bug in handling the HEAD operation
