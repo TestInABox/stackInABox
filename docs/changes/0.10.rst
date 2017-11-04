@@ -1,7 +1,7 @@
 .. _0.10:
 
-ChangeLog for Stack-In-A-Box (latest)
-=====================================
+ChangeLog for Stack-In-A-Box 0.10
+=================================
 
 New
 ---

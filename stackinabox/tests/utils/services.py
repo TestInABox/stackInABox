@@ -13,6 +13,17 @@ logger = logging.getLogger(__name__)
 
 class AdvancedService(StackInABoxService):
 
+    # extra methods to test for in validating the provided utilities
+    # when applicable (f.e request-mock)
+    POTENTIAL_RESPONSES = {
+        'head': (204, ''),
+        'post': (200, 'created'),
+        'put': (200, 'updated'),
+        'patch': (200, 'patched'),
+        'options': (200, 'options'),
+        'delete': (204, '')
+    }
+
     def __init__(self):
         super(AdvancedService, self).__init__('advanced')
         self.register(StackInABoxService.GET, '/',
@@ -24,6 +35,28 @@ class AdvancedService(StackInABoxService):
         self.register(StackInABoxService.GET,
                       re.compile('^/\d+$'),
                       AdvancedService.regex_handler)
+
+        for key in self.POTENTIAL_RESPONSES.keys():
+            self.register(key.upper(), '/',
+                          AdvancedService.extra_method_handler)
+
+    def extra_method_handler(self, request, uri, headers):
+        # generic handler so look-up the real METHOD and provide
+        # an appropriate response
+        method = request.method.lower()
+
+        try:
+            status_code, response_body = self.POTENTIAL_RESPONSES[method]
+            response = (
+                status_code,
+                headers,
+                response_body
+            )
+
+        except LookupError:
+            response = (589, headers, 'unknown method: {0}'.format(method))
+
+        return response
 
     def handler(self, request, uri, headers):
         return (200, headers, 'Hello')

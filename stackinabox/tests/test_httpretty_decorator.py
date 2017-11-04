@@ -1,6 +1,8 @@
 """
 Stack-In-A-Box: Basic Test
 """
+import collections
+import types
 import unittest
 
 import requests
@@ -72,3 +74,93 @@ class TestHttprettyAdvancedWithDecorator(unittest.TestCase):
 
         res = requests.put('http://localhost/advanced2/i')
         self.assertEqual(res.status_code, 597)
+
+
+def httpretty_generator():
+    yield HelloService()
+
+
+class TestHttprettyBasicWithDecoratorAndGenerator(unittest.TestCase):
+
+    def test_verify_generator(self):
+        self.assertIsInstance(httpretty_generator(), types.GeneratorType)
+
+    @stack_decorator.stack_activate(
+        'localhost',
+        httpretty_generator()
+    )
+    def test_basic(self):
+        res = requests.get('http://localhost/hello/')
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.text, 'Hello')
+
+    @stack_decorator.stack_activate(
+        'localhost',
+        httpretty_generator(),
+        200, value='Hello'
+    )
+    def test_basic_with_parameters(self, response_code, value='alpha'):
+        res = requests.get('http://localhost/hello/')
+        self.assertEqual(res.status_code, response_code)
+        self.assertEqual(res.text, value)
+
+    @stack_decorator.stack_activate(
+        'localhost',
+        httpretty_generator(),
+        200, value='Hello',
+        access_services="stack"
+    )
+    def test_basic_with_stack_acccess(self, response_code, value='alpha',
+                                      stack=None):
+        res = requests.get('http://localhost/hello/')
+        self.assertEqual(res.status_code, response_code)
+        self.assertEqual(res.text, value)
+        self.assertEqual(len(stack), 1)
+        self.assertTrue(HelloService().name in stack)
+        self.assertIsInstance(stack[list(stack.keys())[0]], HelloService)
+
+
+def httpretty_list():
+    return [
+        HelloService()
+    ]
+
+
+class TestHttprettyBasicWithDecoratorAndList(unittest.TestCase):
+
+    def test_verify_list(self):
+        self.assertIsInstance(httpretty_list(), collections.Iterable)
+
+    @stack_decorator.stack_activate(
+        'localhost',
+        httpretty_list()
+    )
+    def test_basic(self):
+        res = requests.get('http://localhost/hello/')
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.text, 'Hello')
+
+    @stack_decorator.stack_activate(
+        'localhost',
+        httpretty_list(),
+        200, value='Hello'
+    )
+    def test_basic_with_parameters(self, response_code, value='alpha'):
+        res = requests.get('http://localhost/hello/')
+        self.assertEqual(res.status_code, response_code)
+        self.assertEqual(res.text, value)
+
+    @stack_decorator.stack_activate(
+        'localhost',
+        httpretty_list(),
+        200, value='Hello',
+        access_services="stack"
+    )
+    def test_basic_with_stack_acccess(self, response_code, value='alpha',
+                                      stack=None):
+        res = requests.get('http://localhost/hello/')
+        self.assertEqual(res.status_code, response_code)
+        self.assertEqual(res.text, value)
+        self.assertEqual(len(stack), 1)
+        self.assertTrue(HelloService().name in stack)
+        self.assertIsInstance(stack[list(stack.keys())[0]], HelloService)

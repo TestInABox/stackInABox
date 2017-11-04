@@ -1,7 +1,7 @@
 .. _0.11:
 
-ChangeLog for Stack-In-A-Box (latest)
-=====================================
+ChangeLog for Stack-In-A-Box 0.11
+=================================
 
 New
 ---
@@ -11,4 +11,5 @@ Breaking Changes
 
 Fixed
 -----
-- Sphinx should not be a general requirement
+- Removed `sphinx` from being a dependency as it's only required
+  for building the documentation.

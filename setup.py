@@ -1,11 +1,11 @@
 import sys
 from setuptools import setup, find_packages
 
-REQUIRES = ['six', 'sphinx']
+REQUIRES = ['six']
 
 setup(
     name='stackinabox',
-    version='0.10',
+    version='0.13',
     description='RESTful API Testing Suite',
     license='Apache License 2.0',
     url='https://github.com/TestInABox/stackInABox',

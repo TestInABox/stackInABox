@@ -16,7 +16,7 @@ import mock
 import requests
 from requests import Session
 from requests.adapters import HTTPAdapter
-from requests.packages.urllib3.response import HTTPResponse
+from urllib3.response import HTTPResponse
 import requests_mock
 import requests_mock.compat
 import requests_mock.response
@@ -214,13 +214,13 @@ def requests_get(url, **kwargs):
 def requests_options(url, **kwargs):
     """Requests-mock requests.options wrapper."""
     kwargs.setdefault('allow_redirects', True)
-    return reuests_request('options', url, **kwargs)
+    return requests_request('options', url, **kwargs)
 
 
 def requests_head(url, **kwargs):
     """Requests-mock requests.head wrapper."""
     kwargs.setdefault('allow_redirects', False)
-    return reuests_request('options', url, **kwargs)
+    return requests_request('head', url, **kwargs)
 
 
 def requests_post(url, data=None, json=None, **kwargs):

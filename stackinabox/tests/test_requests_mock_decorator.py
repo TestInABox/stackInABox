@@ -1,8 +1,10 @@
 """
 Stack-In-A-Box: Basic Test
 """
+import collections
 import json
 import logging
+import types
 import unittest
 
 import requests
@@ -92,3 +94,75 @@ class TestRequestMockAdvanced(unittest.TestCase):
         self.assertEqual(res.status_code, 597)
 
         session.close()
+
+
+def requests_mock_generator():
+    yield HelloService()
+
+
+class TestRequestsMockBasicWithDecoratorAndGenerator(unittest.TestCase):
+
+    def test_verify_generator(self):
+        self.assertIsInstance(requests_mock_generator(), types.GeneratorType)
+
+    @stack_decorator.stack_activate('localhost', requests_mock_generator())
+    def test_basic_requests_mock(self):
+        res = requests.get('http://localhost/hello/')
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.text, 'Hello')
+
+    @stack_decorator.stack_activate('localhost', requests_mock_generator(),
+                                    200, value='Hello')
+    def test_basic_with_parameters(self, response_code, value='alpha'):
+        res = requests.get('http://localhost/hello/')
+        self.assertEqual(res.status_code, response_code)
+        self.assertEqual(res.text, value)
+
+    @stack_decorator.stack_activate('localhost', requests_mock_generator(),
+                                    200, value='Hello',
+                                    access_services="stack")
+    def test_basic_with_stack_acccess(self, response_code, value='alpha',
+                                      stack=None):
+        res = requests.get('http://localhost/hello/')
+        self.assertEqual(res.status_code, response_code)
+        self.assertEqual(res.text, value)
+        self.assertEqual(len(stack), 1)
+        self.assertTrue(HelloService().name in stack)
+        self.assertIsInstance(stack[list(stack.keys())[0]], HelloService)
+
+
+def requests_mock_list():
+    return [
+        HelloService()
+    ]
+
+
+class TestRequestsMockBasicWithDecoratorAndGenerator(unittest.TestCase):
+
+    def test_verify_list(self):
+        self.assertIsInstance(requests_mock_list(), collections.Iterable)
+
+    @stack_decorator.stack_activate('localhost', requests_mock_list())
+    def test_basic_requests_mock(self):
+        res = requests.get('http://localhost/hello/')
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.text, 'Hello')
+
+    @stack_decorator.stack_activate('localhost', requests_mock_list(),
+                                    200, value='Hello')
+    def test_basic_with_parameters(self, response_code, value='alpha'):
+        res = requests.get('http://localhost/hello/')
+        self.assertEqual(res.status_code, response_code)
+        self.assertEqual(res.text, value)
+
+    @stack_decorator.stack_activate('localhost', requests_mock_list(),
+                                    200, value='Hello',
+                                    access_services="stack")
+    def test_basic_with_stack_acccess(self, response_code, value='alpha',
+                                      stack=None):
+        res = requests.get('http://localhost/hello/')
+        self.assertEqual(res.status_code, response_code)
+        self.assertEqual(res.text, value)
+        self.assertEqual(len(stack), 1)
+        self.assertTrue(HelloService().name in stack)
+        self.assertIsInstance(stack[list(stack.keys())[0]], HelloService)
