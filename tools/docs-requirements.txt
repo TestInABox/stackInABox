@@ -1,2 +1,7 @@
-sphinx
 doc8
+httpretty==0.8.6
+requests
+requests-mock
+responses>=0.4.0
+six
+sphinx
