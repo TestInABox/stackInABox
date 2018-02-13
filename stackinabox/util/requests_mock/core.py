@@ -132,7 +132,7 @@ class RequestMockCallable(object):
             try:
                 json_data = json.dumps(text_data)
                 text_data = json_data
-            except:
+            except Exception:
                 json_data = None
                 text_data = body
 

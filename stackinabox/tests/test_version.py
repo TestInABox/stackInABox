@@ -29,8 +29,8 @@ class TestVersionMatch(unittest.TestCase):
             for line in input_data:
                 ln = line.strip()
                 if ln.startswith('version='):
-                    l = ln.replace("'", '', 2).replace(',', '')
-                    version_setup = l.split('=')[1]
+                    ln_parts = ln.replace("'", '', 2).replace(',', '')
+                    version_setup = ln_parts.split('=')[1]
                     break
 
         self.assertEqual(version_source, version_setup)
