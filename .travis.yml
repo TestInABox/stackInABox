@@ -16,6 +16,7 @@ matrix:
         - python: "2.7"
           env: TEST_SUITE=suite_2_7 TOX_ENV=docs
 
+sudo: required
 before_install:
   - sudo apt-get install build-essential python-dev
 
