@@ -12,7 +12,6 @@ import sys
 import threading
 import types
 
-import mock
 import requests
 from requests import Session
 from requests.adapters import HTTPAdapter
