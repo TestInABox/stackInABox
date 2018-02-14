@@ -15,6 +15,18 @@ matrix:
           env: TEST_SUITE=suite_3_4 TOX_ENV=pep8
         - python: "2.7"
           env: TEST_SUITE=suite_2_7 TOX_ENV=docs
+        - python: "2.7"
+          env: TEST_SUITE=suite_2_7 TOX_ENV=py27-httpretty
+        - python: "3.6"
+          env: TEST_SUITE=suite_3_6 TOX_ENV=py36-httpretty
+        - python: "2.7"
+          env: TEST_SUITE=suite_2_7 TOX_ENV=py27-requests-mock
+        - python: "3.6"
+          env: TEST_SUITE=suite_3_6 TOX_ENV=py36-requests-mock
+        - python: "2.7"
+          env: TEST_SUITE=suite_2_7 TOX_ENV=py27-responses
+        - python: "3.6"
+          env: TEST_SUITE=suite_3_6 TOX_ENV=py36-responses
 
 sudo: required
 before_install:
