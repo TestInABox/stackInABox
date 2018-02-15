@@ -304,6 +304,7 @@ class StackInABox(object):
 
         return obj
 
+
 # Thread local instance of StackInABox
 local_store = threading.local()
 local_store.instance = StackInABox()

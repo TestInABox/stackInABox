@@ -2,6 +2,11 @@ import sys
 from setuptools import setup, find_packages
 
 REQUIRES = ['six']
+EXTRA_REQUIRES = {
+    'httpretty': ['httpretty==0.8.6'],
+    'requests-mock': ['requests-mock'],
+    'responses': ['responses>=0.4.0']
+}
 
 setup(
     name='stackinabox',
@@ -12,6 +17,7 @@ setup(
     author='Benjamen R. Meyer',
     author_email='bm_witness@yahoo.com',
     install_requires=REQUIRES,
+    extras_require=EXTRA_REQUIRES,
     test_suite='stackinabox',
     packages=find_packages(exclude=['tests*', 'stackinabox/tests']),
     zip_safe=True,
