@@ -6,5 +6,6 @@ Services
 
     service
     router
+    verbs
     service-exceptions
     errors
