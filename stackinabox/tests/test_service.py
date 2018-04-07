@@ -121,7 +121,7 @@ class TestServiceRouteRegistration(unittest.TestCase):
 
         StackInABox.register_service(service)
 
-        stackinabox.util.httpretty.httpretty_registration('localhost')
+        stackinabox.util.httpretty.registration('localhost')
 
         res = requests.get('http://localhost/aas/french')
         self.assertEqual(res.status_code,

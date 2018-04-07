@@ -9,7 +9,7 @@ import unittest
 
 import requests
 
-import stackinabox.util.requests_mock.decorator as stack_decorator
+from stackinabox.util.requests_mock import decorator
 from stackinabox.services.hello import HelloService
 from stackinabox.tests.utils.services import AdvancedService
 
@@ -25,22 +25,22 @@ class TestRequestsMockBasic(unittest.TestCase):
     def tearDown(self):
         super(TestRequestsMockBasic, self).tearDown()
 
-    @stack_decorator.stack_activate('localhost', HelloService())
+    @decorator.activate('localhost', HelloService())
     def test_basic_requests_mock(self):
         res = requests.get('http://localhost/hello/')
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.text, 'Hello')
 
-    @stack_decorator.stack_activate('localhost', HelloService(),
-                                    200, value='Hello')
+    @decorator.activate('localhost', HelloService(),
+                        200, value='Hello')
     def test_basic_with_parameters(self, response_code, value='alpha'):
         res = requests.get('http://localhost/hello/')
         self.assertEqual(res.status_code, response_code)
         self.assertEqual(res.text, value)
 
-    @stack_decorator.stack_activate('localhost', HelloService(),
-                                    200, value='Hello',
-                                    access_services="stack")
+    @decorator.activate('localhost', HelloService(),
+                        200, value='Hello',
+                        access_services="stack")
     def test_basic_with_stack_acccess(self, response_code, value='alpha',
                                       stack=None):
         res = requests.get('http://localhost/hello/')
@@ -59,8 +59,8 @@ class TestRequestMockAdvanced(unittest.TestCase):
     def tearDown(self):
         super(TestRequestMockAdvanced, self).tearDown()
 
-    @stack_decorator.stack_activate('localhost', AdvancedService(),
-                                    session="session")
+    @decorator.activate('localhost', AdvancedService(),
+                        session="session")
     def test_basic(self, session):
         res = session.get('http://localhost/advanced/')
         self.assertEqual(res.status_code, 200)
@@ -105,22 +105,22 @@ class TestRequestsMockBasicWithDecoratorAndGenerator(unittest.TestCase):
     def test_verify_generator(self):
         self.assertIsInstance(requests_mock_generator(), types.GeneratorType)
 
-    @stack_decorator.stack_activate('localhost', requests_mock_generator())
+    @decorator.activate('localhost', requests_mock_generator())
     def test_basic_requests_mock(self):
         res = requests.get('http://localhost/hello/')
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.text, 'Hello')
 
-    @stack_decorator.stack_activate('localhost', requests_mock_generator(),
-                                    200, value='Hello')
+    @decorator.activate('localhost', requests_mock_generator(),
+                        200, value='Hello')
     def test_basic_with_parameters(self, response_code, value='alpha'):
         res = requests.get('http://localhost/hello/')
         self.assertEqual(res.status_code, response_code)
         self.assertEqual(res.text, value)
 
-    @stack_decorator.stack_activate('localhost', requests_mock_generator(),
-                                    200, value='Hello',
-                                    access_services="stack")
+    @decorator.activate('localhost', requests_mock_generator(),
+                        200, value='Hello',
+                        access_services="stack")
     def test_basic_with_stack_acccess(self, response_code, value='alpha',
                                       stack=None):
         res = requests.get('http://localhost/hello/')
@@ -142,22 +142,22 @@ class TestRequestsMockBasicWithDecoratorAndGenerator(unittest.TestCase):
     def test_verify_list(self):
         self.assertIsInstance(requests_mock_list(), collections.Iterable)
 
-    @stack_decorator.stack_activate('localhost', requests_mock_list())
+    @decorator.activate('localhost', requests_mock_list())
     def test_basic_requests_mock(self):
         res = requests.get('http://localhost/hello/')
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.text, 'Hello')
 
-    @stack_decorator.stack_activate('localhost', requests_mock_list(),
-                                    200, value='Hello')
+    @decorator.activate('localhost', requests_mock_list(),
+                        200, value='Hello')
     def test_basic_with_parameters(self, response_code, value='alpha'):
         res = requests.get('http://localhost/hello/')
         self.assertEqual(res.status_code, response_code)
         self.assertEqual(res.text, value)
 
-    @stack_decorator.stack_activate('localhost', requests_mock_list(),
-                                    200, value='Hello',
-                                    access_services="stack")
+    @decorator.activate('localhost', requests_mock_list(),
+                        200, value='Hello',
+                        access_services="stack")
     def test_basic_with_stack_acccess(self, response_code, value='alpha',
                                       stack=None):
         res = requests.get('http://localhost/hello/')

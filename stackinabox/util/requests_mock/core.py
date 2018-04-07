@@ -22,6 +22,7 @@ import requests_mock.response
 import six
 
 from stackinabox.stack import StackInABox
+from stackinabox.util import deprecator
 from stackinabox.util.tools import CaseInsensitiveDict
 
 
@@ -157,7 +158,7 @@ class RequestMockCallable(object):
         )
 
 
-def requests_mock_session_registration(uri, session):
+def session_registration(uri, session):
     """Requests-mock registration with a specific Session.
 
     :param uri: base URI to match against
@@ -183,7 +184,7 @@ def requests_mock_session_registration(uri, session):
     session.mount('https://{0}'.format(uri), StackInABox.hold_out('adapter'))
 
 
-def requests_mock_registration(uri):
+def registration(uri):
     """Requests-mock registrationn.
 
     :param uri: base URI to match against
@@ -388,3 +389,15 @@ class activate(object):
 # the Global session data
 local_sessions = threading.local()
 local_sessions.session = Session()
+
+
+@deprecator.DeprecatedInterface("requests_mock_registration", "registration")
+def requests_mock_registration(uri):
+    return registration(uri)
+
+
+@deprecator.DeprecatedInterface(
+    "requests_mock_session_registration", "session_registration"
+)
+def requests_mock_session_registration(uri, session):
+    return session_registration(uri, session)

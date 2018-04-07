@@ -9,6 +9,7 @@ import re
 import responses
 
 from stackinabox.stack import StackInABox
+from stackinabox.util import deprecator
 from stackinabox.util.tools import CaseInsensitiveDict
 
 
@@ -40,7 +41,7 @@ def responses_callback(request):
                                  headers)
 
 
-def responses_registration(uri):
+def registration(uri):
     """Responses handler registration.
 
     Registers a handler for a given URI with Responses
@@ -75,3 +76,8 @@ def responses_registration(uri):
         responses.add_callback(method,
                                regex,
                                callback=responses_callback)
+
+
+@deprecator.DeprecatedInterface("responses_registration", "registration")
+def responses_registration(uri):
+    return registration(uri)

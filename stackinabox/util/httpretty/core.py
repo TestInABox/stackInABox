@@ -12,6 +12,7 @@ import httpretty.http
 import six
 
 from stackinabox.stack import StackInABox
+from stackinabox.util import deprecator
 from stackinabox.util.tools import CaseInsensitiveDict
 
 
@@ -46,7 +47,7 @@ def httpretty_callback(request, uri, headers):
                                  response_headers)
 
 
-def httpretty_registration(uri):
+def registration(uri):
     """httpretty handler registration.
 
     registers a handler for a given uri with httpretty
@@ -82,3 +83,8 @@ def httpretty_registration(uri):
                        re.I)
     for method in HttpBaseClass.METHODS:
         register_uri(method, regex, body=httpretty_callback)
+
+
+@deprecator.DeprecatedInterface("httpretty_registration", "registration")
+def httpretty_registration(uri):
+    return registration(uri)
