@@ -10,6 +10,9 @@ class TestVersionMatch(unittest.TestCase):
 
     def setUp(self):
         super(TestVersionMatch, self).setUp()
+        self.local_directory = os.path.dirname(__file__)
+        self.setup_py = '{0}/../setup.py'.format(self.local_directory)
+        self.doc_conf = '{0}/../../docs/conf.py'.format(self.local_directory)
 
     def tearDown(self):
         super(TestVersionMatch, self).tearDown()
@@ -25,7 +28,7 @@ class TestVersionMatch(unittest.TestCase):
         version_source = self.make_version_source()
 
         version_setup = None
-        with open('../setup.py', 'rt') as input_data:
+        with open(self.setup_py, 'rt') as input_data:
             for line in input_data:
                 ln = line.strip()
                 if ln.startswith('version='):
@@ -36,9 +39,7 @@ class TestVersionMatch(unittest.TestCase):
         self.assertEqual(version_source, version_setup)
 
     def test_sphinx_version_match(self):
-        sphinx_conf_path = os.path.abspath(
-            os.getcwd() + '../../docs/conf.py'
-        )
+        sphinx_conf_path = self.doc_conf
 
         sys.path.insert(0, sphinx_conf_path)
         import docs.conf
