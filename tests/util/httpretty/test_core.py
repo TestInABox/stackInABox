@@ -11,7 +11,8 @@ import six
 import stackinabox.util.httpretty
 from stackinabox.stack import StackInABox
 from stackinabox.services.hello import HelloService
-from stackinabox.tests.utils.services import AdvancedService
+
+from tests.utils.services import AdvancedService
 
 
 logger = logging.getLogger(__name__)
