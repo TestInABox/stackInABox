@@ -15,13 +15,14 @@ from stackinabox.stack import StackInABox
 from stackinabox.util.responses.core import (
     responses_registration
 )
+from stackinabox.util import deprecator
 from stackinabox.util.tools import CaseInsensitiveDict
 
 
 logger = logging.getLogger(__name__)
 
 
-class stack_activate(object):
+class activate(object):
     """
     Decorator class to make use of Responses and Stack-In-A-Box
     extremely simple to do.
@@ -114,3 +115,14 @@ class stack_activate(object):
             return return_value
 
         return wrapped
+
+
+class stack_activate(activate):
+
+    @deprecator.DeprecatedInterface("stack_activate", "activate")
+    def __init__(self, *args, **kwargs):
+        super(stack_activate, self).__init__(*args, **kwargs)
+
+    @deprecator.DeprecatedInterface("stack_activate", "activate")
+    def __call__(self, *args, **kwargs):
+        super(stack_activate, self).__call__(*args, **kwargs)

@@ -11,7 +11,8 @@ import six
 import stackinabox.util.httpretty
 from stackinabox.stack import StackInABox
 from stackinabox.services.hello import HelloService
-from stackinabox.tests.utils.services import AdvancedService
+
+from tests.utils.services import AdvancedService
 
 
 logger = logging.getLogger(__name__)
@@ -29,7 +30,7 @@ class TestHttprettyBasic(unittest.TestCase):
         StackInABox.reset_services()
 
     def test_basic(self):
-        stackinabox.util.httpretty.httpretty_registration('localhost')
+        stackinabox.util.httpretty.registration('localhost')
 
         res = requests.get('http://localhost/hello/')
         self.assertEqual(res.status_code, 200)
@@ -48,7 +49,7 @@ class TestHttprettyAdvanced(unittest.TestCase):
         StackInABox.reset_services()
 
     def test_basic(self):
-        stackinabox.util.httpretty.httpretty_registration('localhost')
+        stackinabox.util.httpretty.registration('localhost')
 
         res = requests.get('http://localhost/advanced/')
         self.assertEqual(res.status_code, 200)

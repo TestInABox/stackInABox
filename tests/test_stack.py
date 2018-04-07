@@ -57,7 +57,7 @@ class TestStack(unittest.TestCase):
         exceptional = ExceptionalServices()
         StackInABox.register_service(exceptional)
 
-        stackinabox.util.httpretty.httpretty_registration('localhost')
+        stackinabox.util.httpretty.registration('localhost')
 
         res = requests.get('http://localhost/except/')
         self.assertEqual(res.status_code, 596)
