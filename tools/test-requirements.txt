@@ -1,9 +1,10 @@
-coverage
-ddt
+coverage==4.4.1
+ddt==1.1.2
 httpretty==0.8.6
-nose
-nose-exclude
-requests
-requests-mock
+pytest==3.3.2
+pytest-cov==2.5.1
+requests==2.18.4
+requests-mock==1.4.0
 responses>=0.4.0
-six
+six==1.11.0
+pycodestyle==2.3.1

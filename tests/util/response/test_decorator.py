@@ -59,7 +59,10 @@ def test_basic_responses_and_list():
 
 @decorator.activate('localhost', HelloService(),
                     200, value='Hello')
-def test_basic_with_parameters(response_code, value='alpha'):
+def test_basic_with_parameters(*args, **kwargs):
+    # note: work-around for pytest + Py3 and a decorator
+    response_code = args[0]
+    value = kwargs.get('value', 'alpha')
     res = requests.get('http://localhost/hello/')
     assert res.status_code == response_code
     assert res.text == value
@@ -67,7 +70,10 @@ def test_basic_with_parameters(response_code, value='alpha'):
 
 @decorator.activate('localhost', responses_generator(),
                     200, value='Hello')
-def test_basic_with_parameters_and_generator(response_code, value='alpha'):
+def test_basic_with_parameters_and_generator(*args, **kwargs):
+    # note: work-around for pytest + Py3 and a decorator
+    response_code = args[0]
+    value = kwargs.get('value', 'alpha')
     res = requests.get('http://localhost/hello/')
     assert res.status_code == response_code
     assert res.text == value
@@ -75,7 +81,10 @@ def test_basic_with_parameters_and_generator(response_code, value='alpha'):
 
 @decorator.activate('localhost', responses_list(),
                     200, value='Hello')
-def test_basic_with_parameters_and_list(response_code, value='alpha'):
+def test_basic_with_parameters_and_list(*args, **kwargs):
+    # note: work-around for pytest + Py3 and a decorator
+    response_code = args[0]
+    value = kwargs.get('value', 'alpha')
     res = requests.get('http://localhost/hello/')
     assert res.status_code == response_code
     assert res.text == value
@@ -84,8 +93,11 @@ def test_basic_with_parameters_and_list(response_code, value='alpha'):
 @decorator.activate('localhost', HelloService(),
                     200, value='Hello',
                     access_services="stack")
-def test_basic_with_stack_acccess(response_code, value='alpha',
-                                  stack=None):
+def test_basic_with_stack_acccess(*args, **kwargs):
+    # note: work-around for pytest + Py3 and a decorator
+    response_code = args[0]
+    value = kwargs.get('value', 'alpha')
+    stack = kwargs.get('stack', None)
     res = requests.get('http://localhost/hello/')
     assert res.status_code == response_code
     assert res.text == value
@@ -97,8 +109,11 @@ def test_basic_with_stack_acccess(response_code, value='alpha',
 @decorator.activate('localhost', responses_generator(),
                     200, value='Hello',
                     access_services="stack")
-def test_basic_with_stack_acccess_and_generator(response_code, value='alpha',
-                                  stack=None):
+def test_basic_with_stack_acccess_and_generator(*args, **kwargs):
+    # note: work-around for pytest + Py3 and a decorator
+    response_code = args[0]
+    value = kwargs.get('value', 'alpha')
+    stack = kwargs.get('stack', None)
     res = requests.get('http://localhost/hello/')
     assert res.status_code == response_code
     assert res.text == value
@@ -110,8 +125,11 @@ def test_basic_with_stack_acccess_and_generator(response_code, value='alpha',
 @decorator.activate('localhost', responses_list(),
                     200, value='Hello',
                     access_services="stack")
-def test_basic_with_stack_acccess_and_list(response_code, value='alpha',
-                                  stack=None):
+def test_basic_with_stack_acccess_and_list(*args, **kwargs):
+    # note: work-around for pytest + Py3 and a decorator
+    response_code = args[0]
+    value = kwargs.get('value', 'alpha')
+    stack = kwargs.get('stack', None)
     res = requests.get('http://localhost/hello/')
     assert res.status_code == response_code
     assert res.text == value

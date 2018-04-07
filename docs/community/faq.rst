@@ -74,8 +74,26 @@ need to have a common mocked backend fit better with Mimic_; though work is
 underway to create a means of using existing Stack-In-A-Box services to
 provide a similar role as Mimic_ via StackInAWSGI_.
 
+I'm using pytest and now I'm getting fixture not found errors? What gives?
+--------------------------------------------------------------------------
+
+While upgrading from `nosetests` to `pytest` we also ran across this issue
+for Stack-In-A-Box itself which we traced to PyTestFixtureNotFound_. Our
+unit tests were modified for the work-around mentioned which consists of
+having to decode the `*args` and `**kwargs` yourself in the test.
+
+.. note:: We found this issue with our `responses` support only; the issue
+    we found in Pytest's GitHub Issue list was for `requests_mock` instead.
+    The solution was the same.
+
+.. note:: At some point in the future Stack-In-A-Box will provide support
+    for PyTest Fixtures; however, even then we will want to show that you
+    can use the tool _you_ want to use. Fixtures will be an option but not
+    required at that time, so we have to test both cases regardless.
+
 References
 ----------
 
 .. _Mimic: https://pypi.python.org/pypi/mimic/
 .. _StackInAWSGI: https://github.com/TestInABox/stackInAWSGI
+.. _PyTestFixtureNotFound: https://github.com/pytest-dev/pytest/issues/2749
