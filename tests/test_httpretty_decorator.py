@@ -9,7 +9,8 @@ import requests
 
 from stackinabox.util.httpretty import decorator
 from stackinabox.services.hello import HelloService
-from stackinabox.tests.utils.services import AdvancedService
+
+from tests.utils.services import AdvancedService
 
 
 class TestHttprettyBasicWithDecorator(unittest.TestCase):
