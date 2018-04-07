@@ -29,7 +29,7 @@ class TestHttprettyBasic(unittest.TestCase):
         StackInABox.reset_services()
 
     def test_basic(self):
-        stackinabox.util.httpretty.httpretty_registration('localhost')
+        stackinabox.util.httpretty.registration('localhost')
 
         res = requests.get('http://localhost/hello/')
         self.assertEqual(res.status_code, 200)
@@ -48,7 +48,7 @@ class TestHttprettyAdvanced(unittest.TestCase):
         StackInABox.reset_services()
 
     def test_basic(self):
-        stackinabox.util.httpretty.httpretty_registration('localhost')
+        stackinabox.util.httpretty.registration('localhost')
 
         res = requests.get('http://localhost/advanced/')
         self.assertEqual(res.status_code, 200)

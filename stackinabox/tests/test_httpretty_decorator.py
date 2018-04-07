@@ -7,29 +7,29 @@ import unittest
 
 import requests
 
-import stackinabox.util.httpretty.decorator as stack_decorator
+from stackinabox.util.httpretty import decorator
 from stackinabox.services.hello import HelloService
 from stackinabox.tests.utils.services import AdvancedService
 
 
 class TestHttprettyBasicWithDecorator(unittest.TestCase):
 
-    @stack_decorator.stack_activate('localhost', HelloService())
+    @decorator.activate('localhost', HelloService())
     def test_basic(self):
         res = requests.get('http://localhost/hello/')
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.text, 'Hello')
 
-    @stack_decorator.stack_activate('localhost', HelloService(),
-                                    200, value='Hello')
+    @decorator.activate('localhost', HelloService(),
+                        200, value='Hello')
     def test_basic_with_parameters(self, response_code, value='alpha'):
         res = requests.get('http://localhost/hello/')
         self.assertEqual(res.status_code, response_code)
         self.assertEqual(res.text, value)
 
-    @stack_decorator.stack_activate('localhost', HelloService(),
-                                    200, value='Hello',
-                                    access_services="stack")
+    @decorator.activate('localhost', HelloService(),
+                        200, value='Hello',
+                        access_services="stack")
     def test_basic_with_stack_acccess(self, response_code, value='alpha',
                                       stack=None):
         res = requests.get('http://localhost/hello/')
@@ -42,7 +42,7 @@ class TestHttprettyBasicWithDecorator(unittest.TestCase):
 
 class TestHttprettyAdvancedWithDecorator(unittest.TestCase):
 
-    @stack_decorator.stack_activate('localhost', AdvancedService())
+    @decorator.activate('localhost', AdvancedService())
     def test_basic(self):
         res = requests.get('http://localhost/advanced/')
         self.assertEqual(res.status_code, 200)
@@ -85,7 +85,7 @@ class TestHttprettyBasicWithDecoratorAndGenerator(unittest.TestCase):
     def test_verify_generator(self):
         self.assertIsInstance(httpretty_generator(), types.GeneratorType)
 
-    @stack_decorator.stack_activate(
+    @decorator.activate(
         'localhost',
         httpretty_generator()
     )
@@ -94,7 +94,7 @@ class TestHttprettyBasicWithDecoratorAndGenerator(unittest.TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.text, 'Hello')
 
-    @stack_decorator.stack_activate(
+    @decorator.activate(
         'localhost',
         httpretty_generator(),
         200, value='Hello'
@@ -104,7 +104,7 @@ class TestHttprettyBasicWithDecoratorAndGenerator(unittest.TestCase):
         self.assertEqual(res.status_code, response_code)
         self.assertEqual(res.text, value)
 
-    @stack_decorator.stack_activate(
+    @decorator.activate(
         'localhost',
         httpretty_generator(),
         200, value='Hello',
@@ -131,7 +131,7 @@ class TestHttprettyBasicWithDecoratorAndList(unittest.TestCase):
     def test_verify_list(self):
         self.assertIsInstance(httpretty_list(), collections.Iterable)
 
-    @stack_decorator.stack_activate(
+    @decorator.activate(
         'localhost',
         httpretty_list()
     )
@@ -140,7 +140,7 @@ class TestHttprettyBasicWithDecoratorAndList(unittest.TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.text, 'Hello')
 
-    @stack_decorator.stack_activate(
+    @decorator.activate(
         'localhost',
         httpretty_list(),
         200, value='Hello'
@@ -150,7 +150,7 @@ class TestHttprettyBasicWithDecoratorAndList(unittest.TestCase):
         self.assertEqual(res.status_code, response_code)
         self.assertEqual(res.text, value)
 
-    @stack_decorator.stack_activate(
+    @decorator.activate(
         'localhost',
         httpretty_list(),
         200, value='Hello',

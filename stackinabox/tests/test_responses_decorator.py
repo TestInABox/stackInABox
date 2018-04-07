@@ -9,7 +9,7 @@ import unittest
 
 import requests
 
-import stackinabox.util.responses.decorator as stack_decorator
+from stackinabox.util.responses import decorator
 from stackinabox.services.hello import HelloService
 from stackinabox.tests.utils.services import AdvancedService
 
@@ -35,54 +35,54 @@ def test_verify_list():
     assert isinstance(responses_list(), collections.Iterable)
 
 
-@stack_decorator.stack_activate('localhost', HelloService())
+@decorator.activate('localhost', HelloService())
 def test_basic_responses():
     res = requests.get('http://localhost/hello/')
     assert res.status_code == 200
     assert res.text == 'Hello'
 
 
-@stack_decorator.stack_activate('localhost', responses_generator())
+@decorator.activate('localhost', responses_generator())
 def test_basic_responses_and_generator():
     res = requests.get('http://localhost/hello/')
     assert res.status_code == 200
     assert res.text == 'Hello'
 
 
-@stack_decorator.stack_activate('localhost', responses_list())
+@decorator.activate('localhost', responses_list())
 def test_basic_responses_and_list():
     res = requests.get('http://localhost/hello/')
     assert res.status_code == 200
     assert res.text == 'Hello'
 
 
-@stack_decorator.stack_activate('localhost', HelloService(),
-                                200, value='Hello')
+@decorator.activate('localhost', HelloService(),
+                    200, value='Hello')
 def test_basic_with_parameters(response_code, value='alpha'):
     res = requests.get('http://localhost/hello/')
     assert res.status_code == response_code
     assert res.text == value
 
 
-@stack_decorator.stack_activate('localhost', responses_generator(),
-                                200, value='Hello')
+@decorator.activate('localhost', responses_generator(),
+                    200, value='Hello')
 def test_basic_with_parameters_and_generator(response_code, value='alpha'):
     res = requests.get('http://localhost/hello/')
     assert res.status_code == response_code
     assert res.text == value
 
 
-@stack_decorator.stack_activate('localhost', responses_list(),
-                                200, value='Hello')
+@decorator.activate('localhost', responses_list(),
+                    200, value='Hello')
 def test_basic_with_parameters_and_list(response_code, value='alpha'):
     res = requests.get('http://localhost/hello/')
     assert res.status_code == response_code
     assert res.text == value
 
 
-@stack_decorator.stack_activate('localhost', HelloService(),
-                                200, value='Hello',
-                                access_services="stack")
+@decorator.activate('localhost', HelloService(),
+                    200, value='Hello',
+                    access_services="stack")
 def test_basic_with_stack_acccess(response_code, value='alpha',
                                   stack=None):
     res = requests.get('http://localhost/hello/')
@@ -93,9 +93,9 @@ def test_basic_with_stack_acccess(response_code, value='alpha',
     assert isinstance(stack[list(stack.keys())[0]], HelloService)
 
 
-@stack_decorator.stack_activate('localhost', responses_generator(),
-                                200, value='Hello',
-                                access_services="stack")
+@decorator.activate('localhost', responses_generator(),
+                    200, value='Hello',
+                    access_services="stack")
 def test_basic_with_stack_acccess_and_generator(response_code, value='alpha',
                                   stack=None):
     res = requests.get('http://localhost/hello/')
@@ -106,9 +106,9 @@ def test_basic_with_stack_acccess_and_generator(response_code, value='alpha',
     assert isinstance(stack[list(stack.keys())[0]], HelloService)
 
 
-@stack_decorator.stack_activate('localhost', responses_list(),
-                                200, value='Hello',
-                                access_services="stack")
+@decorator.activate('localhost', responses_list(),
+                    200, value='Hello',
+                    access_services="stack")
 def test_basic_with_stack_acccess_and_list(response_code, value='alpha',
                                   stack=None):
     res = requests.get('http://localhost/hello/')
@@ -119,7 +119,7 @@ def test_basic_with_stack_acccess_and_list(response_code, value='alpha',
     assert isinstance(stack[list(stack.keys())[0]], HelloService)
 
 
-@stack_decorator.stack_activate('localhost', AdvancedService())
+@decorator.activate('localhost', AdvancedService())
 def test_advanced_responses():
     res = requests.get('http://localhost/advanced/')
     assert res.status_code == 200
