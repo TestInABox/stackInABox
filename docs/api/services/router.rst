@@ -12,6 +12,6 @@ sub-service routing. This is entirely an internal object.
 
     router = stackinabox.services.service.StackInABoxServiceRouter
 
-.. currentmodule:: stackinabox.services.service
+.. currentmodule:: stackinabox.services.router
 .. autoclass:: StackInABoxServiceRouter
     :members:

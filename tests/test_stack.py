@@ -44,26 +44,32 @@ class TestStack(unittest.TestCase):
             self.assertEqual(mock_reset.call_count, 1)
 
     def test_register_service(self):
-        with mock.patch('stackinabox.stack.StackInABox.register') as mock_register:
+        with mock.patch(
+            'stackinabox.stack.StackInABox.register'
+        ) as mock_register:
             data = hello.HelloService()
             stack.StackInABox.register_service(data)
             mock_register.assert_called_once_with(data)
 
     def test_call_into(self):
         with mock.patch('stackinabox.stack.StackInABox.call') as mock_call:
-            data = ('GET', 'wedding', '/matrimoney', { 'reception': 'tbd'})
+            data = ('GET', 'wedding', '/matrimoney', {'reception': 'tbd'})
             stack.StackInABox.call_into(*data)
             mock_call.assert_called_once_with(*data)
 
     def test_hold_onto(self):
-        with mock.patch('stackinabox.stack.StackInABox.into_hold') as mock_hold:
+        with mock.patch(
+            'stackinabox.stack.StackInABox.into_hold'
+        ) as mock_hold:
             name = 'emo'
             data = 'Fearless'
             stack.StackInABox.hold_onto(name, data)
             mock_hold.assert_called_once_with(name, data)
 
     def test_hold_out(self):
-        with mock.patch('stackinabox.stack.StackInABox.from_hold') as mock_hold:
+        with mock.patch(
+            'stackinabox.stack.StackInABox.from_hold'
+        ) as mock_hold:
             name = 'emo'
             data = 'Fearless'
             mock_hold.return_value = data
@@ -172,7 +178,9 @@ class TestStack(unittest.TestCase):
         theStack.base_url = 'localhost'
         for svc in services_to_register:
             theStack.register(svc)
-        result = theStack.call('GET', mock.MagicMock(), 'localhost/except/', {})
+        result = theStack.call(
+            'GET', mock.MagicMock(), 'localhost/except/', {}
+        )
         self.assertEqual(len(result), 3)
         status_code, headers, msg = result
         self.assertEqual(status_code, 597)
@@ -185,7 +193,9 @@ class TestStack(unittest.TestCase):
         theStack.register(exceptional)
         theStack.base_url = 'localhost'
 
-        result = theStack.call('GET', mock.MagicMock(), 'localhost/except/', {})
+        result = theStack.call(
+            'GET', mock.MagicMock(), 'localhost/except/', {}
+        )
         self.assertEqual(len(result), 3)
         status_code, headers, msg = result
         self.assertEqual(status_code, 596)

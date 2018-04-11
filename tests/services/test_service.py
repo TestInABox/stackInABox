@@ -5,6 +5,7 @@ import httpretty
 import requests
 
 from stackinabox.stack import StackInABox
+from stackinabox.services import exceptions
 from stackinabox.services.service import *
 import stackinabox.util.httpretty
 
@@ -43,7 +44,7 @@ class TestServiceRegex(unittest.TestCase):
             StackInABoxService.validate_regex(case, False)
 
         for case in negative_cases:
-            with self.assertRaises(InvalidRouteRegexError):
+            with self.assertRaises(exceptions.InvalidRouteRegexError):
                 StackInABoxService.validate_regex(case, False)
 
     def test_stackinabox_service_regex(self):
@@ -108,7 +109,7 @@ class TestServiceRouteRegistration(unittest.TestCase):
 
         service = AnotherAdvancedService()
 
-        with self.assertRaises(RouteAlreadyRegisteredError):
+        with self.assertRaises(exceptions.RouteAlreadyRegisteredError):
             service.register(StackInABoxService.GET, '/',
                              AnotherAdvancedService.second_handler)
 
