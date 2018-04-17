@@ -1,131 +1,307 @@
 import re
 import unittest
 
-import httpretty
-import requests
+import ddt
 
-from stackinabox.stack import StackInABox
-from stackinabox.services import exceptions
-from stackinabox.services.service import *
-import stackinabox.util.httpretty
+from stackinabox.services import (
+    exceptions,
+    service,
+    router
+)
 
 
-class TestServiceRegex(unittest.TestCase):
+class FakeRouter(object):
+
+    def __init__(self, is_subservice, return_value=None):
+        self.is_subservice = is_subservice
+        self.called_with = []
+        self.return_value = return_value
+        self.side_effects = None
+
+    def __call__(self, *args, **kwargs):
+        self.called_with.append(
+            {
+                'args': args,
+                'kwargs': kwargs
+            }
+        )
+        return_value = None
+        if self.side_effects:
+            return_value = self.side_effects.pop(0)
+        else:
+            return_value = self.return_value
+        return return_value
+
+
+@ddt.ddt
+class TestStackInABoxService(unittest.TestCase):
 
     def setUp(self):
-        super(TestServiceRegex, self).setUp()
+        super(TestStackInABoxService, self).setUp()
 
     def tearDown(self):
-        super(TestServiceRegex, self).tearDown()
+        super(TestStackInABoxService, self).tearDown()
 
-    def test_instantiation(self):
-        name = 'test-service'
+    def test_initialization(self):
+        name = 'fake-it'
+        instance = service.StackInABoxService(name)
+        self.assertEqual(instance.name, name)
+        self.assertEqual(instance.routes, {})
 
-        service = StackInABoxService(name)
-        self.assertEqual(service.name, name)
-        self.assertTrue(service.base_url.startswith('/'))
-        self.assertTrue(service.base_url.endswith(name))
-        self.assertEqual(len(service.base_url),
-                         (len(name) + 1))
-        self.assertEqual(len(service.routes), 0)
+    @ddt.data(
+        ('requiem', False),
+        (re.compile('^/$'), True)
+    )
+    @ddt.unpack
+    def test_is_regex(self, regex_statement, valid_regex):
+        self.assertEqual(
+            service.StackInABoxService.is_regex(regex_statement),
+            valid_regex
+        )
 
-    def test_stackinabox_validate_regex(self):
+    @ddt.data(
+        (re.compile('^/$'), True, False),
+        (re.compile('^/'), False, False),
+        (re.compile('/$'), False, False),
+        (re.compile('^/'), True, True),
+        (re.compile('^/$'), False, True)
+    )
+    @ddt.unpack
+    def test_validate_regex(
+        self, regex_value, regex_valid, is_subservice
+    ):
 
-        positive_cases = [
-            re.compile('^/$')
-        ]
+        if regex_valid:
+            service.StackInABoxService.validate_regex(
+                regex_value,
+                is_subservice
+            )
 
-        negative_cases = [
-            re.compile('^/'),
-            re.compile('/$')
-        ]
-
-        for case in positive_cases:
-            StackInABoxService.validate_regex(case, False)
-
-        for case in negative_cases:
+        else:
             with self.assertRaises(exceptions.InvalidRouteRegexError):
-                StackInABoxService.validate_regex(case, False)
+                service.StackInABoxService.validate_regex(
+                    regex_value,
+                    is_subservice
+                )
 
-    def test_stackinabox_service_regex(self):
+    @ddt.data(
+        ('/', re.compile('^/$'), False, '^/$'),
+        ('/', re.compile('^/'), True, '^/'),
+        ('/', '/hello', False, '^/hello$'),
+    )
+    @ddt.unpack
+    def test_get_service_regex(
+        self, base_url, service_url, sub_service, expected_regex
+    ):
+        result = service.StackInABoxService.get_service_regex(
+            base_url, service_url, sub_service
+        )
+        self.assertIsInstance(result, type(re.compile('')))
+        self.assertEqual(
+            result.pattern,
+            expected_regex
+        )
 
-        case_regex = [
-            re.compile('^/$')
-        ]
+    @ddt.data(
+        {},
+        {
+            'breakpoint': {
+                'regex': re.compile('^/helix$'),
+                'uri': '/helix',
+                'handlers': FakeRouter(False)
+            }
+        }
+    )
+    def test_base_url(self, route_table):
+        name = 'fake-it'
+        instance = service.StackInABoxService(name)
+        instance.routes = route_table
 
-        case_nonregex = [
-            '/',
-        ]
+        original_url = '/{0}'.format(name)
+        self.assertEqual(instance.base_url, original_url)
 
-        for case in case_regex:
-            self.assertEqual(StackInABoxService.get_service_regex('base',
-                                                                  case,
-                                                                  False),
-                             case)
+        new_url = '/ti-ekaf'
+        instance.base_url = new_url
+        self.assertEqual(instance.base_url, new_url)
 
-        for case in case_nonregex:
-            case_regex = re.compile('^{0}$'.format(case))
-            self.assertEqual(StackInABoxService.get_service_regex('base',
-                                                                  case,
-                                                                  False),
-                             case_regex)
+        instance.reset()
+        self.assertEqual(instance.base_url, original_url)
 
+    @ddt.data(
+        ({}, '/'),
+        ({
+            'breakpoint': {
+                'regex': re.compile('^/helix$'),
+                'uri': '/helix',
+                'handlers': FakeRouter(False)
+            }
+        }, '/')
+    )
+    @ddt.unpack
+    def test_try_handle_route_failure(self, route_table, uri):
+        instance = service.StackInABoxService('throw-away-595')
+        instance.routes = route_table
+        input_headers = {'golden-ratio': '3-4-5'}
+        result = instance.try_handle_route(
+            uri, 'GET', None, uri, input_headers
+        )
 
-class AnotherAdvancedService(StackInABoxService):
+        self.assertIsInstance(result, tuple)
+        self.assertEqual(len(result), 3)
+        status_code, headers, message = result
+        self.assertEqual(status_code, 595)
+        self.assertEqual(headers, input_headers)
+        self.assertIsInstance(message, str)
 
-    def __init__(self):
-        super(AnotherAdvancedService, self).__init__('aas')
-        self.register(StackInABoxService.GET, '/',
-                      AnotherAdvancedService.first_handler)
+    @ddt.data(
+        '/helix',
+        '/helix?double=True'
+    )
+    def test_try_handle_route_success(self, uri):
+        # NOTE: This cannot be merged into `test_request` because
+        # of additional parameter required
+        instance = service.StackInABoxService('throw-away-200')
+        input_headers = {'golden-ratio': '3-4-5'}
 
-    def first_handler(self, request, uri, headers):
-        return (200, headers, 'hello')
+        message_result = 'helios'
+        instance.routes = {
+            'breakpoint': {
+                'regex': re.compile('^/helix$'),
+                'uri': uri,
+                'handlers': FakeRouter(
+                    False,
+                    return_value=(
+                        200, input_headers, message_result
+                    )
+                )
+            }
+        }
 
-    def second_handler(self, request, uri, headers):
-        return (200, headers, 'howdy')
+        result = instance.try_handle_route(
+            uri, 'GET', None, uri, input_headers
+        )
 
+        self.assertIsInstance(result, tuple)
+        self.assertEqual(len(result), 3)
+        status_code, headers, message = result
+        self.assertEqual(status_code, 200)
+        self.assertEqual(headers, input_headers)
+        self.assertEqual(message, message_result)
 
-class YetAnotherService(StackInABoxService):
+    @ddt.data(
+        ('/helix', 'request'),
+        ('/helix?double=True', 'request'),
+        ('/helix', 'sub_request'),
+        ('/helix?double=True', 'sub_request'),
+    )
+    @ddt.unpack
+    def test_request(self, uri, method_to_call):
+        instance = service.StackInABoxService('throw-away-200')
+        input_headers = {'golden-ratio': '3-4-5'}
 
-    def __init__(self):
-        super(YetAnotherService, self).__init__('yaas')
-        self.register(StackInABoxService.GET, '^/french$',
-                      YetAnotherService.yaas_handler)
+        message_result = 'helios'
+        instance.routes = {
+            'breakpoint': {
+                'regex': re.compile('^/helix$'),
+                'uri': uri,
+                'handlers': FakeRouter(
+                    False,
+                    return_value=(
+                        200, input_headers, message_result
+                    )
+                )
+            }
+        }
 
-    def yaas_handler(self, request, uri, headers):
-        return (200, headers, 'bonjour')
+        callee = getattr(instance, method_to_call)
+        result = callee('GET', None, uri, input_headers)
 
+        self.assertIsInstance(result, tuple)
+        self.assertEqual(len(result), 3)
+        status_code, headers, message = result
+        self.assertEqual(status_code, 200)
+        self.assertEqual(headers, input_headers)
+        self.assertEqual(message, message_result)
 
-class TestServiceRouteRegistration(unittest.TestCase):
+    def test_create_route_existing(self):
+        instance = service.StackInABoxService(__name__)
+        instance.routes['hero'] = 'phalzbottom'
+        instance.create_route('hero', False)
+        self.assertFalse(isinstance(instance.routes['hero'], dict))
 
-    def setUp(self):
-        super(TestServiceRouteRegistration, self).setUp()
+    def test_create_route_new(self):
+        instance = service.StackInABoxService(__name__)
+        uri = '/hero'
+        instance.create_route(uri, False)
+        self.assertIn(uri, instance.routes)
+        self.assertIsInstance(instance.routes[uri], dict)
+        self.assertIn('regex', instance.routes[uri])
+        self.assertIsInstance(
+            instance.routes[uri]['regex'],
+            type(re.compile(''))
+        )
+        self.assertEqual(
+            instance.routes[uri]['regex'].pattern,
+            '^{0}$'.format(uri)
+        )
+        self.assertIn('uri', instance.routes[uri])
+        self.assertEqual(instance.routes[uri]['uri'], uri)
+        self.assertIn('handlers', instance.routes[uri])
+        self.assertIsInstance(
+            instance.routes[uri]['handlers'],
+            router.StackInABoxServiceRouter
+        )
 
-    def tearDown(self):
-        super(TestServiceRouteRegistration, self).tearDown()
-        StackInABox.reset_services()
+    def test_register(self):
+        method = 'HASHTAG'
+        uri = '/images'
 
-    def test_bad_registration(self):
+        def call_me():
+            pass
 
-        service = AnotherAdvancedService()
+        instance = service.StackInABoxService('period')
+        self.assertEqual(instance.routes, {})
+        instance.register(method, uri, call_me)
+        self.assertIn(uri, instance.routes)
+        self.assertIsInstance(instance.routes[uri], dict)
+        self.assertIn('regex', instance.routes[uri])
+        self.assertIsInstance(
+            instance.routes[uri]['regex'],
+            type(re.compile(''))
+        )
+        self.assertEqual(
+            instance.routes[uri]['regex'].pattern,
+            '^{0}$'.format(uri)
+        )
+        self.assertIn('uri', instance.routes[uri])
+        self.assertEqual(instance.routes[uri]['uri'], uri)
+        self.assertIn('handlers', instance.routes[uri])
+        self.assertIsInstance(
+            instance.routes[uri]['handlers'],
+            router.StackInABoxServiceRouter
+        )
 
-        with self.assertRaises(exceptions.RouteAlreadyRegisteredError):
-            service.register(StackInABoxService.GET, '/',
-                             AnotherAdvancedService.second_handler)
-
-    @httpretty.activate
-    def test_subservice_registration(self):
-        service = AnotherAdvancedService()
-        subservice = YetAnotherService()
-        service.register_subservice(re.compile('^/french'),
-                                    subservice)
-
-        StackInABox.register_service(service)
-
-        stackinabox.util.httpretty.registration('localhost')
-
-        res = requests.get('http://localhost/aas/french')
-        self.assertEqual(res.status_code,
-                         200)
-        self.assertEqual(res.text,
-                         'bonjour')
+    def test_sub_register(self):
+        uri = '/numeric'
+        instance = service.StackInABoxService('conjunction')
+        instance2 = service.StackInABoxService('terminator')
+        self.assertEqual(instance.routes, {})
+        instance.register_subservice(uri, instance2)
+        self.assertIn(uri, instance.routes)
+        self.assertIsInstance(instance.routes[uri], dict)
+        self.assertIn('regex', instance.routes[uri])
+        self.assertIsInstance(
+            instance.routes[uri]['regex'],
+            type(re.compile(''))
+        )
+        self.assertEqual(
+            instance.routes[uri]['regex'].pattern,
+            '^{0}$'.format(uri)
+        )
+        self.assertIn('uri', instance.routes[uri])
+        self.assertEqual(instance.routes[uri]['uri'], uri)
+        self.assertIn('handlers', instance.routes[uri])
+        self.assertIsInstance(
+            instance.routes[uri]['handlers'],
+            router.StackInABoxServiceRouter
+        )
