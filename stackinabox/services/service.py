@@ -199,6 +199,7 @@ class StackInABoxService(object):
     PATCH = 'PATCH'
     POST = 'POST'
     PUT = 'PUT'
+    TRACE = 'TRACE'
     METHODS = [
         DELETE,
         GET,
@@ -206,7 +207,8 @@ class StackInABoxService(object):
         OPTIONS,
         PATCH,
         POST,
-        PUT
+        PUT,
+        TRACE
     ]
 
     def __init__(self, name):
