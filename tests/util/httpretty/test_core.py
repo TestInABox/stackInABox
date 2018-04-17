@@ -4,6 +4,7 @@ Stack-In-A-Box: Basic Test
 import logging
 import unittest
 
+import ddt
 import httpretty
 import requests
 import six
@@ -37,6 +38,7 @@ class TestHttprettyBasic(unittest.TestCase):
         self.assertEqual(res.text, 'Hello')
 
 
+@ddt.ddt
 @httpretty.activate
 class TestHttprettyAdvanced(unittest.TestCase):
 
@@ -48,8 +50,12 @@ class TestHttprettyAdvanced(unittest.TestCase):
         super(TestHttprettyAdvanced, self).tearDown()
         StackInABox.reset_services()
 
-    def test_basic(self):
-        stackinabox.util.httpretty.registration('localhost')
+    @ddt.data(True, False)
+    def test_basic(self, use_deprecated):
+        if use_deprecated:
+            stackinabox.util.httpretty.httpretty_registration('localhost')
+        else:
+            stackinabox.util.httpretty.registration('localhost')
 
         res = requests.get('http://localhost/advanced/')
         self.assertEqual(res.status_code, 200)

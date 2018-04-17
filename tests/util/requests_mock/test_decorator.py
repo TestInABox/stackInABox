@@ -18,6 +18,21 @@ from tests.utils.services import AdvancedService
 logger = logging.getLogger(__name__)
 
 
+class TestRequestsMockBasicWithDecoratorErrors(unittest.TestCase):
+
+    def test_basic(self):
+
+        decor_instance = decorator.activate('localhost')
+        with self.assertRaises(TypeError):
+            decor_instance.process_service({}, raise_on_type=True)
+
+    @decorator.stack_activate('localhost', HelloService())
+    def test_deprecated(self):
+        res = requests.get('http://localhost/hello/')
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.text, 'Hello')
+
+
 class TestRequestsMockBasic(unittest.TestCase):
 
     def setUp(self):
