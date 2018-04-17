@@ -5,9 +5,11 @@ Requests-Mock Utility
 
 StackInABox provides support for writing tests with requests-mock.
 
-.. currentmodule:: stackinabox.util.requests_mock
+.. currentmodule:: stackinabox.util.requests_mock.reqcallable
 .. autoclass:: RequestMockCallable
     :members:
+
+.. currentmodule:: stackinabox.util.requests_mock
 .. autofunction:: requests_mock_session_registration
 .. autofunction:: requests_mock_registration
 .. autofunction:: requests_request
