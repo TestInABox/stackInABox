@@ -11,9 +11,9 @@ import six
 
 import stackinabox.util.responses
 from stackinabox.stack import StackInABox
-from stackinabox.services.hello import HelloService
 
 from tests.utils.services import AdvancedService
+from tests.utils.hello import HelloService
 
 
 logger = logging.getLogger(__name__)

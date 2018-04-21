@@ -10,9 +10,9 @@ import unittest
 import requests
 
 from stackinabox.util.requests_mock import decorator
-from stackinabox.services.hello import HelloService
 
 from tests.utils.services import AdvancedService
+from tests.utils.hello import HelloService
 
 
 logger = logging.getLogger(__name__)

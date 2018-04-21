@@ -7,13 +7,13 @@ import mock
 import requests
 
 from stackinabox import stack
-from stackinabox.services import (
-    hello,
-    service
-)
+from stackinabox.services import service
 import stackinabox.util.httpretty
 
-from tests.utils import services as test_services
+from tests.utils import (
+    hello,
+    services as test_services
+)
 
 
 class ExceptionalServices(service.StackInABoxService):
