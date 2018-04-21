@@ -3,7 +3,6 @@ Stack-In-A-Box: Basic Test
 """
 import json
 import logging
-import unittest
 
 import requests
 import responses

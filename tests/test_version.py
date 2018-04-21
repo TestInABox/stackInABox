@@ -1,12 +1,12 @@
 import os
 import os.path
 import sys
-import unittest
 
 import stackinabox
+from tests import base
 
 
-class TestVersionMatch(unittest.TestCase):
+class TestVersionMatch(base.TestCase):
 
     def setUp(self):
         super(TestVersionMatch, self).setUp()

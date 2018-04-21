@@ -3,7 +3,6 @@ Stack-In-A-Box: Basic Test
 """
 import json
 import logging
-import unittest
 
 import ddt
 import requests
@@ -15,19 +14,18 @@ import stackinabox.util.requests_mock
 from stackinabox.util.requests_mock import core
 from stackinabox.stack import StackInABox
 
-from tests.utils.services import AdvancedService
-from tests.utils.hello import HelloService
+from tests.util import base
 
 
 logger = logging.getLogger(__name__)
 
 
 @ddt.ddt
-class TestRequestsMockBasic(unittest.TestCase):
+class TestRequestsMockBasic(base.UtilTestCase):
 
     def setUp(self):
         super(TestRequestsMockBasic, self).setUp()
-        StackInABox.register_service(HelloService())
+        StackInABox.register_service(self.hello_service)
         self.session = requests.Session()
 
     def tearDown(self):
@@ -101,11 +99,11 @@ class TestRequestsMockBasic(unittest.TestCase):
         )
 
 
-class TestRequestMockAdapter(unittest.TestCase):
+class TestRequestMockAdapter(base.UtilTestCase):
 
     def setUp(self):
         super(TestRequestMockAdapter, self).setUp()
-        StackInABox.register_service(HelloService())
+        StackInABox.register_service(self.hello_service)
         self.session = requests.Session()
 
     def tearDown(self):
@@ -122,11 +120,11 @@ class TestRequestMockAdapter(unittest.TestCase):
 
 
 @ddt.ddt
-class TestRequestMockAdvanced(unittest.TestCase):
+class TestRequestMockAdvanced(base.UtilTestCase):
 
     def setUp(self):
         super(TestRequestMockAdvanced, self).setUp()
-        StackInABox.register_service(AdvancedService())
+        StackInABox.register_service(self.advanced_service)
         self.session = requests.Session()
 
     def tearDown(self):

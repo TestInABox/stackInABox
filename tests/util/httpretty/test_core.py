@@ -2,7 +2,6 @@
 Stack-In-A-Box: Basic Test
 """
 import logging
-import unittest
 
 import ddt
 import httpretty
@@ -12,19 +11,18 @@ import six
 import stackinabox.util.httpretty
 from stackinabox.stack import StackInABox
 
-from tests.utils.services import AdvancedService
-from tests.utils.hello import HelloService
+from tests.util import base
 
 
 logger = logging.getLogger(__name__)
 
 
 @httpretty.activate
-class TestHttprettyBasic(unittest.TestCase):
+class TestHttprettyBasic(base.UtilTestCase):
 
     def setUp(self):
         super(TestHttprettyBasic, self).setUp()
-        StackInABox.register_service(HelloService())
+        StackInABox.register_service(self.hello_service)
 
     def tearDown(self):
         super(TestHttprettyBasic, self).tearDown()
@@ -40,11 +38,11 @@ class TestHttprettyBasic(unittest.TestCase):
 
 @ddt.ddt
 @httpretty.activate
-class TestHttprettyAdvanced(unittest.TestCase):
+class TestHttprettyAdvanced(base.UtilTestCase):
 
     def setUp(self):
         super(TestHttprettyAdvanced, self).setUp()
-        StackInABox.register_service(AdvancedService())
+        StackInABox.register_service(self.advanced_service)
 
     def tearDown(self):
         super(TestHttprettyAdvanced, self).tearDown()

@@ -5,12 +5,12 @@ import collections
 import json
 import logging
 import types
-import unittest
 
 import requests
 
 from stackinabox.util.responses import decorator
 
+from tests import base
 from tests.utils.services import AdvancedService
 from tests.utils.hello import HelloService
 
@@ -36,7 +36,7 @@ def test_verify_list():
     assert isinstance(responses_list(), collections.Iterable)
 
 
-class TestDecoratorParameters(unittest.TestCase):
+class TestDecoratorParameters(base.TestCase):
 
     def test_process_service_parameters(self):
         decor_instance = decorator.activate('localhost')

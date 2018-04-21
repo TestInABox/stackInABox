@@ -1,5 +1,4 @@
 import re
-import unittest
 
 import ddt
 
@@ -8,6 +7,8 @@ from stackinabox.services import (
     service,
     router
 )
+
+from tests.services import base
 
 
 class FakeRouter(object):
@@ -34,7 +35,7 @@ class FakeRouter(object):
 
 
 @ddt.ddt
-class TestStackInABoxService(unittest.TestCase):
+class TestStackInABoxService(base.TestCase):
 
     def setUp(self):
         super(TestStackInABoxService, self).setUp()

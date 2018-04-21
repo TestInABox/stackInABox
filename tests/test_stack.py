@@ -1,5 +1,4 @@
 import re
-import unittest
 
 import ddt
 import httpretty
@@ -10,6 +9,7 @@ from stackinabox import stack
 from stackinabox.services import service
 import stackinabox.util.httpretty
 
+from tests import base
 from tests.utils import (
     hello,
     services as test_services
@@ -29,7 +29,7 @@ class ExceptionalServices(service.StackInABoxService):
 
 
 @ddt.ddt
-class TestStack(unittest.TestCase):
+class TestStack(base.TestCase):
 
     def setUp(self):
         super(TestStack, self).setUp()
