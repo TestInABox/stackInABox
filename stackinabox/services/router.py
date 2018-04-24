@@ -20,7 +20,7 @@ class StackInABoxServiceRouter(object):
         :param obj: optional object for sub-service routing
         :param parent_obj: parent for sub-service routing
 
-        Note: obj and parent_obj must not be the same object
+        :raises: CircularReferenceError if a circular route is detected
         """
         self.service_name = name
         self.uri = uri
@@ -29,7 +29,9 @@ class StackInABoxServiceRouter(object):
         self.methods = {}
 
         # Ensure we do not have any circular references
-        assert(self.obj != self.parent_obj)
+        if None not in (self.obj, self.parent_obj):
+            if self.obj == self.parent_obj:
+                raise exceptions.CircularReferenceError
 
     @property
     def is_subservice(self):
@@ -44,6 +46,7 @@ class StackInABoxServiceRouter(object):
 
         :param obj: stackinabox.services.StackInABoxService instance
         :raises: RouteAlreadyRegisteredError if the route is already registered
+        :raises: CircularReferenceError if a circular route is detected
         :returns: n/a
         """
         # ensure there is not already a sub-service
@@ -61,7 +64,8 @@ class StackInABoxServiceRouter(object):
                 .format(id(self), self.service_name, self.uri, obj.name))
 
         # Ensure we do not have any circular references
-        assert(obj != self.parent_obj)
+        if obj == self.parent_obj:
+            raise exceptions.CircularReferenceError
 
         # if no errors, save the object and update the URI
         self.obj = obj
@@ -73,7 +77,7 @@ class StackInABoxServiceRouter(object):
         :param new_uri: URI to switch to and update the matching
         :returns: n/a
 
-        Note: This overwrites any existing URI
+        .. note:: This overwrites any existing URI
         """
         self.uri = new_uri
 
@@ -92,22 +96,28 @@ class StackInABoxServiceRouter(object):
 
         # ensure the HTTP verb is not already registered
         if method not in self.methods.keys():
-            logger.debug('Service Router ({0} - {1}): Adding method {2} on '
-                         'route {3}'
-                         .format(id(self),
-                                 self.service_name,
-                                 method,
-                                 self.uri))
+            logger.debug(
+                'Service Router ({0} - {1}): Adding method {2} on route {3}'
+                .format(
+                    id(self),
+                    self.service_name,
+                    method,
+                    self.uri
+                )
+            )
             self.methods[method] = fn
 
         else:
             raise exceptions.RouteAlreadyRegisteredError(
                 'Service Router ({0} - {1}): Method {2} already registered '
                 'on Route {3}'
-                .format(id(self),
-                        self.service_name,
-                        method,
-                        self.uri))
+                .format(
+                    id(self),
+                    self.service_name,
+                    method,
+                    self.uri
+                )
+            )
 
     def __call__(self, method, request, uri, headers):
         """Python callable interface.
@@ -125,37 +135,56 @@ class StackInABoxServiceRouter(object):
 
         # Check the registered methods, preferring a function to sub-service
         if method in self.methods:
-            logger.debug('Service Router ({0} - {1}): Located Method {2} on '
-                         'Route {3}. Calling...'
-                         .format(id(self),
-                                 self.service_name,
-                                 method,
-                                 self.uri))
-            return self.methods[method](self.parent_obj,
-                                        request,
-                                        uri,
-                                        headers)
+            logger.debug(
+                'Service Router ({0} - {1}): Located Method {2} on Route '
+                '{3}. Calling...'.format(
+                    id(self),
+                    self.service_name,
+                    method,
+                    self.uri
+                )
+            )
+
+            return self.methods[method](
+                self.parent_obj,
+                request,
+                uri,
+                headers
+            )
+
         # If no method, is there a sub-service that handles it?
         elif self.obj is not None:
-            logger.debug('Service Router ({0} - {1}): Located Subservice {2} '
-                         'on Route {3}. Calling...'
-                         .format(id(self),
-                                 self.service_name,
-                                 self.obj.name,
-                                 self.uri))
+            logger.debug(
+                'Service Router ({0} - {1}): Located Subservice {2} on Route '
+                '{3}. Calling...'.format(
+                    id(self),
+                    self.service_name,
+                    self.obj.name,
+                    self.uri
+                )
+            )
 
-            return self.obj.sub_request(method,
-                                        request,
-                                        uri,
-                                        headers)
+            return self.obj.sub_request(
+                method,
+                request,
+                uri,
+                headers
+            )
 
         # otherwise, return an HTTP 405 error
         else:
-            logger.debug('Service Router ({0} - {1}): '
-                         'No Method handler for service'
-                         .format(id(self),
-                                 self.service_name))
-            return (405,
-                    headers,
-                    '{0} not supported. Supported Methods are {1}'.format(
-                        method, self.methods))
+            logger.debug(
+                'Service Router ({0} - {1}): No Method handler for service'
+                .format(
+                    id(self),
+                    self.service_name
+                )
+            )
+
+            return (
+                405,
+                headers,
+                '{0} not supported. Supported Methods are {1}'.format(
+                    method, self.methods
+                )
+            )
