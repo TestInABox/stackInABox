@@ -1,6 +1,6 @@
 doc8==0.8.0
 httpretty==0.8.6
-requests==2.18.4
+requests==2.21.0
 requests-mock==1.4.0
 responses>=0.4.0
 six==1.11.0
