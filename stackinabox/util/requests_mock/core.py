@@ -41,7 +41,7 @@ class RequestMockCallable(object):
         :param uri: URI to match against
         """
         self.regex = re.compile(
-            '(http)?s?(://)?{0}:?(\d+)?/'.format(uri), re.I)
+            r'(http)?s?(://)?{0}:?(\d+)?/'.format(uri), re.I)
 
     def __call__(self, request):
         """object callable interface.

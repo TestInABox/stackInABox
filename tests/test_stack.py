@@ -2,10 +2,9 @@ import re
 import unittest
 
 import ddt
-import httpretty
 import requests
 
-import stackinabox.util.httpretty
+import stackinabox.util.requests_mock
 from stackinabox.stack import (
     StackInABox, ServiceAlreadyRegisteredError)
 from stackinabox.services.service import *
@@ -52,12 +51,12 @@ class TestStack(unittest.TestCase):
         result = StackInABox.get_services_url(url, base)
         self.assertEqual(result, value)
 
-    @httpretty.activate
     def test_service_exception(self):
         exceptional = ExceptionalServices()
         StackInABox.register_service(exceptional)
 
-        stackinabox.util.httpretty.registration('localhost')
+        with stackinabox.util.requests_mock.activate():
+            stackinabox.util.requests_mock.registration('localhost')
 
-        res = requests.get('http://localhost/except/')
-        self.assertEqual(res.status_code, 596)
+            res = requests.get('http://localhost/except/')
+            self.assertEqual(res.status_code, 596)

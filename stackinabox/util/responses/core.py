@@ -61,7 +61,7 @@ def registration(uri):
 
     # Build the regex for the URI and register all HTTP verbs
     # with Responses
-    regex = re.compile('(http)?s?(://)?{0}:?(\d+)?/'.format(uri),
+    regex = re.compile(r'(http)?s?(://)?{0}:?(\d+)?/'.format(uri),
                        re.I)
     METHODS = [
         responses.DELETE,

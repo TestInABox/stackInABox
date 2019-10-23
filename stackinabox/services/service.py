@@ -383,7 +383,7 @@ class StackInABoxService(object):
         return self.try_handle_route(uri, method, request, uri, headers)
 
     def sub_request(self, method, request, uri, headers):
-        """Handle the supplied sub-service request on the specified routing URI.
+        """Handle the supplied sub-service request on the specified routing URI
 
         :param method: string - HTTP Verb
         :param request: request object describing the HTTP request

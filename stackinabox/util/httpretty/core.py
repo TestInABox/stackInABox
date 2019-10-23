@@ -79,7 +79,7 @@ def registration(uri):
 
     # build the regex for the uri and register all http verbs
     # with httpretty
-    regex = re.compile('(http)?s?(://)?{0}:?(\d+)?/'.format(uri),
+    regex = re.compile(r'(http)?s?(://)?{0}:?(\d+)?/'.format(uri),
                        re.I)
     for method in HttpBaseClass.METHODS:
         register_uri(method, regex, body=httpretty_callback)
