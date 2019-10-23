@@ -1,7 +1,12 @@
 """
 Stack-In-A-Box: Responses Support via decorator
 """
-import collections
+try:
+    import collections.abc as collections
+except ImportError:
+    # Py2.7 Support
+    import collections
+
 import functools
 import logging
 import re

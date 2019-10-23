@@ -2,6 +2,8 @@
 Stack-In-A-Box: Basic Test
 """
 import logging
+import sys
+import unittest
 
 import ddt
 import httpretty
@@ -17,6 +19,7 @@ from tests.util import base
 logger = logging.getLogger(__name__)
 
 
+@unittest.skipIf(sys.version_info >= (3, 0), "Httpretty not supported by Py3")
 @httpretty.activate
 class TestHttprettyBasic(base.UtilTestCase):
 
@@ -36,6 +39,7 @@ class TestHttprettyBasic(base.UtilTestCase):
         self.assertEqual(res.text, 'Hello')
 
 
+@unittest.skipIf(sys.version_info >= (3, 0), "Httpretty not supported by Py3")
 @ddt.ddt
 @httpretty.activate
 class TestHttprettyAdvanced(base.UtilTestCase):

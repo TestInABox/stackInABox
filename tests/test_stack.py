@@ -1,13 +1,11 @@
+import mock
 import re
 
 import ddt
-import httpretty
-import mock
 import requests
 
 from stackinabox import stack
 from stackinabox.services import service
-import stackinabox.util.httpretty
 
 from tests import base
 from tests.utils import (
