@@ -2,6 +2,7 @@
 Stack-In-A-Box: Basic Test
 """
 import collections
+import sys
 import types
 import unittest
 
@@ -13,6 +14,7 @@ from stackinabox.services.hello import HelloService
 from tests.utils.services import AdvancedService
 
 
+@unittest.skipIf(sys.version_info >= (3, 0), "Httpretty not supported by Py3")
 class TestHttprettyBasicWithDecorator(unittest.TestCase):
 
     @decorator.activate('localhost', HelloService())
@@ -41,6 +43,7 @@ class TestHttprettyBasicWithDecorator(unittest.TestCase):
         self.assertIsInstance(stack[list(stack.keys())[0]], HelloService)
 
 
+@unittest.skipIf(sys.version_info >= (3, 0), "Httpretty not supported by Py3")
 class TestHttprettyAdvancedWithDecorator(unittest.TestCase):
 
     @decorator.activate('localhost', AdvancedService())
@@ -81,6 +84,7 @@ def httpretty_generator():
     yield HelloService()
 
 
+@unittest.skipIf(sys.version_info >= (3, 0), "Httpretty not supported by Py3")
 class TestHttprettyBasicWithDecoratorAndGenerator(unittest.TestCase):
 
     def test_verify_generator(self):
@@ -127,6 +131,7 @@ def httpretty_list():
     ]
 
 
+@unittest.skipIf(sys.version_info >= (3, 0), "Httpretty not supported by Py3")
 class TestHttprettyBasicWithDecoratorAndList(unittest.TestCase):
 
     def test_verify_list(self):

@@ -14,7 +14,11 @@
 #    See the License for the specific language governing permissions and
 #    limitations under the License.
 
-import collections
+try:
+    import collections.abc as collections
+except ImportError:
+    # Py2.7 Support
+    import collections
 
 
 # Compliments of Requests

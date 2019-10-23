@@ -89,6 +89,11 @@ Out-of-the-box it supports the following frameworks:
 
 You can use any of them, and you must pull them in via your own test requirements.
 
+.. note:: HTTPretty has some version and Python limitations. Version 0.8.6 works fine; however, version 0.9.x which supports
+    Python3 seems to have a breaking change that is causing problems. Only 0.8.6 is supported by StackInABox under Python2
+    for the time being. That is not to say you may not get it to work; just that the StackInABox Unit Tests cannot verify it
+    will work. PRs are welcome to help resolve this.
+
 -----------
 Error Codes
 -----------

@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 REQUIRES = ['six']
 EXTRA_REQUIRES = {
-    'httpretty': ['httpretty==0.8.6'],
+    'httpretty': ['httpretty'],
     'requests-mock': ['requests-mock'],
     'responses': ['responses>=0.4.0']
 }

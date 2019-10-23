@@ -33,7 +33,7 @@ class AdvancedService(StackInABoxService):
         self.register(StackInABoxService.GET, '/g',
                       AdvancedService.query_handler)
         self.register(StackInABoxService.GET,
-                      re.compile('^/\d+$'),
+                      re.compile(r'^/\d+$'),
                       AdvancedService.regex_handler)
 
         for key in self.POTENTIAL_RESPONSES.keys():

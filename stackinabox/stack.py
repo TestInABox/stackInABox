@@ -36,10 +36,41 @@ class StackInABox(object):
     """
 
     @classmethod
+    def get_thread_instance(cls):
+        """
+        Interface to the thread storage to ensure the instance properly exists
+        """
+        create = False
+
+        # if the `instance` property doesn't exist
+        if not hasattr(local_store, 'instance'):
+            local_store.instance = None
+            create = True
+
+        # if the instance doesn't exist at all
+        elif local_store.instance is None:
+            create = True
+
+        # if it's something else entirely...
+        elif not isinstance(local_store.instance, cls):
+            local_store.instance = None
+            create = True
+
+        # if the above conditions are met, create it
+        if create:
+            logger.debug('Creating new StackInABox instance...')
+            local_store.instance = cls()
+            logger.debug(
+                'Created StackInABox({0})'.format(local_store.instance.__id)
+            )
+
+        return local_store.instance
+
+    @classmethod
     def reset_services(cls):
         """Reset the thread's StackInABox instance."""
         logger.debug('Resetting services')
-        return local_store.instance.reset()
+        return cls.get_thread_instance().reset()
 
     @classmethod
     def register_service(cls, service):
@@ -51,7 +82,7 @@ class StackInABox(object):
 
         """
         logger.debug('Registering service {0}'.format(service.name))
-        return local_store.instance.register(service)
+        return cls.get_thread_instance().register(service)
 
     @classmethod
     def call_into(cls, method, request, uri, headers):
@@ -66,7 +97,7 @@ class StackInABox(object):
 
         """
         logger.debug('Request: {0} - {1}'.format(method, uri))
-        return local_store.instance.call(method,
+        return cls.get_thread_instance().call(method,
                                          request,
                                          uri,
                                          headers)
@@ -85,7 +116,7 @@ class StackInABox(object):
         """
         logger.debug('Holding on {0} of type {1} with id {2}'
                      .format(name, type(obj), id(obj)))
-        local_store.instance.into_hold(name, obj)
+        cls.get_thread_instance().into_hold(name, obj)
 
     @classmethod
     def hold_out(cls, name):
@@ -102,7 +133,7 @@ class StackInABox(object):
         """
         logger.debug('Retreiving {0} from hold'
                      .format(name))
-        obj = local_store.instance.from_hold(name)
+        obj = cls.get_thread_instance().from_hold(name)
         logger.debug('Retrieved {0} of type {1} with id {2} from hold'
                      .format(name, type(obj), id(obj)))
         return obj
@@ -115,7 +146,7 @@ class StackInABox(object):
 
         """
         logger.debug('Request: Update URI to {0}'.format(uri))
-        local_store.instance.base_url = uri
+        cls.get_thread_instance().base_url = uri
 
     def __init__(self):
         """Initialize the StackInABox instance.
@@ -307,4 +338,3 @@ class StackInABox(object):
 
 # Thread local instance of StackInABox
 local_store = threading.local()
-local_store.instance = StackInABox()

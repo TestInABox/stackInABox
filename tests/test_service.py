@@ -1,12 +1,11 @@
 import re
 import unittest
 
-import httpretty
 import requests
 
 from stackinabox.stack import StackInABox
 from stackinabox.services.service import *
-import stackinabox.util.httpretty
+import stackinabox.util.requests_mock
 
 
 class TestServiceRegex(unittest.TestCase):
@@ -112,7 +111,6 @@ class TestServiceRouteRegistration(unittest.TestCase):
             service.register(StackInABoxService.GET, '/',
                              AnotherAdvancedService.second_handler)
 
-    @httpretty.activate
     def test_subservice_registration(self):
         service = AnotherAdvancedService()
         subservice = YetAnotherService()
@@ -121,10 +119,11 @@ class TestServiceRouteRegistration(unittest.TestCase):
 
         StackInABox.register_service(service)
 
-        stackinabox.util.httpretty.registration('localhost')
+        with stackinabox.util.requests_mock.activate():
+            stackinabox.util.requests_mock.registration('localhost')
 
-        res = requests.get('http://localhost/aas/french')
-        self.assertEqual(res.status_code,
-                         200)
-        self.assertEqual(res.text,
-                         'bonjour')
+            res = requests.get('http://localhost/aas/french')
+            self.assertEqual(res.status_code,
+                             200)
+            self.assertEqual(res.text,
+                             'bonjour')
