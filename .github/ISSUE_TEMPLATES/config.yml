@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Documentation
+    url: https://stackinabox.readthedocs.io/en/latest/
+    about: Make sure you read the relevant docs
+  - name: Ask the Community
+    url: https://gitter.im/TestInABox/community
+    about: Join the Test-In-A-Box Gitter Discussion
