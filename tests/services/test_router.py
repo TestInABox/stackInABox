@@ -133,6 +133,7 @@ class TestStackInABoxRouter(base.TestCase):
             None,
             None
         )
+
         def fn():
             pass
 

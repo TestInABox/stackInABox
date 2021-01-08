@@ -102,7 +102,11 @@ class StackInABoxServiceRouter(object):
                     id(self),
                     self.service_name,
                     method,
-                    self.uri
+                    (
+                        self.uri.pattern
+                        if hasattr(self.uri, 'pattern')
+                        else self.uri
+                    )
                 )
             )
             self.methods[method] = fn

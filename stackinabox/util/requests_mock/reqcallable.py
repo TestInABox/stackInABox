@@ -24,7 +24,7 @@ class RequestMockCallable(object):
         :param uri: URI to match against
         """
         self.regex = re.compile(
-            '(http)?s?(://)?{0}:?(\d+)?/'.format(uri), re.I)
+            r'(http)?s?(://)?{0}:?(\d+)?/'.format(uri), re.I)
 
     def __call__(self, request):
         """object callable interface.
@@ -51,7 +51,7 @@ class RequestMockCallable(object):
         :returns: string - HTTP reason text
         """
 
-        if status_code in requests.status_codes.codes:
+        if status_code in requests.status_codes._codes:
             return requests.status_codes._codes[status_code][0].replace('_',
                                                                         ' ')
         else:
@@ -77,7 +77,7 @@ class RequestMockCallable(object):
         # standard HTTP status and reason text format
         elif isinstance(status, str) or isinstance(status, bytes):
             code, reason = status.split(' ', 1)
-            return (code, reason)
+            return (int(code), reason)
 
         # otherwise, return with a default reason code
         else:
@@ -110,25 +110,28 @@ class RequestMockCallable(object):
 
         # if the body is a string-type...
         if isinstance(body, six.string_types):
+            logger.debug('running text result')
             # Try to convert it to JSON
             text_data = body
 
         # if the body is binary, then it's the content
         elif isinstance(body, six.binary_type):
+            logger.debug('running binary result')
             content_data = body
 
         # by default, it's just body data
         else:
             # default to body data
+            logger.debug('running default result')
             body_data = body
 
         # build the Python requests' Response object
+        # `raw` and `json` parameters shouldn't be used
         return requests_mock.response.create_response(
             request,
             headers=output_headers,
             status_code=status_code,
             body=body_data,
-            json=None,
             text=text_data,
             content=content_data
         )
