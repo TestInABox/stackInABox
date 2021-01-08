@@ -8,3 +8,4 @@ Community Guide
     help
     contribute
     faq
+    about

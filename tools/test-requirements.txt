@@ -1,12 +1,12 @@
-coverage==4.5.4
-ddt==1.2.1
-httpretty==0.8.6
-mock==3.0.5
-pytest==5.2.1
-pytest-cov==2.8.1
-requests==2.22.0
-requests-mock==1.7.0
-responses>=0.10.6
-six==1.12.0
-pycodestyle==2.5.0
-importlib-metadata==0.22.0 ;python_version<"3.8"
+coverage==5.3.1
+ddt==1.4.1
+httpretty==1.0.5
+mock==4.0.3
+pytest==6.2.1
+pytest-cov==2.10.1
+requests==2.25.1
+requests-mock==1.8.0
+responses>=0.12.1
+six==1.15.0
+pycodestyle==2.6.0
+importlib-metadata==3.3.0 ;python_version<"3.8"

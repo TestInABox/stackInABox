@@ -1,4 +1,7 @@
 [report]
+show_missing = True
+precision = 2
+fail_under = 92
 exclude_lines =
     # Have to re-enable the standard pragma
     pragma: no cover
@@ -8,3 +11,4 @@ exclude_lines =
 
 [run]
 omit = *tests* stackinabox/tests*
+branch = True

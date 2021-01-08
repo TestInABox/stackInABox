@@ -23,139 +23,10 @@ import six
 
 from stackinabox.stack import StackInABox
 from stackinabox.util import deprecator
-from stackinabox.util.tools import CaseInsensitiveDict
+from stackinabox.util.requests_mock import reqcallable
 
 
 logger = logging.getLogger(__name__)
-
-
-class RequestMockCallable(object):
-    """Requests-Mock Callable object.
-
-    Python callable object to interact with Requests-Mock
-    """
-
-    def __init__(self, uri):
-        """object initialization
-
-        :param uri: URI to match against
-        """
-        self.regex = re.compile(
-            r'(http)?s?(://)?{0}:?(\d+)?/'.format(uri), re.I)
-
-    def __call__(self, request):
-        """object callable interface.
-
-        :param request: Python requests Request object
-
-        :returns: Python requests Response object if handled
-                  otherwise None
-        """
-        uri = request.url
-        if self.regex.match(uri):
-            return self.handle(request, uri)
-
-        else:
-            # We don't handle it
-            return None
-
-    @staticmethod
-    def get_reason_for_status(status_code):
-        """Lookup the HTTP reason text for a given status code.
-
-        :param status_code: int - HTTP status code
-
-        :returns: string - HTTP reason text
-        """
-
-        if status_code in requests.status_codes.codes:
-            return requests.status_codes._codes[status_code][0].replace('_',
-                                                                        ' ')
-        else:
-            return 'Unknown status code - {0}'.format(status_code)
-
-    @staticmethod
-    def split_status(status):
-        """Split a HTTP Status and Reason code string into a tuple.
-
-        :param status string containing the status and reason text or
-                             the integer of the status code
-
-        :returns: tuple - (int, string) containing the integer status code
-                          and reason text string
-        """
-
-        # If the status is an integer, then lookup the reason text
-        if isinstance(status, int):
-            return (status, RequestMockCallable.get_reason_for_status(
-                status))
-
-        # otherwise, ensure it is a string and try to split it based on the
-        # standard HTTP status and reason text format
-        elif isinstance(status, str) or isinstance(status, bytes):
-            code, reason = status.split(' ', 1)
-            return (code, reason)
-
-        # otherwise, return with a default reason code
-        else:
-            return (status, 'Unknown')
-
-    def handle(self, request, uri):
-        """Request handler interface.
-
-        :param request: Python requests Request object
-        :param uri: URI of the request
-        """
-
-        # Convert the call over to Stack-In-A-Box
-        method = request.method
-        headers = CaseInsensitiveDict()
-        request_headers = CaseInsensitiveDict()
-        request_headers.update(request.headers)
-        request.headers = request_headers
-        stackinabox_result = StackInABox.call_into(method,
-                                                   request,
-                                                   uri,
-                                                   headers)
-
-        # reformat the result for easier use
-        status_code, output_headers, body = stackinabox_result
-
-        json_data = None
-        text_data = None
-        content_data = None
-        body_data = None
-
-        # if the body is a string-type...
-        if isinstance(body, six.string_types):
-            # Try to convert it to JSON
-            text_data = body
-            try:
-                json_data = json.dumps(text_data)
-                text_data = json_data
-            except Exception:
-                json_data = None
-                text_data = body
-
-        # if the body is binary, then it's the content
-        elif isinstance(body, six.binary_type):
-            content_data = body
-
-        # by default, it's just body data
-        else:
-            # default to body data
-            body_data = body
-
-        # build the Python requests' Response object
-        return requests_mock.response.create_response(
-            request,
-            headers=output_headers,
-            status_code=status_code,
-            body=body_data,
-            json=json_data,
-            text=text_data,
-            content=content_data
-        )
 
 
 def session_registration(uri, session):
@@ -177,7 +48,9 @@ def session_registration(uri, session):
     # Create a Python Requests Adapter object for handling the session
     StackInABox.hold_onto('adapter', requests_mock.Adapter())
     # Add the Request handler object for the URI
-    StackInABox.hold_out('adapter').add_matcher(RequestMockCallable(uri))
+    StackInABox.hold_out('adapter').add_matcher(
+        reqcallable.RequestMockCallable(uri)
+    )
 
     # Tell the session about the adapter and the URI
     session.mount('http://{0}'.format(uri), StackInABox.hold_out('adapter'))
@@ -261,66 +134,66 @@ class requests_session(requests.sessions.SessionRedirectMixin):
         """Pyton requests.session.Session.prepare_request wrapper."""
         return local_sessions.session.prepare_request(request)
 
-    def request(*args, **kwargs):
+    def request(self, *args, **kwargs):
         """requests.session.Session.request wrapper."""
-        return local_session.session.request(*args, **kwargs)
+        return local_sessions.session.request(*args, **kwargs)
 
-    def get(*args, **kwargs):
+    def get(self, *args, **kwargs):
         """requests.session.Session.get wrapper."""
-        return local_session.session.get(*args, **kwargs)
+        return local_sessions.session.get(*args, **kwargs)
 
-    def options(*args, **kwargs):
+    def options(self, *args, **kwargs):
         """requests.session.Session.options wrapper."""
-        return local_session.session.options(*args, **kwargs)
+        return local_sessions.session.options(*args, **kwargs)
 
-    def head(*args, **kwargs):
+    def head(self, *args, **kwargs):
         """requests.session.Session.head wrapper."""
-        return local_session.session.head(*args, **kwargs)
+        return local_sessions.session.head(*args, **kwargs)
 
-    def post(*args, **kwargs):
+    def post(self, *args, **kwargs):
         """requests.session.Session.post wrapper."""
-        return local_session.session.post(*args, **kwargs)
+        return local_sessions.session.post(*args, **kwargs)
 
-    def put(*args, **kwargs):
+    def put(self, *args, **kwargs):
         """requests.session.Session.put wrapper."""
-        return local_session.session.put(*args, **kwargs)
+        return local_sessions.session.put(*args, **kwargs)
 
-    def patch(*args, **kwargs):
+    def patch(self, *args, **kwargs):
         """requests.session.Session.patch wrapper."""
-        return local_session.session.patch(*args, **kwargs)
+        return local_sessions.session.patch(*args, **kwargs)
 
-    def delete(*args, **kwargs):
+    def delete(self, *args, **kwargs):
         """requests.session.Session.delete wrapper."""
-        return local_session.session.delete(*args, **kwargs)
+        return local_sessions.session.delete(*args, **kwargs)
 
-    def send(*args, **kwargs):
+    def send(self, *args, **kwargs):
         """requests.session.Session.send wrapper."""
-        return local_session.session.send(*args, **kwargs)
+        return local_sessions.session.send(*args, **kwargs)
 
-    def merge_environment_settings(*args, **kwargs):
+    def merge_environment_settings(self, *args, **kwargs):
         """requests.session.Session.merge_environment_settings wrapper."""
-        return local_session.session.merge_environment_settings(*args,
+        return local_sessions.session.merge_environment_settings(*args,
                                                                 **kwargs)
 
-    def get_adapter(*args, **kwargs):
+    def get_adapter(self, *args, **kwargs):
         """requests.session.Session.get_adapter wrapper."""
-        return local_session.session.get_adapter(*args, **kwargs)
+        return local_sessions.session.get_adapter(*args, **kwargs)
 
-    def close(*args, **kwargs):
+    def close(self, *args, **kwargs):
         """requests.session.Session.close wrapper."""
-        return local_session.session.close(*args, **kwargs)
+        return local_sessions.session.close(*args, **kwargs)
 
-    def mount(*args, **kwargs):
+    def mount(self, *args, **kwargs):
         """requests.session.Session.mount wrapper."""
-        return local_session.session.mount(*args, **kwargs)
+        return local_sessions.session.mount(*args, **kwargs)
 
-    def __getstate__(*args, **kwargs):
+    def __getstate__(self, *args, **kwargs):
         """requests.session.Session.__getstate__ wrapper."""
-        return local_session.session.__getstate__(*args, **kwargs)
+        return local_sessions.session.__getstate__(*args, **kwargs)
 
-    def __setstate__(*args, **kwargs):
+    def __setstate__(self, *args, **kwargs):
         """requests.session.Session.__setstate__ wrapper."""
-        return local_session.session.__setstate__(*args, **kwargs)
+        return local_sessions.session.__setstate__(*args, **kwargs)
 
 
 def get_session():

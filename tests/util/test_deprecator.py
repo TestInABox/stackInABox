@@ -1,11 +1,11 @@
-import unittest
-
 import mock
 
 from stackinabox.util import deprecator
 
+from tests.util import base
 
-class TestUtilsDeprecator(unittest.TestCase):
+
+class TestUtilsDeprecator(base.TestCase):
 
     def test_basic(self):
         with mock.patch('warnings.warn') as mock_warning:

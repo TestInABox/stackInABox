@@ -12,6 +12,7 @@ Breaking Changes
   switch just by changing the imports. Previously the utility being supported
   had its name in the methods, thus requiring more significant code changes
   if one decided to change utilities.
+- Moved the HelloService example from stackinabox proper to the test suite
 
 Fixed
 -----

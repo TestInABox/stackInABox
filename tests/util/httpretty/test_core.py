@@ -5,15 +5,15 @@ import logging
 import sys
 import unittest
 
+import ddt
 import httpretty
 import requests
 import six
 
 import stackinabox.util.httpretty
 from stackinabox.stack import StackInABox
-from stackinabox.services.hello import HelloService
 
-from tests.utils.services import AdvancedService
+from tests.util import base
 
 
 logger = logging.getLogger(__name__)
@@ -21,11 +21,11 @@ logger = logging.getLogger(__name__)
 
 @unittest.skipIf(sys.version_info >= (3, 0), "Httpretty not supported by Py3")
 @httpretty.activate
-class TestHttprettyBasic(unittest.TestCase):
+class TestHttprettyBasic(base.UtilTestCase):
 
     def setUp(self):
         super(TestHttprettyBasic, self).setUp()
-        StackInABox.register_service(HelloService())
+        StackInABox.register_service(self.hello_service)
 
     def tearDown(self):
         super(TestHttprettyBasic, self).tearDown()
@@ -40,19 +40,24 @@ class TestHttprettyBasic(unittest.TestCase):
 
 
 @unittest.skipIf(sys.version_info >= (3, 0), "Httpretty not supported by Py3")
+@ddt.ddt
 @httpretty.activate
-class TestHttprettyAdvanced(unittest.TestCase):
+class TestHttprettyAdvanced(base.UtilTestCase):
 
     def setUp(self):
         super(TestHttprettyAdvanced, self).setUp()
-        StackInABox.register_service(AdvancedService())
+        StackInABox.register_service(self.advanced_service)
 
     def tearDown(self):
         super(TestHttprettyAdvanced, self).tearDown()
         StackInABox.reset_services()
 
-    def test_basic(self):
-        stackinabox.util.httpretty.registration('localhost')
+    @ddt.data(True, False)
+    def test_basic(self, use_deprecated):
+        if use_deprecated:
+            stackinabox.util.httpretty.httpretty_registration('localhost')
+        else:
+            stackinabox.util.httpretty.registration('localhost')
 
         res = requests.get('http://localhost/advanced/')
         self.assertEqual(res.status_code, 200)

@@ -5,14 +5,14 @@ import collections
 import json
 import logging
 import types
-import unittest
 
 import requests
 
 from stackinabox.util.responses import decorator
-from stackinabox.services.hello import HelloService
 
+from tests import base
 from tests.utils.services import AdvancedService
+from tests.utils.hello import HelloService
 
 
 logger = logging.getLogger(__name__)
@@ -36,8 +36,23 @@ def test_verify_list():
     assert isinstance(responses_list(), collections.Iterable)
 
 
+class TestDecoratorParameters(base.TestCase):
+
+    def test_process_service_parameters(self):
+        decor_instance = decorator.activate('localhost')
+        with self.assertRaises(TypeError):
+            decor_instance.process_service({}, raise_on_type=True)
+
+
 @decorator.activate('localhost', HelloService())
 def test_basic_responses():
+    res = requests.get('http://localhost/hello/')
+    assert res.status_code == 200
+    assert res.text == 'Hello'
+
+
+@decorator.stack_activate('localhost', HelloService())
+def test_deprecated():
     res = requests.get('http://localhost/hello/')
     assert res.status_code == 200
     assert res.text == 'Hello'

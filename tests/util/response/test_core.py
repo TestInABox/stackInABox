@@ -3,7 +3,6 @@ Stack-In-A-Box: Basic Test
 """
 import json
 import logging
-import unittest
 
 import requests
 import responses
@@ -11,9 +10,9 @@ import six
 
 import stackinabox.util.responses
 from stackinabox.stack import StackInABox
-from stackinabox.services.hello import HelloService
 
 from tests.utils.services import AdvancedService
+from tests.utils.hello import HelloService
 
 
 logger = logging.getLogger(__name__)
@@ -36,10 +35,13 @@ def test_basic_responses():
 
 def test_advanced_responses():
 
-    def run():
+    def run(use_deprecated):
         responses.mock.start()
         StackInABox.register_service(AdvancedService())
-        stackinabox.util.responses.registration('localhost')
+        if use_deprecated:
+            stackinabox.util.responses.responses_registration('localhost')
+        else:
+            stackinabox.util.responses.registration('localhost')
 
         res = requests.get('http://localhost/advanced/')
         assert res.status_code == 200
@@ -77,5 +79,6 @@ def test_advanced_responses():
         responses.mock.stop()
         responses.mock.reset()
 
-    with responses.RequestsMock():
-        run()
+    for deprecation_status in [True, False]:
+        with responses.RequestsMock():
+            run(deprecation_status)

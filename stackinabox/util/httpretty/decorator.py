@@ -58,29 +58,29 @@ class activate(object):
         else:
             self.enable_service_access = None
 
-        def process_service(arg_based_service, raise_on_type=True):
-            if isinstance(arg_based_service, StackInABoxService):
-                logger.debug("Registering {0}".format(arg_based_service.name))
-                self.services[arg_based_service.name] = arg_based_service
-                return True
-            elif raise_on_type:
-                raise TypeError(
-                    "Generator or Iterable must provide a "
-                    "StackInABoxService in all of its results."
-                )
-            return False
-
         for arg in args:
-            if process_service(arg, raise_on_type=False):
+            if self.process_service(arg, raise_on_type=False):
                 pass
             elif (
                 isinstance(arg, types.GeneratorType) or
                 isinstance(arg, collections.Iterable)
             ):
                 for sub_arg in arg:
-                    process_service(sub_arg, raise_on_type=True)
+                    self.process_service(sub_arg, raise_on_type=True)
             else:
                 self.args.append(arg)
+
+    def process_service(self, arg_based_service, raise_on_type=True):
+        if isinstance(arg_based_service, StackInABoxService):
+            logger.debug("Registering {0}".format(arg_based_service.name))
+            self.services[arg_based_service.name] = arg_based_service
+            return True
+        elif raise_on_type:
+            raise TypeError(
+                "Generator or Iterable must provide a "
+                "StackInABoxService in all of its results."
+            )
+        return False
 
     def __call__(self, fn):
         """

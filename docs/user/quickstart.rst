@@ -38,7 +38,8 @@ to use the Stack-In-A-Box in an actual test:
 
     import stackinabox.util.requests_mock
     from stackinabox.stack import StackInABox
-    from stackinabox.services.hello import HelloService
+    # from the stackinabox test suite...
+    from tests.utils.hello import HelloService
 
     class TestRequestsMock(unittest.TestCase):
 

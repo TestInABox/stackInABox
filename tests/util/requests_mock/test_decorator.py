@@ -5,20 +5,35 @@ import collections
 import json
 import logging
 import types
-import unittest
 
 import requests
 
 from stackinabox.util.requests_mock import decorator
-from stackinabox.services.hello import HelloService
 
+from tests.util import base
 from tests.utils.services import AdvancedService
+from tests.utils.hello import HelloService
 
 
 logger = logging.getLogger(__name__)
 
 
-class TestRequestsMockBasic(unittest.TestCase):
+class TestRequestsMockBasicWithDecoratorErrors(base.UtilTestCase):
+
+    def test_basic(self):
+
+        decor_instance = decorator.activate('localhost')
+        with self.assertRaises(TypeError):
+            decor_instance.process_service({}, raise_on_type=True)
+
+    @decorator.stack_activate('localhost', HelloService())
+    def test_deprecated(self):
+        res = requests.get('http://localhost/hello/')
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.text, 'Hello')
+
+
+class TestRequestsMockBasic(base.UtilTestCase):
 
     def setUp(self):
         super(TestRequestsMockBasic, self).setUp()
@@ -48,11 +63,11 @@ class TestRequestsMockBasic(unittest.TestCase):
         self.assertEqual(res.status_code, response_code)
         self.assertEqual(res.text, value)
         self.assertEqual(len(stack), 1)
-        self.assertTrue(HelloService().name in stack)
+        self.assertTrue(self.hello_service.name in stack)
         self.assertIsInstance(stack[list(stack.keys())[0]], HelloService)
 
 
-class TestRequestMockAdvanced(unittest.TestCase):
+class TestRequestMockAdvanced(base.UtilTestCase):
 
     def setUp(self):
         super(TestRequestMockAdvanced, self).setUp()
@@ -101,7 +116,7 @@ def requests_mock_generator():
     yield HelloService()
 
 
-class TestRequestsMockBasicWithDecoratorAndGenerator(unittest.TestCase):
+class TestRequestsMockBasicWithDecoratorAndGenerator(base.UtilTestCase):
 
     def test_verify_generator(self):
         self.assertIsInstance(requests_mock_generator(), types.GeneratorType)
@@ -128,7 +143,7 @@ class TestRequestsMockBasicWithDecoratorAndGenerator(unittest.TestCase):
         self.assertEqual(res.status_code, response_code)
         self.assertEqual(res.text, value)
         self.assertEqual(len(stack), 1)
-        self.assertTrue(HelloService().name in stack)
+        self.assertTrue(self.hello_service.name in stack)
         self.assertIsInstance(stack[list(stack.keys())[0]], HelloService)
 
 
@@ -138,7 +153,7 @@ def requests_mock_list():
     ]
 
 
-class TestRequestsMockBasicWithDecoratorAndGenerator(unittest.TestCase):
+class TestRequestsMockBasicWithDecoratorAndGenerator(base.UtilTestCase):
 
     def test_verify_list(self):
         self.assertIsInstance(requests_mock_list(), collections.Iterable)
@@ -165,5 +180,5 @@ class TestRequestsMockBasicWithDecoratorAndGenerator(unittest.TestCase):
         self.assertEqual(res.status_code, response_code)
         self.assertEqual(res.text, value)
         self.assertEqual(len(stack), 1)
-        self.assertTrue(HelloService().name in stack)
+        self.assertTrue(self.hello_service.name in stack)
         self.assertIsInstance(stack[list(stack.keys())[0]], HelloService)
