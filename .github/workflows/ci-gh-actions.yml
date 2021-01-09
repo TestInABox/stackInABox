@@ -1,6 +1,6 @@
 name: Stack-In-A-Box CI
 
-on: [push, pull_request]
+on: [pull_request]
 
 jobs:
     lint:
@@ -13,9 +13,6 @@ jobs:
             - uses: actions/checkout@v2
               with:
                ref: ${{ github.event.pull_request.head.sha }}
-              if: ${{ github.event_name }} == 'pull_request'
-            - uses: actions/checkout@v2
-              if: ${{ github.event_name }} != 'pull_request'
             - name: Setup Python ${{ matrix.python-version }}
               uses: actions/setup-python@v2
               with:
@@ -35,9 +32,6 @@ jobs:
             - uses: actions/checkout@v2
               with:
                ref: ${{ github.event.pull_request.head.sha }}
-              if: ${{ github.event_name }} == 'pull_request'
-            - uses: actions/checkout@v2
-              if: ${{ github.event_name }} != 'pull_request'
             - name: Setup Python ${{ matrix.python-version }}
               uses: actions/setup-python@v2
               with:
@@ -48,9 +42,7 @@ jobs:
               run: tox -v -e py${{ matrix.python-version }} -- -v
             - name: Run Tox Optional Modules
               run: tox -v -e py3-httpretty,py3-requests-mock,py3-responses -- -v
-            - name: Build Docs
-              run: tox -v -e docs -- -v
-    build: 
+    docs: 
         runs-on: ubuntu-latest
         strategy:
             fail-fast: true
@@ -60,9 +52,6 @@ jobs:
             - uses: actions/checkout@v2
               with:
                ref: ${{ github.event.pull_request.head.sha }}
-              if: ${{ github.event_name }} == 'pull_request'
-            - uses: actions/checkout@v2
-              if: ${{ github.event_name }} != 'pull_request'
             - name: Setup Python ${{ matrix.python-version }}
               uses: actions/setup-python@v2
               with:
