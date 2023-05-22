@@ -4,7 +4,7 @@ httpretty==1.0.5
 mock==4.0.3
 pytest==6.2.1
 pytest-cov==2.10.1
-requests==2.25.1
+requests==2.31.0
 requests-mock==1.8.0
 responses>=0.12.1
 six==1.15.0
