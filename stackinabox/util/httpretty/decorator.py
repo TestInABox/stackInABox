@@ -4,7 +4,6 @@ Stack-In-A-Box: HTTPretty Support via decorator
 try:
     import collections.abc as collections
 except ImportError:
-    # Py2.7 Support
     import collections
 import functools
 import logging

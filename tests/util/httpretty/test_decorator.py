@@ -1,7 +1,10 @@
 """
 Stack-In-A-Box: Basic Test
 """
-import collections
+try:
+    import collections.abc as collections
+except ImportError:
+    import collections
 import sys
 import types
 import unittest

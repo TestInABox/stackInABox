@@ -75,7 +75,8 @@ def registration(uri):
     for method in METHODS:
         responses.add_callback(method,
                                regex,
-                               callback=responses_callback)
+                               callback=responses_callback,
+                               content_type=None)
 
 
 @deprecator.DeprecatedInterface("responses_registration", "registration")
