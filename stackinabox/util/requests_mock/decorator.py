@@ -4,7 +4,6 @@ Stack-In-A-Box: Requests-Mock Support via Decorator
 try:
     import collections.abc as collections
 except ImportError:
-    # Py2.7 Support
     import collections
 import functools
 import logging

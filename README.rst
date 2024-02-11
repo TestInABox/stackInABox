@@ -28,6 +28,9 @@ Installation is simple:
 
    pip install stackinabox
 
+.. note:: Python 2.7 is no longer supported. Pypy implements Python2.7 compatibility, however, the `setuptools` package
+    may cause issues if you cannot install a version that supports Python2.7.
+
 =====
 Goals
 =====
@@ -40,7 +43,7 @@ Goals
   - you should not necessarily need to know the ins and outs of each service
   - you should be able to register what you need (f.e authentication, storage) and have it just work
   
-- should be useable on systems like Travis (https://travis-ci.org/)
+- should be useable on systems like Travis (https://travis-ci.org/), GitHub Actions, etc
 - should be light on requirements
 
   - we do not want to bloat your testing to fit our needs

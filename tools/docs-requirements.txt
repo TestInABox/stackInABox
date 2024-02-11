@@ -1,7 +1,7 @@
-doc8==0.8.1
-httpretty==1.0.5
-requests==2.25.1
-requests-mock==1.8.0
+doc8==1.1.1
+httpretty==1.1.4
+requests==2.31.0
+requests-mock==1.11.0
 responses>=0.12.1
-six==1.15.0
-sphinx==3.4.2
+six==1.16.0
+sphinx==7.2.6

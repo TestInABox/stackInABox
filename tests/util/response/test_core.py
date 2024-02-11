@@ -56,8 +56,9 @@ def test_advanced_responses():
             'alice': 'alice: Good-Bye bob',
             'joe': 'joe: Good-Bye jane'
         }
-        res = requests.get('http://localhost/advanced/g?bob=alice;'
-                           'alice=bob&joe=jane')
+        res = requests.get(
+            'http://localhost/advanced/g?bob=alice&alice=bob&joe=jane'
+        )
         assert res.status_code == 200
         assert res.json() == expected_result
 
