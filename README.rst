@@ -279,3 +279,10 @@ There is now also the option of using a decorator:
             res = requests.get('http://localhost/')
             self.assertEqual(res.status_code, 200)
             self.assertEqual(res.text, 'Hello')
+
+======
+Enjoy!
+======
+
+Please now go and enjoy better testing.
+
