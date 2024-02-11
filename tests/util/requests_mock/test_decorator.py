@@ -94,8 +94,9 @@ class TestRequestMockAdvanced(base.UtilTestCase):
             'alice': 'alice: Good-Bye bob',
             'joe': 'joe: Good-Bye jane'
         }
-        res = session.get('http://localhost/advanced/g?bob=alice;'
-                          'alice=bob&joe=jane')
+        res = session.get(
+            'http://localhost/advanced/g?bob=alice&alice=bob&joe=jane'
+        )
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.json(), expected_result)
 
