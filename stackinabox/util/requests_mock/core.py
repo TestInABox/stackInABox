@@ -52,6 +52,9 @@ def session_registration(uri, session):
         reqcallable.RequestMockCallable(uri)
     )
 
+    if not uri.endswith('/'):
+        uri += '/'
+
     # Tell the session about the adapter and the URI
     session.mount('http://{0}'.format(uri), StackInABox.hold_out('adapter'))
     session.mount('https://{0}'.format(uri), StackInABox.hold_out('adapter'))
