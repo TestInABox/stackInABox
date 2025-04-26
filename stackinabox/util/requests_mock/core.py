@@ -17,13 +17,17 @@ from requests import Session
 from requests.adapters import HTTPAdapter
 from urllib3.response import HTTPResponse
 import requests_mock
-import requests_mock.compat
 import requests_mock.response
 import six
 
 from stackinabox.stack import StackInABox
 from stackinabox.util import deprecator
 from stackinabox.util.requests_mock import reqcallable
+
+try:
+    import requests_mock.compat
+except ImportError:
+    pass
 
 
 logger = logging.getLogger(__name__)
@@ -51,6 +55,9 @@ def session_registration(uri, session):
     StackInABox.hold_out('adapter').add_matcher(
         reqcallable.RequestMockCallable(uri)
     )
+
+    if not uri.endswith('/'):
+        uri += '/'
 
     # Tell the session about the adapter and the URI
     session.mount('http://{0}'.format(uri), StackInABox.hold_out('adapter'))
