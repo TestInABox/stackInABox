@@ -17,13 +17,17 @@ from requests import Session
 from requests.adapters import HTTPAdapter
 from urllib3.response import HTTPResponse
 import requests_mock
-import requests_mock.compat
 import requests_mock.response
 import six
 
 from stackinabox.stack import StackInABox
 from stackinabox.util import deprecator
 from stackinabox.util.requests_mock import reqcallable
+
+try:
+    import requests_mock.compat
+except ImportError:
+    pass
 
 
 logger = logging.getLogger(__name__)
