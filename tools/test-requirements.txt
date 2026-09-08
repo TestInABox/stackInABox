@@ -2,7 +2,7 @@ coverage==7.4.1
 ddt==1.7.1
 httpretty==1.1.4
 mock==5.1.0
-pytest==8.0.0
+pytest==9.0.3
 pytest-cov==4.1.0
 requests==2.32.0
 requests-mock==1.11.0
